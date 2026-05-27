@@ -635,6 +635,7 @@ public class MainActivity extends CommonActivity
         bm.registerReceiver(receiver, new IntentFilter(AppIntent.ACTION_OPEN_BOOKS));
         bm.registerReceiver(receiver, new IntentFilter(AppIntent.ACTION_OPEN_BOOK));
         bm.registerReceiver(receiver, new IntentFilter(AppIntent.ACTION_OPEN_SETTINGS));
+        bm.registerReceiver(receiver, new IntentFilter(AppIntent.ACTION_SHOW_PENDING_REMINDERS));
     }
 
     @Override
@@ -1016,6 +1017,12 @@ public class MainActivity extends CommonActivity
 
                 case AppIntent.ACTION_OPEN_SETTINGS: {
                     openSettings();
+                    break;
+                }
+
+                case AppIntent.ACTION_SHOW_PENDING_REMINDERS: {
+                    sendBroadcast(new Intent(this, com.orgzly.android.reminders.RemindersBroadcastReceiver.class)
+                            .setAction(AppIntent.ACTION_SHOW_PENDING_REMINDERS));
                     break;
                 }
 

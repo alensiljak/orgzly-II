@@ -27,6 +27,7 @@
     <string name="mark_as_done">Mark as done</string>
     <string name="mark_as_done_with_repeater">Reschedule %s</string>
     <string name="reminder_snooze">Snooze</string>
+    <string name="show_pending_reminders">Show pending reminders</string>
     <string name="close">Close</string>
     <string name="import_">Import</string> <!-- Reserved keyword -->
     <string name="export">Export</string>
