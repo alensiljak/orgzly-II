@@ -1,0 +1,81 @@
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'joda-time:joda-time:2.10.5'
+
+    implementation 'org.jetbrains:annotations:18.0.0'
+
+    testImplementation 'junit:junit:4.12'
+}
+
+def isReleaseBuild() {
+    return !VERSION_NAME.contains("SNAPSHOT")
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            groupId = 'com.orgzlyrevived'
+            artifactId = 'org-java'
+            version = VERSION_NAME
+
+            pom {
+                name = 'org-java'
+                description = 'Org files parser and generator'
+                url = 'https://github.com/orgzly-revived/org-java'
+
+                scm {
+                    url = "http://github.com/orgzly-revived/org-java"
+                    connection = "scm:git:http://github.com/orgzly-revived/org-java.git"
+                    developerConnection = "scm:git:git@github.com:orgzly-revived/org-java.git"
+                }
+
+                licenses {
+                    license {
+                        name = 'GNU General Public License, Version 3'
+                        url = 'http://www.gnu.org/licenses/gpl-3.0.html'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'neven'
+                        name = 'Neven'
+                        email = 'neven@orgzly.com'
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/" + System.getenv("GITHUB_REPOSITORY")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+
+//signing {
+//    sign publishing.publications.mavenJava
+//}
