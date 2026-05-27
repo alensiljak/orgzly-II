@@ -228,7 +228,7 @@ public class MainActivity extends CommonActivity
         if (data != null) {
             boolean isOrgzlyScheme = "orgzly".equals(data.getScheme()) && "note".equals(data.getHost());
             boolean isHttpScheme = ("https".equals(data.getScheme()) || "http".equals(data.getScheme()))
-                    && "orgzlyrevived.com".equals(data.getHost())
+                    && "orgzly.com".equals(data.getHost())
                     && data.getPath() != null && data.getPath().startsWith("/note/");
 
             if (isOrgzlyScheme || isHttpScheme) {

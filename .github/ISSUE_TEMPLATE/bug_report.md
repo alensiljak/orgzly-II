@@ -13,5 +13,5 @@ Please complete the following information:
 
     Device: 
     Android Version: 
-    Orgzly Revived Version: 
-    Sync repository type (directory/Dropbox/WebDAV/Git): 
+    Orgzly Version: 
+    Sync repository type (directory/Dropbox/WebDAV/Git):

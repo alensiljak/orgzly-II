@@ -17,4 +17,4 @@ Užrašinės išsaugomos Org mode formatu
 * Kurti ir išsaugoti paieškas greitai prieigai
 * Sinchronizuoti užrašines su vienu ar daugiau katalogų
 
-Orgzly Revived yra bendruomenės atšaka originalios Orgzly programėlės.
+Orgzly  yra bendruomenės atšaka originalios Orgzly programėlės.

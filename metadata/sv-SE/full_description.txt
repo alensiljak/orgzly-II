@@ -1,4 +1,4 @@
-Orgzly Revived är ett program för att hantera anteckningar och att-göra-listor.
+Orgzly  är ett program för att hantera anteckningar och att-göra-listor.
 
 Du kan lagra dina anteckningar i vanliga textfiler och synkronisera dem med en mapp på din mobila enhet, SD-kort eller över WebDAV.
 
@@ -17,4 +17,4 @@ Besök <a href='https://orgmode.org/'>orgmode.org</a> för mer information.
 * Skapa och spara sökfrågor för snabb åtkomst
 * Synkronisera anteckningar med en eller flera lagringsplatser
 
-Orgzly Revived är en ”fork” av appen Orgzly.
+Orgzly  är en ”fork” av appen Orgzly.

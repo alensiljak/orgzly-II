@@ -50,12 +50,12 @@ class CalendarManagerTest {
         // The start time should be converted from local to UTC
         val startTime = contentValues["DTSTART"] as Long
         val endTime = contentValues["DTEND"] as Long
-        
+
         // For all-day events, the time should be adjusted by the timezone offset
         val localTimeZone = TimeZone.getDefault()
         val expectedOffset = localTimeZone.getOffset(1672531200000)
         val expectedStartTime = 1672531200000 - expectedOffset
-        
+
         assertEquals("Start time should be converted to UTC", expectedStartTime, startTime)
         assertEquals("End time should also be converted to UTC", expectedStartTime + 24 * 60 * 60 * 1000, endTime)
     }
@@ -190,12 +190,12 @@ class CalendarManagerTest {
             repeater: OrgRepeater?
         ): Map<String, Any> {
             val dtEnd = eventEndTime ?: (eventStartTime + if (isAllDay) 24 * 60 * 60 * 1000 else 60 * 60 * 1000)
-            
+
             // For all-day events, convert local time to UTC since Android Calendar expects all-day events in UTC
             val (adjustedStartTime, adjustedEndTime, eventTimeZone) = adjustEventTimesForTimezone(eventStartTime, dtEnd, isAllDay)
-            
-            val description = (note.note.content ?: "") + "\n\nOpen in Orgzly: https://orgzlyrevived.com/note/${note.note.id}"
- 
+
+            val description = (note.note.content ?: "") + "\n\nOpen in Orgzly: https://orgzly.com/note/${note.note.id}"
+
             return listOfNotNull(
                 "DTSTART" to adjustedStartTime,
                 "DTEND" to adjustedEndTime,
@@ -208,15 +208,15 @@ class CalendarManagerTest {
                 "SYNC_DATA1" to note.note.id.toString()
             ).toMap()
         }
-        
+
         protected fun adjustEventTimesForTimezone(eventStartTime: Long, eventEndTime: Long, isAllDay: Boolean): Triple<Long, Long, String> {
             return if (isAllDay) {
                 val localTimeZone = TimeZone.getDefault()
-                
+
                 // Convert local timestamp to UTC for all-day events
                 val startTimeInUtc = eventStartTime - localTimeZone.getOffset(eventStartTime)
                 val endTimeInUtc = eventEndTime - localTimeZone.getOffset(eventEndTime)
-                
+
                 Triple(startTimeInUtc, endTimeInUtc, "UTC")
             } else {
                 Triple(eventStartTime, eventEndTime, TimeZone.getDefault().id)
@@ -267,7 +267,7 @@ class CalendarManagerTest {
         )
 
         val allNotes = listOf(doneNote, todoNote, noStateNote)
-        
+
         // Filter out DONE items (simulating what the CalendarManager does)
         val filteredNotes = allNotes.filter { noteView ->
             !isDoneKeyword(noteView.note.state)

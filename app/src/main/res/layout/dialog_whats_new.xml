@@ -270,7 +270,7 @@
 
         <com.orgzly.android.ui.views.WhatsNewChange
             style="@style/WhatsNewChange"
-            app:text="Always sort agenda items chronologically (&lt;a href=&quot;https://orgzlyrevived.com/docs#search-agenda&quot;&gt;documentation&lt;/a&gt;)." />
+            app:text="Always sort agenda items chronologically (&lt;a href=&quot;https://orgzly.com/docs#search-agenda&quot;&gt;documentation&lt;/a&gt;)." />
 
         <com.orgzly.android.ui.views.WhatsNewChange
             style="@style/WhatsNewChange"
@@ -410,7 +410,7 @@
 
         <com.orgzly.android.ui.views.WhatsNewChange
             style="@style/WhatsNewChange"
-            app:text="Fix &lt;a href=&quot;https://github.com/orgzly-revived/orgzly-android-revived/issues/395&quot;&gt;file corruption bug&lt;/a&gt; when saving to directory repos." />
+            app:text="Fix &lt;a href=&quot;https://github.com/orgzly-/orgzly-android-/issues/395&quot;&gt;file corruption bug&lt;/a&gt; when saving to directory repos." />
 
         <TextView
             style="@style/WhatsNewVersion"
@@ -467,7 +467,7 @@
 
         <com.orgzly.android.ui.views.WhatsNewChange
             style="@style/WhatsNewChange"
-            app:text="Support &lt;a href=&quot;https://www.orgzlyrevived.com/docs#orgc553add&quot;&gt;the .orgzlyignore file&lt;/a&gt; in all repo types" />
+            app:text="Support &lt;a href=&quot;https://www.orgzly.com/docs#orgc553add&quot;&gt;the .orgzlyignore file&lt;/a&gt; in all repo types" />
 
         <TextView
             style="@style/WhatsNewVersion"

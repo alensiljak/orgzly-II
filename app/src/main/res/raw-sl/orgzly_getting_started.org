@@ -70,11 +70,11 @@ Označite opombo kot končano, da premaknete repetitor.
 
 ** Opomba lahko vključuje povezave
 
-Pokličite telefonsko številko (tel:555-0199), pošljite SMS (sms:555-0199), sestavite e-pošto (mailto:support@orgzlyrevived.com) ali obiščite spletno stran ([[https://www.orgzlyrevived.com][Orgzlyrevived.com]]).
+Pokličite telefonsko številko (tel:555-0199), pošljite SMS (sms:555-0199), sestavite e-pošto (mailto:support@orgzly.com) ali obiščite spletno stran ([[https://www.orgzly.com][Orgzly.com]]).
 
 V aplikaciji se lahko povežete tudi z drugim opombo ali zvezkom.
 
-Za več informacij glejte [[https://www.orgzlyrevived.com/docs#links]].
+Za več informacij glejte [[https://www.orgzly.com/docs#links]].
 
 ** Podprt je osnovni tipografski poudarek
 
@@ -99,7 +99,7 @@ Kliknite potrditveno polje, da ga preklopite. Na koncu vrstice pritisnite gumb n
 
 Opombe lahko iščete po stanju, oznaki, načrtovanju, roku ali časih dogodkov itd.
 
-Za več informacij glejte [[https://www.orgzlyrevived.com/docs#search]].
+Za več informacij glejte [[https://www.orgzly.com/docs#search]].
 
 ** Iskalne poizvedbe lahko shranite za hiter dostop
 

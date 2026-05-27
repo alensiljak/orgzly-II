@@ -4,13 +4,13 @@
 
     <string name="whats_new_intro"><![CDATA[
         Visit
-        <a href="https://www.orgzlyrevived.com">Orgzlyrevived.com</a>
+        <a href="https://www.orgzly.com">Orgzly.com</a>
         for documentation.
 
         <br><br>
 
         Use
-        <a href="https://github.com/orgzly-revived/orgzly-android-revived/issues">GitHub</a>
+        <a href="https://github.com/orgzly-/orgzly-android-/issues">GitHub</a>
         to check for existing feature requests and bug reports and to report new ones.
 
         <br><br>
@@ -21,13 +21,13 @@
         <br><br>
 
         Help us
-        <a href="https://toolate.othing.xyz/projects/orgzly-revived/">translate</a>
+        <a href="https://toolate.othing.xyz/projects/orgzly-/">translate</a>
         the app on Weblate.
     ]]></string>
 
     <string name="whats_new_outro"><![CDATA[
         Visit
-        <a href="https://www.orgzlyrevived.com/changelog">Changelog</a>
+        <a href="https://www.orgzly.com/changelog">Changelog</a>
         for the full list.
     ]]></string>
 </resources>

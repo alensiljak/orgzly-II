@@ -54,13 +54,13 @@ jobs:
         with:
           releaseDirectory: app/build/outputs/apk/fdroid/release
           signingKeyBase64: ${{ secrets.APK_SIGNING_KEYSTORE_FILE }}
-          alias: orgzly-revived-20231013
+          alias: orgzly-key
           keyStorePassword: ${{ secrets.APK_SIGNING_KEYSTORE_PASSWORD }}
         env:
           BUILD_TOOLS_VERSION: ${{ env.BUILD_TOOL_VERSION }}
 
       - name: Rename F-Droid APK file
-        run: mv ${{steps.sign_fdroid_apk.outputs.signedReleaseFile}} orgzly-revived-fdroid-${{ env.VERSION }}.apk
+        run: mv ${{steps.sign_fdroid_apk.outputs.signedReleaseFile}} orgzly-fdroid-${{ env.VERSION }}.apk
 
       # "Premium" APK
 
@@ -81,13 +81,13 @@ jobs:
         with:
           releaseDirectory: app/build/outputs/apk/premium/release
           signingKeyBase64: ${{ secrets.APK_SIGNING_KEYSTORE_FILE }}
-          alias: orgzly-revived-20231013
+          alias: orgzly-key
           keyStorePassword: ${{ secrets.APK_SIGNING_KEYSTORE_PASSWORD }}
         env:
           BUILD_TOOLS_VERSION: ${{ env.BUILD_TOOL_VERSION }}
 
       - name: Rename "premium" APK file
-        run: mv ${{steps.sign_premium_apk.outputs.signedReleaseFile}} orgzly-revived-${{ env.VERSION }}.apk
+        run: mv ${{steps.sign_premium_apk.outputs.signedReleaseFile}} orgzly-${{ env.VERSION }}.apk
 
       # "Premium" AAB
 
@@ -102,13 +102,13 @@ jobs:
         with:
           releaseDirectory: app/build/outputs/bundle/premiumRelease
           signingKeyBase64: ${{ secrets.APK_SIGNING_KEYSTORE_FILE }}
-          alias: orgzly-revived-20231013
+          alias: orgzly-key
           keyStorePassword: ${{ secrets.APK_SIGNING_KEYSTORE_PASSWORD }}
         env:
           BUILD_TOOLS_VERSION: ${{ env.BUILD_TOOL_VERSION }}
 
       - name: Rename "premium" AAB file
-        run: mv ${{steps.sign_premium_aab.outputs.signedReleaseFile}} orgzly-revived-${{ env.VERSION }}.aab
+        run: mv ${{steps.sign_premium_aab.outputs.signedReleaseFile}} orgzly-${{ env.VERSION }}.aab
 
       - name: Upload artifacts and create Github release draft
         uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0

@@ -17,4 +17,4 @@ Visita <a href='https://orgmode.org/'>orgmode.org</a> para más información.
 * Crea y guarda búsquedas para acceso rápdio
 * Sincroniza libretas con uno o más directorios
 
-Orgzly Revived es un fork de la comunidad de la aplicación original de Orgzly.
+Orgzly  es un fork de la comunidad de la aplicación original de Orgzly.

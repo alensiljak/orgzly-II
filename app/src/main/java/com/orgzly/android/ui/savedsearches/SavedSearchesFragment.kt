@@ -333,7 +333,7 @@ class SavedSearchesFragment : CommonFragment(), DrawerItem, OnViewHolderClickLis
 
     companion object {
 
-        const val SEARCH_DOCUMENTATION_URL = "https://www.orgzlyrevived.com/docs#search"
+        const val SEARCH_DOCUMENTATION_URL = "https://www.orgzly.com/docs#search"
 
         private val TAG = SavedSearchesFragment::class.java.name
 

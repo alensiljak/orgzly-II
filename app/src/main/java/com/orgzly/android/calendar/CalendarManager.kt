@@ -56,7 +56,7 @@ class CalendarManager(
 
         val writePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALENDAR)
         val readPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR)
-        
+
         LogUtils.d(TAG, "Checking permissions - Write: $writePermission, Read: $readPermission (Granted=${PackageManager.PERMISSION_GRANTED})")
 
         if (writePermission != PackageManager.PERMISSION_GRANTED) {
@@ -66,7 +66,7 @@ class CalendarManager(
 
         val calendarId = getOrCreateCalendarId()
         LogUtils.d(TAG, "Using Calendar ID: $calendarId")
-        
+
         if (calendarId == -1L) {
             LogUtils.d(TAG, "Failed to get or create calendar")
             return
@@ -133,7 +133,7 @@ class CalendarManager(
     private fun updateCalendarColorIfNeeded(calendarId: Long) {
         val currentColor = getCurrentCalendarColor(calendarId)
         val desiredColor = getCalendarColor()
-        
+
         if (currentColor != desiredColor) {
             updateCalendarColor(desiredColor)
         }
@@ -218,7 +218,7 @@ class CalendarManager(
         )?.use { cursor ->
             val idIndex = cursor.getColumnIndex(CalendarContract.Events._ID)
             val syncData1Index = cursor.getColumnIndex(CalendarContract.Events.SYNC_DATA1)
-            
+
             if (idIndex != -1 && syncData1Index != -1) {
                 while (cursor.moveToNext()) {
                     val eventId = cursor.getLong(idIndex)
@@ -295,11 +295,11 @@ class CalendarManager(
 
     private fun buildEventContentValues(calendarId: Long, note: NoteView, eventTime: CalendarEventTime): ContentValues {
         val dtEnd = eventTime.end ?: (eventTime.start + if (eventTime.isAllDay) DAY_IN_MILLIS else HOUR_IN_MILLIS)
-        
+
         // For all-day events, convert local time to UTC since Android Calendar expects all-day events in UTC
         val (adjustedStartTime, adjustedEndTime, eventTimeZone) = adjustEventTimesForTimezone(eventTime.start, dtEnd, eventTime.isAllDay)
-        
-        val description = "Open in Orgzly: https://orgzlyrevived.com/note/${note.note.id}" + if (note.note.content.isNullOrEmpty()) "" else "\n\n${note.note.content}"
+
+        val description = "Open in Orgzly: https://orgzly.com/note/${note.note.id}" + if (note.note.content.isNullOrEmpty()) "" else "\n\n${note.note.content}"
 
         return ContentValues().apply {
             put(CalendarContract.Events.DTSTART, adjustedStartTime)
@@ -338,11 +338,11 @@ class CalendarManager(
     private fun adjustEventTimesForTimezone(eventStartTime: Long, eventEndTime: Long, isAllDay: Boolean): Triple<Long, Long, String> {
         return if (isAllDay) {
             val localTimeZone = TimeZone.getDefault()
-            
+
             // Convert local timestamp to UTC for all-day events (Add the offset instead of substracting it)
             val startTimeInUtc = eventStartTime + localTimeZone.getOffset(eventStartTime)
             val endTimeInUtc = eventEndTime + localTimeZone.getOffset(eventEndTime)
-            
+
             Triple(startTimeInUtc, endTimeInUtc, "UTC")
         } else {
             Triple(eventStartTime, eventEndTime, TimeZone.getDefault().id)

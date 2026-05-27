@@ -4,7 +4,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 android {
-    namespace = 'com.orgzly'
+    namespace = 'cc.alensiljak.orgzly'
 
     compileSdk 36
 
@@ -13,8 +13,8 @@ android {
         targetSdkVersion 36
         versionCode 282
         versionName "1.20.0"
-        applicationId = "com.orgzlyrevived"
-        resValue "string", "application_id", "com.orgzlyrevived"
+        applicationId = "cc.alensiljak.orgzly"
+        resValue "string", "application_id", "cc.alensiljak.orgzly"
 
         testInstrumentationRunner "com.orgzly.android.OrgzlyTestRunner"
 
@@ -247,8 +247,8 @@ def orgJavaLocation() {
         logger.info("app: Using org-java from ${gradle.ext.orgJavaDir}")
         return project(':org-java')
     } else {
-        logger.info("app: Using com.github.orgzly-revived:org-java:$versions.org_java from Maven repository")
-        return "com.github.orgzly-revived:org-java:$versions.org_java"
+        logger.info("app: Using com.github.orgzly:org-java:$versions.org_java from Maven repository")
+        return "com.github.orgzly:org-java:$versions.org_java"
     }
 }
 

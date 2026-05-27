@@ -70,11 +70,11 @@ You can have multiple event times:
 
 ** Нотатка може мати посилання
 
-Подзвонити за номером (tel:555-0199), надіслати SMS (sms:555-0199), написати електронного листа (mailto:support@orgzlyrevived.com) або відвідати вебсторінку ([[https://www.orgzlyrevived.com][Orgzlyrevived.com]]).
+Подзвонити за номером (tel:555-0199), надіслати SMS (sms:555-0199), написати електронного листа (mailto:support@orgzly.com) або відвідати вебсторінку ([[https://www.orgzly.com][Orgzly.com]]).
 
 Також Ви можете посилатися на іншу нотатку або записник.
 
-Детальніше дивіться [[https://www.orgzlyrevived.com/docs#links]].
+Детальніше дивіться [[https://www.orgzly.com/docs#links]].
 
 ** Підтримуються основні типографічні виділення
 
@@ -99,7 +99,7 @@ You can have multiple event times:
 
 Ви можете шукати нотатки за станом, мітками, запланованим або кінцевим часом тощо.
 
-Детальніше дивіться [[https://www.orgzlyrevived.com/docs#search]].
+Детальніше дивіться [[https://www.orgzly.com/docs#search]].
 
 ** Пошукові запити можна зберігати для швидкого доступу
 

@@ -77,7 +77,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="http" />
                 <data android:scheme="https" />
-                <data android:host="orgzlyrevived.com" />
+                <data android:host="orgzly.com" />
                 <data android:pathPrefix="/note/" />
                 <data android:autoVerify="true" />
             </intent-filter>

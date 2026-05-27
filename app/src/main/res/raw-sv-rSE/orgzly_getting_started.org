@@ -70,11 +70,11 @@ Du kan ändra antalet möjliga prioritetsnivåer i Inställningar. Du kan också
 
 ** Anteckningar kan innehålla länkar
 
-Ring ett telefonnummer (tel:555-0199), skicka ett SMS (sms:555-0199), skriv ett mail (mailto:support@orgzlyrevived.com) eller besök en webbplats ([[https://www.orgzlyrevived.com][Orgzlyrevived.com]]).
+Ring ett telefonnummer (tel:555-0199), skicka ett SMS (sms:555-0199), skriv ett mail (mailto:support@orgzly.com) eller besök en webbplats ([[https://www.orgzly.com][Orgzly.com]]).
 
 Du kan också länka till en annan anteckning eller anteckningsbok i appen.
 
-Besök [[https://www.orgzlyrevived.com/docs#links]] för mer information.
+Besök [[https://www.orgzly.com/docs#links]] för mer information.
 
 ** Orgzly stöder grundläggande typografisk formatering
 
@@ -99,7 +99,7 @@ Klicka i rutan för att klarmarkera den. Tryck på Enter vid slutet av den sista
 
 Du kan söka efter anteckningar baserat på status, taggar, schemalagd tid, deadline, händelsetider, med mera.
 
-Besök [[https://www.orgzlyrevived.com/docs#search]] för att få veta mer.
+Besök [[https://www.orgzly.com/docs#search]] för att få veta mer.
 
 ** Sökfrågor kan sparas för snabb åtkomst
 
