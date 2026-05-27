@@ -3,7 +3,7 @@ package com.orgzly.android.reminders
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.App
 import com.orgzly.android.AppIntent
 import com.orgzly.android.data.DataRepository

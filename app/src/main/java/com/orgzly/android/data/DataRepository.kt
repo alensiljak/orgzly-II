@@ -18,8 +18,8 @@ import androidx.sqlite.db.SupportSQLiteQueryBuilder
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.*
 import com.orgzly.android.data.mappers.OrgMapper
 import com.orgzly.android.db.NotesClipboard

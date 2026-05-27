@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.MotionEvent
 import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.util.LogUtils
 
 class ItemGestureDetector(context: Context, private val listener: Listener) :

@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.orgzly.BuildConfig;
-import com.orgzly.R;
+import cc.alensiljak.orgzly.BuildConfig;
+import cc.alensiljak.orgzly.R;
 import com.orgzly.android.db.entity.Book;
 import com.orgzly.android.query.Query;
 import com.orgzly.android.query.QueryParser;

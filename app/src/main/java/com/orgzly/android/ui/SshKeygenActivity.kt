@@ -12,11 +12,11 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.getSystemService
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.git.SshKey
 import com.orgzly.android.ui.dialogs.ShowSshKeyDialogFragment
 import com.orgzly.android.util.BiometricAuthenticator
-import com.orgzly.databinding.ActivitySshKeygenBinding
+import cc.alensiljak.orgzly.databinding.ActivitySshKeygenBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

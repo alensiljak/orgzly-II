@@ -11,8 +11,8 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.workDataOf
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.ui.repos.ReposActivity
 import com.orgzly.android.ui.showSnackbar

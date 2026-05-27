@@ -44,7 +44,7 @@ import androidx.test.espresso.intent.Intents;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 
-import com.orgzly.R;
+import cc.alensiljak.orgzly.R;
 import com.orgzly.android.BookFormat;
 import com.orgzly.android.OrgzlyTest;
 import com.orgzly.android.RetryTestRule;

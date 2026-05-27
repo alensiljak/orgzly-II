@@ -10,7 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import androidx.preference.PreferenceDialogFragmentCompat
 import com.google.android.material.textfield.TextInputLayout
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.org.OrgStatesWorkflow
 import com.orgzly.org.utils.ArrayListSpaceSeparated
 import java.util.*

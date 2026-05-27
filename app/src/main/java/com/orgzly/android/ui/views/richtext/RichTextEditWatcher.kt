@@ -2,7 +2,7 @@ package com.orgzly.android.ui.views.richtext
 
 import android.text.Editable
 import android.text.TextWatcher
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.util.LogUtils
 import java.util.regex.Pattern
 

@@ -4,8 +4,8 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.data.DataRepository
 import com.orgzly.android.db.dao.NoteDao

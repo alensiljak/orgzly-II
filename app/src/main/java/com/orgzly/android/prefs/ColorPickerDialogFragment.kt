@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import androidx.preference.PreferenceDialogFragmentCompat
-import com.orgzly.R
-import com.orgzly.databinding.DialogColorPickerBinding
+import cc.alensiljak.orgzly.R
+import cc.alensiljak.orgzly.databinding.DialogColorPickerBinding
 import kotlin.math.pow
 
 class ColorPickerDialogFragment : PreferenceDialogFragmentCompat() {

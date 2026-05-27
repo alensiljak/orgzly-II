@@ -7,8 +7,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.ui.CommonActivity
 import com.orgzly.android.ui.showSnackbar

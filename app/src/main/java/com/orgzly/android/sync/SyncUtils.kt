@@ -1,7 +1,7 @@
 package com.orgzly.android.sync
 
 import androidx.core.net.toUri
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.BookFormat
 import com.orgzly.android.BookName
 import com.orgzly.android.NotesOrgExporter

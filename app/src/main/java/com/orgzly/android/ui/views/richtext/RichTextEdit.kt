@@ -9,7 +9,7 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.ancestors
 import androidx.core.widget.NestedScrollView
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.ui.util.KeyboardUtils
 import com.orgzly.android.util.LogUtils
 

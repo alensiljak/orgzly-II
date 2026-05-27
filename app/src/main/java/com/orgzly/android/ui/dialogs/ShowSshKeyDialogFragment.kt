@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.git.SshKey.sshPublicKey
 import com.orgzly.android.ui.SshKeygenActivity
 

@@ -3,7 +3,7 @@ package com.orgzly.android.sync
 import android.content.Context
 import androidx.work.Data
 import androidx.work.workDataOf
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 
 data class SyncState(val type: Type, val message: String? = null, val current: Int, val total: Int) {
     enum class Type {

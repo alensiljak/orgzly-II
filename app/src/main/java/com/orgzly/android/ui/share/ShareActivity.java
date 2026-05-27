@@ -14,8 +14,8 @@ import android.util.Log;
 import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.pm.ShortcutManagerCompat;
 
-import com.orgzly.BuildConfig;
-import com.orgzly.R;
+import cc.alensiljak.orgzly.BuildConfig;
+import cc.alensiljak.orgzly.R;
 import com.orgzly.android.App;
 import com.orgzly.android.AppIntent;
 import com.orgzly.android.data.DataRepository;

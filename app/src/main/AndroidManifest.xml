@@ -31,7 +31,7 @@
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
     <application
-        android:name=".android.App"
+        android:name="com.orgzly.android.App"
         android:allowBackup="true"
         android:networkSecurityConfig="@xml/network_security_config" tools:targetApi="n"
         android:supportsRtl="true"
@@ -42,7 +42,7 @@
 
         <!-- <profileable android:shell="true" tools:targetApi="q" /> -->
 
-        <activity android:name=".android.ui.LauncherActivity" android:exported="true">
+        <activity android:name="com.orgzly.android.ui.LauncherActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -54,7 +54,7 @@
         </activity>
 
         <activity
-            android:name=".android.ui.main.MainActivity"
+            android:name="com.orgzly.android.ui.main.MainActivity"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:exported="true">
             <intent-filter>
@@ -84,7 +84,7 @@
         </activity>
 
         <activity
-            android:name=".android.ui.share.ShareActivity"
+            android:name="com.orgzly.android.ui.share.ShareActivity"
             android:exported="true"
             android:windowSoftInputMode="stateUnchanged"
             android:taskAffinity="">
@@ -109,17 +109,17 @@
         </activity>
 
         <activity
-            android:name=".android.ui.settings.SettingsActivity"
+            android:name="com.orgzly.android.ui.settings.SettingsActivity"
             android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
 
         <activity
-            android:name=".android.ui.repos.ReposActivity"
+            android:name="com.orgzly.android.ui.repos.ReposActivity"
             android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
 
         <activity
-            android:name=".android.ui.repo.dropbox.DropboxRepoActivity"
+            android:name="com.orgzly.android.ui.repo.dropbox.DropboxRepoActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
         </activity>
 
@@ -139,32 +139,32 @@
         </activity>
 
         <activity
-            android:name=".android.ui.repo.git.GitRepoActivity"
+            android:name="com.orgzly.android.ui.repo.git.GitRepoActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
         </activity>
 
         <activity
-            android:name=".android.ui.SshKeygenActivity"
+            android:name="com.orgzly.android.ui.SshKeygenActivity"
             android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
 
         <activity
-            android:name=".android.ui.repo.webdav.WebdavRepoActivity"
+            android:name="com.orgzly.android.ui.repo.webdav.WebdavRepoActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
         </activity>
 
         <activity
-            android:name=".android.ui.repo.directory.DirectoryRepoActivity"
+            android:name="com.orgzly.android.ui.repo.directory.DirectoryRepoActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
         </activity>
 
         <activity
-            android:name=".android.ui.repo.BrowserActivity"
+            android:name="com.orgzly.android.ui.repo.BrowserActivity"
             android:windowSoftInputMode="stateAlwaysHidden">
         </activity>
 
         <activity
-            android:name=".android.ui.BookChooserActivity"
+            android:name="com.orgzly.android.ui.BookChooserActivity"
             android:label="@string/book_shortcut_label"
             android:icon="@mipmap/cic_shortcut_notebook"
             android:exported="true">
@@ -176,7 +176,7 @@
         </activity>
 
         <activity
-            android:name=".android.ui.TemplateChooserActivity"
+            android:name="com.orgzly.android.ui.TemplateChooserActivity"
             android:label="@string/new_note_shortcut_label"
             android:icon="@mipmap/cic_shortcut_new_note"
             android:exported="true">
@@ -188,25 +188,25 @@
         </activity>
 
         <service
-            android:name=".android.widgets.ListWidgetService"
+            android:name="com.orgzly.android.widgets.ListWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS"
             android:exported="false" />
 
         <service
-            android:name=".android.reminders.AlarmSoundService" />
+            android:name="com.orgzly.android.reminders.AlarmSoundService" />
 
         <activity
-            android:name=".android.widgets.ListWidgetSelectionActivity"
+            android:name="com.orgzly.android.widgets.ListWidgetSelectionActivity"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.AppCompat.Light.Dialog"
             android:excludeFromRecents="true"/>
 
         <activity
-            android:name=".android.ui.SyncShortcutActivity"
+            android:name="com.orgzly.android.ui.SyncShortcutActivity"
             android:taskAffinity="" />
 
         <activity
-            android:name=".android.ui.logs.AppLogsActivity"
+            android:name="com.orgzly.android.ui.logs.AppLogsActivity"
             android:exported="false"
             android:label="@string/logs" />
 
@@ -221,7 +221,7 @@
         </provider>
 
         <receiver
-            android:name=".android.widgets.ListWidgetProvider"
+            android:name="com.orgzly.android.widgets.ListWidgetProvider"
             android:label="@string/list_widget_name"
             android:exported="true">
 
@@ -234,27 +234,27 @@
                 android:resource="@xml/list_widget_info" />
         </receiver>
 
-        <receiver android:name=".android.BootCompletedReceiver" android:exported="false">
+        <receiver android:name="com.orgzly.android.BootCompletedReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".android.reminders.RemindersBroadcastReceiver" android:exported="false">
+        <receiver android:name="com.orgzly.android.reminders.RemindersBroadcastReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".android.NotificationBroadcastReceiver"/>
+        <receiver android:name="com.orgzly.android.NotificationBroadcastReceiver"/>
 
-        <receiver android:name=".android.NewNoteBroadcastReceiver"/>
+        <receiver android:name="com.orgzly.android.NewNoteBroadcastReceiver"/>
 
-        <receiver android:name=".android.external.ExternalAccessReceiver"
+        <receiver android:name="com.orgzly.android.external.ExternalAccessReceiver"
             android:exported="true">
         </receiver>
 
-        <receiver android:name=".android.TimeChangeBroadcastReceiver" android:exported="false">
+        <receiver android:name="com.orgzly.android.TimeChangeBroadcastReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.TIME_SET"/>
                 <action android:name="android.intent.action.TIMEZONE_CHANGED"/>
@@ -262,7 +262,7 @@
         </receiver>
 
         <receiver
-            android:name=".android.ActionReceiver"
+            android:name="com.orgzly.android.ActionReceiver"
             android:exported="true" tools:ignore="ExportedReceiver" />
     </application>
 </manifest>

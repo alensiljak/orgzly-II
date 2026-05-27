@@ -18,8 +18,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
 import androidx.core.content.ContextCompat;
 
-import com.orgzly.BuildConfig;
-import com.orgzly.R;
+import cc.alensiljak.orgzly.BuildConfig;
+import cc.alensiljak.orgzly.R;
 import com.orgzly.android.ActionReceiver;
 import com.orgzly.android.AppIntent;
 import com.orgzly.android.NewNoteBroadcastReceiver;

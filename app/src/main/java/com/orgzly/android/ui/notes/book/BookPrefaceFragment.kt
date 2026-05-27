@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.BookUtils
 import com.orgzly.android.data.DataRepository
@@ -17,7 +17,7 @@ import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.ui.CommonFragment
 import com.orgzly.android.ui.main.SharedMainActivityViewModel
 import com.orgzly.android.util.LogUtils
-import com.orgzly.databinding.FragmentBookPrefaceBinding
+import cc.alensiljak.orgzly.databinding.FragmentBookPrefaceBinding
 import javax.inject.Inject
 
 /**

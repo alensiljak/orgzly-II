@@ -3,7 +3,7 @@ package com.orgzly.android.ui.notes.query
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.data.DataRepository
 import com.orgzly.android.ui.AppBar
 import com.orgzly.android.ui.CommonViewModel

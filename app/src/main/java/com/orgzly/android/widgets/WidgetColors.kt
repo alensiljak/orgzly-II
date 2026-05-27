@@ -1,6 +1,6 @@
 package com.orgzly.android.widgets
 
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 
 object WidgetColors {
     val colors = mapOf(

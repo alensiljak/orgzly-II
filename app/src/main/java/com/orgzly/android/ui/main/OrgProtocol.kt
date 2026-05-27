@@ -1,7 +1,7 @@
 package com.orgzly.android.ui.main
 
 import android.content.Intent
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.query.Condition
 import com.orgzly.android.query.Query
 import com.orgzly.android.query.user.DottedQueryBuilder

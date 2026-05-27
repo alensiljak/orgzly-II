@@ -14,7 +14,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.db.entity.Book
 import com.orgzly.android.db.entity.BookAction
 import com.orgzly.android.db.entity.BookView
@@ -24,7 +24,7 @@ import com.orgzly.android.ui.SelectableItemAdapter
 import com.orgzly.android.ui.Selection
 import com.orgzly.android.ui.util.goneUnless
 import com.orgzly.android.ui.util.styledAttributes
-import com.orgzly.databinding.ItemBookBinding
+import cc.alensiljak.orgzly.databinding.ItemBookBinding
 
 
 class BooksAdapter(

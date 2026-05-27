@@ -1,7 +1,7 @@
 package com.orgzly.android.ui.notes.book
 
 import androidx.recyclerview.widget.*
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.util.LogUtils
 
 abstract class ListAdapterWithHeaders<T, VH : RecyclerView.ViewHolder>(

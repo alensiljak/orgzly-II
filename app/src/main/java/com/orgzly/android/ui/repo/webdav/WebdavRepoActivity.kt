@@ -8,7 +8,7 @@ import android.view.WindowManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.repos.RepoFactory
 import com.orgzly.android.repos.RepoType
@@ -19,8 +19,8 @@ import com.orgzly.android.ui.CommonActivity
 import com.orgzly.android.ui.showSnackbar
 import com.orgzly.android.ui.util.KeyboardUtils
 import com.orgzly.android.util.UriUtils
-import com.orgzly.databinding.ActivityRepoWebdavBinding
-import com.orgzly.databinding.DialogCertificatesBinding
+import cc.alensiljak.orgzly.databinding.ActivityRepoWebdavBinding
+import cc.alensiljak.orgzly.databinding.DialogCertificatesBinding
 import javax.inject.Inject
 
 class WebdavRepoActivity : CommonActivity() {

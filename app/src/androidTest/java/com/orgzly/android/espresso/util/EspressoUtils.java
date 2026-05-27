@@ -52,7 +52,7 @@ import androidx.test.espresso.util.HumanReadables;
 import androidx.test.espresso.util.TreeIterables;
 import androidx.test.uiautomator.UiDevice;
 
-import com.orgzly.R;
+import cc.alensiljak.orgzly.R;
 import com.orgzly.android.ui.SpanUtils;
 
 import org.hamcrest.Description;

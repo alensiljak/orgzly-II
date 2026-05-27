@@ -14,8 +14,8 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.ui.ImageLoader
 import com.orgzly.android.ui.main.MainActivity

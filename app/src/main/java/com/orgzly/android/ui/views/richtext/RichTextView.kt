@@ -13,8 +13,8 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.GestureDetectorCompat
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.ui.SpanUtils
 import com.orgzly.android.ui.util.styledAttributes

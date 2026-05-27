@@ -1,7 +1,7 @@
 package com.orgzly.android.ui.dialogs
 
 import android.content.Context
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.org.datetime.OrgInterval
 import com.orgzly.org.datetime.OrgRepeater
 

@@ -44,7 +44,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cl.emilym.compose.units.rdp
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.prefs.StateWorkflows
 import com.orgzly.android.query.RelativeDateOption

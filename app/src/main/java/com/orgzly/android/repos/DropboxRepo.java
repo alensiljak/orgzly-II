@@ -5,7 +5,7 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
-import com.orgzly.R;
+import cc.alensiljak.orgzly.R;
 import com.orgzly.android.App;
 import com.orgzly.android.BookName;
 import com.orgzly.android.prefs.AppPreferences;

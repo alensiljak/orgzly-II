@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.LayoutDirection
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 
 enum class Icons {
     ARROW_BACK,

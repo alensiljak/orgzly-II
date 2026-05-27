@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.material.progressindicator.LinearProgressIndicator
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 
 /**
  * Used for compatibility with CommonFragment

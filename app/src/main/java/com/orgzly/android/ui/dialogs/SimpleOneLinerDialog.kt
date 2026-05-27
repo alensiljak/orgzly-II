@@ -11,7 +11,7 @@ import androidx.annotation.StringRes
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.ui.util.KeyboardUtils
 
 class SimpleOneLinerDialog : DialogFragment() {

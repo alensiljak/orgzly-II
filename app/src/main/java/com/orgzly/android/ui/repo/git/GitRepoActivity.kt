@@ -24,7 +24,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.git.GitPreferences
 import com.orgzly.android.git.GitSshKeyTransportSetter
@@ -43,7 +43,7 @@ import com.orgzly.android.ui.showSnackbar
 import com.orgzly.android.ui.util.copyPlainTextToClipboard
 import com.orgzly.android.util.AppPermissions
 import com.orgzly.android.util.MiscUtils
-import com.orgzly.databinding.ActivityRepoGitBinding
+import cc.alensiljak.orgzly.databinding.ActivityRepoGitBinding
 import org.eclipse.jgit.errors.NoRemoteRepositoryException
 import org.eclipse.jgit.errors.NotSupportedException
 import org.eclipse.jgit.lib.ProgressMonitor

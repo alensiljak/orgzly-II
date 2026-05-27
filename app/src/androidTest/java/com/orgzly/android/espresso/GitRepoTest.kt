@@ -7,7 +7,7 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.OrgzlyTest
 import com.orgzly.android.RetryTestRule
 import com.orgzly.android.db.entity.Repo

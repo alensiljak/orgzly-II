@@ -3,7 +3,7 @@ package com.orgzly.android.ui.notes
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import com.orgzly.databinding.ItemHeadBinding
+import cc.alensiljak.orgzly.databinding.ItemHeadBinding
 
 class NoteItemViewHolder(val binding: ItemHeadBinding, private val clickListener: ClickListener) :
         RecyclerView.ViewHolder(binding.root),

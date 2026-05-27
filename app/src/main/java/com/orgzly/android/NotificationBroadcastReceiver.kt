@@ -4,7 +4,7 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.reminders.AlarmSoundService
 import com.orgzly.android.reminders.RemindersScheduler
 import com.orgzly.android.ui.notifications.Notifications

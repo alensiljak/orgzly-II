@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ViewFlipper;
 
-import com.orgzly.BuildConfig;
+import cc.alensiljak.orgzly.BuildConfig;
 import com.orgzly.android.ui.util.ListViewUtils;
 import com.orgzly.android.ui.util.ViewUtils;
 import com.orgzly.android.util.LogUtils;

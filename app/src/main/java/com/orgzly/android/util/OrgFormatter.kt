@@ -8,7 +8,7 @@ import android.text.Spanned
 import android.text.style.CharacterStyle
 import android.text.style.StyleSpan
 import android.text.style.TypefaceSpan
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.ui.views.style.*
 import com.orgzly.org.datetime.OrgDateTime

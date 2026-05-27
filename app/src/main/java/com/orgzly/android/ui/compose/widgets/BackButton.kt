@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.ui.compose.base.LocalNavigator
 
 @Composable

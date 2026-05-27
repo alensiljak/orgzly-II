@@ -7,7 +7,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.work.ForegroundInfo
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.NotificationChannels
 import com.orgzly.android.ui.main.MainActivity
 import com.orgzly.android.ui.util.ActivityUtils.immutable

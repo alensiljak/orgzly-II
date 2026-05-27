@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.db.entity.Book
 import com.orgzly.android.db.entity.Note
 import com.orgzly.android.db.entity.NoteView
@@ -16,8 +16,8 @@ import com.orgzly.android.ui.SelectableItemAdapter
 import com.orgzly.android.ui.Selection
 import com.orgzly.android.ui.notes.NoteItemViewBinder
 import com.orgzly.android.ui.notes.NoteItemViewHolder
-import com.orgzly.databinding.ItemHeadBinding
-import com.orgzly.databinding.ItemPrefaceBinding
+import cc.alensiljak.orgzly.databinding.ItemHeadBinding
+import cc.alensiljak.orgzly.databinding.ItemPrefaceBinding
 
 class BookAdapter(
     private val bookId: Long,

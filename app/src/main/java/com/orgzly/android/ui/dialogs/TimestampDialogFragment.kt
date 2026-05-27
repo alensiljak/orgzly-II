@@ -10,8 +10,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.ui.TimeType
 import com.orgzly.android.ui.util.KeyboardUtils
@@ -19,8 +19,8 @@ import com.orgzly.android.ui.util.getLayoutInflater
 import com.orgzly.android.ui.views.richtext.RichTextEdit
 import com.orgzly.android.util.LogUtils
 import com.orgzly.android.util.UserTimeFormatter
-import com.orgzly.databinding.DialogTimestampBinding
-import com.orgzly.databinding.DialogTimestampTitleBinding
+import cc.alensiljak.orgzly.databinding.DialogTimestampBinding
+import cc.alensiljak.orgzly.databinding.DialogTimestampTitleBinding
 import com.orgzly.org.datetime.OrgDateTime
 import java.util.Calendar
 import java.util.TreeSet

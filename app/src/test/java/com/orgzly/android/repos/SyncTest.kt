@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import androidx.test.core.app.ApplicationProvider
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.BookFormat
 import com.orgzly.android.BookName
 import com.orgzly.android.LocalStorage

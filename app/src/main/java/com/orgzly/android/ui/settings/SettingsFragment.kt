@@ -10,8 +10,8 @@ import androidx.annotation.StringRes
 import androidx.preference.*
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.AppIntent
 import com.orgzly.android.calendar.CalendarWorker

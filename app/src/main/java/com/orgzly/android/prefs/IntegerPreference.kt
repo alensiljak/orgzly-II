@@ -3,7 +3,7 @@ package com.orgzly.android.prefs
 import android.content.Context
 import android.util.AttributeSet
 import androidx.preference.EditTextPreference
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.ui.util.styledAttributes
 
 class IntegerPreference : EditTextPreference {

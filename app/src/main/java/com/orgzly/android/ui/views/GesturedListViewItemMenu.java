@@ -11,8 +11,8 @@ import android.view.animation.Interpolator;
 import android.view.animation.Transformation;
 import android.widget.ViewFlipper;
 
-import com.orgzly.BuildConfig;
-import com.orgzly.R;
+import cc.alensiljak.orgzly.BuildConfig;
+import cc.alensiljak.orgzly.R;
 import com.orgzly.android.ui.util.ListViewUtils;
 import com.orgzly.android.util.LogUtils;
 

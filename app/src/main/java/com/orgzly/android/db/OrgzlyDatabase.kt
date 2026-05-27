@@ -10,7 +10,7 @@ import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteQueryBuilder
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.db.dao.AppLogDao
 import com.orgzly.android.db.dao.BookDao
 import com.orgzly.android.db.dao.BookLinkDao

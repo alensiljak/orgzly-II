@@ -11,7 +11,7 @@ import androidx.annotation.StringRes;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.orgzly.R;
+import cc.alensiljak.orgzly.R;
 import com.orgzly.android.App;
 import com.orgzly.android.LocalStorage;
 import com.orgzly.org.OrgStatesWorkflow;

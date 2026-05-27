@@ -10,7 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.ui.compose.providers.appPreference
 

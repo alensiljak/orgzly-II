@@ -2,7 +2,7 @@ package com.orgzly.android.repos
 
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.db.entity.Repo
 import com.orgzly.android.prefs.AppPreferences
 import org.json.JSONObject

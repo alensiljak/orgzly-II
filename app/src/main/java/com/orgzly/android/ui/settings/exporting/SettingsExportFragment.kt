@@ -11,8 +11,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.data.DataRepository
 import com.orgzly.android.db.entity.Book
@@ -21,7 +21,7 @@ import com.orgzly.android.ui.Breadcrumbs
 import com.orgzly.android.ui.showSnackbar
 import com.orgzly.android.ui.util.styledAttributes
 import com.orgzly.android.util.LogUtils
-import com.orgzly.databinding.DialogExportSettingsBinding
+import cc.alensiljak.orgzly.databinding.DialogExportSettingsBinding
 import javax.inject.Inject
 
 class SettingsExportFragment : DialogFragment() {

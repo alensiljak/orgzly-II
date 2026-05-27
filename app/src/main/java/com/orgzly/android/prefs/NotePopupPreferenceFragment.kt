@@ -7,8 +7,8 @@ import androidx.preference.PreferenceDialogFragmentCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.ui.dndrv.NotePopupPreferenceRecyclerListAdapter
 import com.orgzly.android.ui.dndrv.SimpleItemTouchHelperCallback
 import com.orgzly.android.util.LogUtils

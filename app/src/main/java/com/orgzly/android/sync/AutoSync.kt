@@ -1,7 +1,7 @@
 package com.orgzly.android.sync
 
 import android.app.Application
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.data.DataRepository
 import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.util.LogUtils

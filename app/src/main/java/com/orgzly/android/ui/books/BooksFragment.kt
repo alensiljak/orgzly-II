@@ -22,8 +22,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.BookFormat
 import com.orgzly.android.BookName
@@ -48,9 +48,9 @@ import com.orgzly.android.ui.util.setup
 import com.orgzly.android.usecase.BookDelete
 import com.orgzly.android.util.LogUtils
 import com.orgzly.android.util.MiscUtils
-import com.orgzly.databinding.DialogBookDeleteBinding
-import com.orgzly.databinding.DialogBookRenameBinding
-import com.orgzly.databinding.FragmentBooksBinding
+import cc.alensiljak.orgzly.databinding.DialogBookDeleteBinding
+import cc.alensiljak.orgzly.databinding.DialogBookRenameBinding
+import cc.alensiljak.orgzly.databinding.FragmentBooksBinding
 import javax.inject.Inject
 
 /**

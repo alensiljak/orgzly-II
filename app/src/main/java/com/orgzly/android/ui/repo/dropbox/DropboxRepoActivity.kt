@@ -11,8 +11,8 @@ import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.repos.DropboxClient
 import com.orgzly.android.repos.DropboxRepo
@@ -26,7 +26,7 @@ import com.orgzly.android.ui.util.KeyboardUtils
 import com.orgzly.android.util.LogUtils
 import com.orgzly.android.util.MiscUtils
 import com.orgzly.android.util.UriUtils
-import com.orgzly.databinding.ActivityRepoDropboxBinding
+import cc.alensiljak.orgzly.databinding.ActivityRepoDropboxBinding
 import javax.inject.Inject
 
 

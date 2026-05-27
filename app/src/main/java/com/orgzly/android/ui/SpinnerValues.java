@@ -5,7 +5,7 @@ import androidx.appcompat.widget.AppCompatSpinner;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.orgzly.R;
+import cc.alensiljak.orgzly.R;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,8 +7,8 @@ import android.view.View
 import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import com.orgzly.R
-import com.orgzly.databinding.DialogPeriodWithTypeBinding
+import cc.alensiljak.orgzly.R
+import cc.alensiljak.orgzly.databinding.DialogPeriodWithTypeBinding
 import com.orgzly.org.datetime.OrgInterval
 
 

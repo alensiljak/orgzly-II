@@ -19,8 +19,8 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.orgzly.BuildConfig;
-import com.orgzly.R;
+import cc.alensiljak.orgzly.BuildConfig;
+import cc.alensiljak.orgzly.R;
 import com.orgzly.android.ActionReceiver;
 import com.orgzly.android.App;
 import com.orgzly.android.AppIntent;

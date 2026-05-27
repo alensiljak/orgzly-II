@@ -5,7 +5,7 @@ import static org.junit.Assert.fail;
 
 import android.net.Uri;
 
-import com.orgzly.BuildConfig;
+import cc.alensiljak.orgzly.BuildConfig;
 import com.orgzly.android.data.DataRepository;
 import com.orgzly.android.data.DbRepoBookRepository;
 import com.orgzly.android.db.entity.BookAction;

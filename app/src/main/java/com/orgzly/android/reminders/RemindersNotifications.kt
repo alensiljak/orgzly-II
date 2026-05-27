@@ -8,7 +8,7 @@ import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.AppIntent
 import com.orgzly.android.NotificationBroadcastReceiver
 import com.orgzly.android.NotificationChannels

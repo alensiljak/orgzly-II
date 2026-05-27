@@ -9,7 +9,7 @@ import androidx.annotation.StringRes
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.snackbar.Snackbar
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.ui.util.styledAttributes
 
 @JvmOverloads

@@ -3,7 +3,7 @@ package com.orgzly.android.ui.dialogs
 import android.content.Context
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.ui.NoteStates
 
 object NoteStateDialog {

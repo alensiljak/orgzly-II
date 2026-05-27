@@ -1,6 +1,6 @@
 package com.orgzly.android.misc
 
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.OrgzlyTest
 import org.junit.Assert.*
 

@@ -1,6 +1,6 @@
 package com.orgzly.android.usecase
 
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.App
 import com.orgzly.android.data.DataRepository
 import com.orgzly.android.reminders.RemindersScheduler

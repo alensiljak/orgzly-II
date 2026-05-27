@@ -5,7 +5,7 @@ import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.ui.util.getLayoutInflater
 import com.orgzly.android.ui.util.styledAttributes
 import com.orgzly.android.util.MiscUtils

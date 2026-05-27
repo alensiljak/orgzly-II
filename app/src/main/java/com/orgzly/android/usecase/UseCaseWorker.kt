@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.work.*
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.App
 import com.orgzly.android.AppIntent
 import com.orgzly.android.data.DataRepository

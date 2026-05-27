@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 
 import androidx.preference.DialogPreference;
 
-import com.orgzly.R;
+import cc.alensiljak.orgzly.R;
 
 public class StatesPreference extends DialogPreference {
     public StatesPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {

@@ -13,7 +13,7 @@ import com.orgzly.android.ui.SelectableItemAdapter
 import com.orgzly.android.ui.Selection
 import com.orgzly.android.ui.notes.NoteItemViewBinder
 import com.orgzly.android.ui.notes.NoteItemViewHolder
-import com.orgzly.databinding.ItemHeadBinding
+import cc.alensiljak.orgzly.databinding.ItemHeadBinding
 
 class SearchAdapter(
         private val context: Context,

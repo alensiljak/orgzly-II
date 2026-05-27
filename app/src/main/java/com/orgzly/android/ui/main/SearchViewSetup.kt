@@ -5,7 +5,7 @@ import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentActivity
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.db.entity.Book
 import com.orgzly.android.query.Condition
 import com.orgzly.android.query.Query

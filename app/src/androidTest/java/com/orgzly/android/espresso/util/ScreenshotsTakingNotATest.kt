@@ -9,7 +9,7 @@ import androidx.test.espresso.action.*
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.matcher.ViewMatchers.*
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.OrgzlyTest
 import com.orgzly.android.db.entity.SavedSearch
 import com.orgzly.android.espresso.util.EspressoUtils.clickSetting

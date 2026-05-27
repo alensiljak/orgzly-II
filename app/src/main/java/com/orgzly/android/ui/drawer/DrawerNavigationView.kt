@@ -5,8 +5,8 @@ import android.content.res.Resources
 import android.view.Menu
 import androidx.lifecycle.Observer
 import com.google.android.material.navigation.NavigationView
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.AppIntent
 import com.orgzly.android.db.entity.BookAction
 import com.orgzly.android.db.entity.BookView

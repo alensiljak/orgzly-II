@@ -5,8 +5,8 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.annotation.IdRes
 import androidx.preference.DialogPreference
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.ui.notes.NotePopup
 import com.orgzly.android.util.LogUtils
 

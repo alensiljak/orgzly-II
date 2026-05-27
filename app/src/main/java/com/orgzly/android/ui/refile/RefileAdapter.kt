@@ -8,12 +8,12 @@ import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.db.entity.Book
 import com.orgzly.android.db.entity.Note
 import com.orgzly.android.db.entity.NoteView
 import com.orgzly.android.ui.notes.NoteItemViewBinder
-import com.orgzly.databinding.ItemRefileBinding
+import cc.alensiljak.orgzly.databinding.ItemRefileBinding
 
 class RefileAdapter(val context: Context, val listener: OnClickListener) :
         ListAdapter<RefileViewModel.Item, RefileAdapter.RefileViewHolder>(DIFF_CALLBACK) {

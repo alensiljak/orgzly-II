@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import android.widget.ArrayAdapter
 import android.widget.MultiAutoCompleteTextView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.BookUtils
 import com.orgzly.android.NotesOrgExporter
 import com.orgzly.android.db.NotesClipboard
@@ -47,7 +47,7 @@ import com.orgzly.android.ui.util.setup
 import com.orgzly.android.ui.util.styledAttributes
 import com.orgzly.android.util.LogUtils
 import com.orgzly.android.util.SpaceTokenizer
-import com.orgzly.databinding.FragmentBookBinding
+import cc.alensiljak.orgzly.databinding.FragmentBookBinding
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

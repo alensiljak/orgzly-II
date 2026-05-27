@@ -2,7 +2,7 @@ package com.orgzly.android.repos
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.prefs.AppPreferences
 import org.eclipse.jgit.ignore.IgnoreNode

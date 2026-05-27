@@ -1,7 +1,7 @@
 package com.orgzly.android.widgets
 
 import android.widget.RemoteViewsService.RemoteViewsFactory
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.util.LogUtils
 
 object ListWidgetFactoryRegistry {

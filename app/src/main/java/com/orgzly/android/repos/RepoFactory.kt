@@ -1,7 +1,7 @@
 package com.orgzly.android.repos
 
 import android.content.Context
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.data.DbRepoBookRepository
 import com.orgzly.android.prefs.AppPreferences
 import javax.inject.Inject

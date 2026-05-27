@@ -6,7 +6,7 @@ import android.text.format.DateFormat
 import android.util.AttributeSet
 
 import androidx.preference.DialogPreference
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 

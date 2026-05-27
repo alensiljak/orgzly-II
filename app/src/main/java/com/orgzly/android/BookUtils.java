@@ -6,7 +6,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 
-import com.orgzly.R;
+import cc.alensiljak.orgzly.R;
 import com.orgzly.android.db.entity.Book;
 import com.orgzly.android.db.entity.BookAction;
 import com.orgzly.android.ui.util.ExtensionsKt;

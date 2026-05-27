@@ -1,7 +1,7 @@
 package com.orgzly.android.util
 
 import android.util.Log
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.App
 import com.orgzly.android.prefs.AppPreferences
 import org.joda.time.DateTime

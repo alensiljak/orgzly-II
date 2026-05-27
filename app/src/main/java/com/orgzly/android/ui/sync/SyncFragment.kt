@@ -14,8 +14,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.data.DataRepository
 import com.orgzly.android.prefs.AppPreferences
@@ -27,7 +27,7 @@ import com.orgzly.android.usecase.UseCase
 import com.orgzly.android.usecase.UseCaseResult
 import com.orgzly.android.usecase.UseCaseRunner
 import com.orgzly.android.util.LogUtils.d
-import com.orgzly.databinding.FragmentSyncBinding
+import cc.alensiljak.orgzly.databinding.FragmentSyncBinding
 import javax.inject.Inject
 
 /**

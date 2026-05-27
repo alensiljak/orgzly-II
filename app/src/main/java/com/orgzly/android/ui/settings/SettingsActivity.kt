@@ -5,7 +5,7 @@ import android.widget.FrameLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.ui.CommonActivity
 import com.orgzly.android.ui.settings.SettingsFragment.Listener
@@ -15,7 +15,7 @@ import com.orgzly.android.usecase.DatabaseClear
 import com.orgzly.android.usecase.UseCase
 import com.orgzly.android.usecase.UseCaseRunner
 import com.orgzly.android.usecase.UseCaseWorker
-import com.orgzly.databinding.ActivitySettingsBinding
+import cc.alensiljak.orgzly.databinding.ActivitySettingsBinding
 
 class SettingsActivity : CommonActivity(), Listener {
     private lateinit var binding: ActivitySettingsBinding

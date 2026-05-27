@@ -3,7 +3,7 @@ package com.orgzly.android.ui.notes.book
 import android.content.Context
 import android.graphics.Typeface
 import android.view.View
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.usecase.BookUpdatePreface

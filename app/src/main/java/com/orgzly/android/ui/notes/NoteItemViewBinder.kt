@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.db.entity.Note
 import com.orgzly.android.db.entity.NoteView
@@ -21,8 +21,8 @@ import com.orgzly.android.usecase.NoteToggleFoldingSubtree
 import com.orgzly.android.usecase.NoteUpdateContent
 import com.orgzly.android.usecase.UseCaseRunner
 import com.orgzly.android.util.UserTimeFormatter
-import com.orgzly.databinding.ItemAgendaDividerBinding
-import com.orgzly.databinding.ItemHeadBinding
+import cc.alensiljak.orgzly.databinding.ItemAgendaDividerBinding
+import cc.alensiljak.orgzly.databinding.ItemHeadBinding
 
 class NoteItemViewBinder(private val context: Context, private val inBook: Boolean) {
     private val attrs: Attrs = Attrs.obtain(context)

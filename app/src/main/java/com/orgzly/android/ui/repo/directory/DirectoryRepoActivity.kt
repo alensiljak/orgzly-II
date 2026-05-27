@@ -8,8 +8,8 @@ import android.text.TextUtils
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.repos.DocumentRepo
 import com.orgzly.android.repos.RepoFactory
@@ -21,7 +21,7 @@ import com.orgzly.android.ui.showSnackbar
 import com.orgzly.android.util.AppPermissions
 import com.orgzly.android.util.LogUtils
 import com.orgzly.android.util.MiscUtils
-import com.orgzly.databinding.ActivityRepoDirectoryBinding
+import cc.alensiljak.orgzly.databinding.ActivityRepoDirectoryBinding
 import javax.inject.Inject
 
 class DirectoryRepoActivity : CommonActivity() {

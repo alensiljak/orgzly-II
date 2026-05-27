@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.NotesOrgExporter
 import com.orgzly.android.sync.SyncRunner
 import com.orgzly.android.ui.dialogs.TimestampDialogFragment

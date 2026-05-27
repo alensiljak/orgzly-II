@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.orgzly.BuildConfig;
+import cc.alensiljak.orgzly.BuildConfig;
 import com.orgzly.android.ui.notifications.Notifications;
 import com.orgzly.android.usecase.NoteCreateFromNotification;
 import com.orgzly.android.usecase.UseCaseRunner;

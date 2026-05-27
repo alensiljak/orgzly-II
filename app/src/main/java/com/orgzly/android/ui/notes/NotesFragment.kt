@@ -7,8 +7,8 @@ import android.view.View
 import android.widget.PopupWindow
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.data.DataRepository
 import com.orgzly.android.ui.CommonFragment

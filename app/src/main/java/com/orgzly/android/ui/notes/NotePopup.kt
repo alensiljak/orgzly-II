@@ -15,8 +15,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import com.google.android.material.button.MaterialButton
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.prefs.NotePopupPreference
 import com.orgzly.android.ui.util.getLayoutInflater
 import com.orgzly.android.util.LogUtils

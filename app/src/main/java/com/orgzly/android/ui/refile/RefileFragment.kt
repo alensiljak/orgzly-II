@@ -12,8 +12,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.data.DataRepository
 import com.orgzly.android.db.entity.Book
@@ -23,7 +23,7 @@ import com.orgzly.android.ui.showSnackbar
 import com.orgzly.android.ui.util.invisibleIf
 import com.orgzly.android.usecase.NoteRefile
 import com.orgzly.android.util.LogUtils
-import com.orgzly.databinding.DialogRefileBinding
+import cc.alensiljak.orgzly.databinding.DialogRefileBinding
 import javax.inject.Inject
 
 class RefileFragment : DialogFragment() {

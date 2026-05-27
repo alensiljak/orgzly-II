@@ -1,7 +1,7 @@
 package com.orgzly.android.ui.settings.importing
 
 import androidx.lifecycle.MutableLiveData
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.App
 import com.orgzly.android.data.DataRepository
 import com.orgzly.android.db.dao.NoteDao.NoteIdBookId

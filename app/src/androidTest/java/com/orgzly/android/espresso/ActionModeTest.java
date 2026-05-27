@@ -5,7 +5,7 @@ import android.os.SystemClock;
 
 import androidx.test.core.app.ActivityScenario;
 
-import com.orgzly.R;
+import cc.alensiljak.orgzly.R;
 import com.orgzly.android.OrgzlyTest;
 import com.orgzly.android.RetryTestRule;
 import com.orgzly.android.ui.main.MainActivity;

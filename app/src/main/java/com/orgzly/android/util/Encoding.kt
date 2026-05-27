@@ -1,7 +1,7 @@
 package com.orgzly.android.util
 
 import android.util.Log
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import java.io.File
 import java.io.FileInputStream
 

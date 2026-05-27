@@ -9,8 +9,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
-import com.orgzly.BuildConfig;
-import com.orgzly.R;
+import cc.alensiljak.orgzly.BuildConfig;
+import cc.alensiljak.orgzly.R;
 import com.orgzly.android.BookName;
 import com.orgzly.android.db.entity.Repo;
 import com.orgzly.android.prefs.AppPreferences;

@@ -20,7 +20,7 @@ import com.dropbox.core.v2.files.LookupError;
 import com.dropbox.core.v2.files.Metadata;
 import com.dropbox.core.v2.files.RelocationResult;
 import com.dropbox.core.v2.files.WriteMode;
-import com.orgzly.BuildConfig;
+import cc.alensiljak.orgzly.BuildConfig;
 import com.orgzly.android.BookName;
 import com.orgzly.android.prefs.AppPreferences;
 

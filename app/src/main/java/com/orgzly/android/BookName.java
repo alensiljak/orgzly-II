@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import androidx.documentfile.provider.DocumentFile;
 
-import com.orgzly.BuildConfig;
+import cc.alensiljak.orgzly.BuildConfig;
 import com.orgzly.android.db.entity.BookView;
 import com.orgzly.android.repos.Rook;
 import com.orgzly.android.repos.VersionedRook;

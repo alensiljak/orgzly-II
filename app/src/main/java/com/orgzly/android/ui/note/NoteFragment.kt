@@ -27,8 +27,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.BookUtils
 import com.orgzly.android.NotesOrgExporter
@@ -65,7 +65,7 @@ import com.orgzly.android.util.LogUtils
 import com.orgzly.android.util.OrgFormatter
 import com.orgzly.android.util.SpaceTokenizer
 import com.orgzly.android.util.UserTimeFormatter
-import com.orgzly.databinding.FragmentNoteBinding
+import cc.alensiljak.orgzly.databinding.FragmentNoteBinding
 import com.orgzly.org.OrgProperties
 import com.orgzly.org.datetime.OrgDateTime
 import com.orgzly.org.datetime.OrgRange

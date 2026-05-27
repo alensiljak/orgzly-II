@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.data.DataRepository
 import com.orgzly.android.db.entity.Book
 import com.orgzly.android.ui.share.ShareActivity

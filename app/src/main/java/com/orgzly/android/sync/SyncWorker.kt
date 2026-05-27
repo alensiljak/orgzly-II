@@ -6,8 +6,8 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.SharingShortcutsManager
 import com.orgzly.android.data.DataRepository

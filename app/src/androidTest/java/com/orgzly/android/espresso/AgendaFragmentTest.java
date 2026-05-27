@@ -31,7 +31,7 @@ import android.widget.TextView;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.contrib.PickerActions;
 
-import com.orgzly.R;
+import cc.alensiljak.orgzly.R;
 import com.orgzly.android.OrgzlyTest;
 import com.orgzly.android.RetryTestRule;
 import com.orgzly.android.espresso.util.EspressoUtils;

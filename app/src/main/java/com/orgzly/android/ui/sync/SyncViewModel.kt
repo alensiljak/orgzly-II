@@ -2,7 +2,7 @@ package com.orgzly.android.ui.sync
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.sync.SyncRunner
 import com.orgzly.android.sync.SyncState
 import com.orgzly.android.util.LogUtils

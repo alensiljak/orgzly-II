@@ -8,7 +8,7 @@ import android.content.pm.PackageManager
 import android.provider.CalendarContract
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
-import com.orgzly.BuildConfig
+import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.data.DataRepository
 import com.orgzly.android.db.entity.NoteView
 import com.orgzly.android.prefs.AppPreferences

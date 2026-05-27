@@ -5,7 +5,7 @@ import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.ui.CommonActivity
 import java.io.IOException
 import java.util.concurrent.Executor

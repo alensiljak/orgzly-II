@@ -1,6 +1,6 @@
 package com.orgzly.android.sync
 
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 
 // TODO: Write tests for *all* cases.

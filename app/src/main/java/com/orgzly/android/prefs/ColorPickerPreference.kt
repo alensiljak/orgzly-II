@@ -5,7 +5,7 @@ import android.content.res.TypedArray
 import android.graphics.Color
 import android.util.AttributeSet
 import androidx.preference.DialogPreference
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import java.util.Locale
 
 import androidx.preference.PreferenceViewHolder

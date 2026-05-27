@@ -14,8 +14,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.data.DataRepository
 import com.orgzly.android.db.entity.SavedSearch
@@ -31,7 +31,7 @@ import com.orgzly.android.ui.savedsearches.SavedSearchesViewModel.Companion.APP_
 import com.orgzly.android.ui.settings.SettingsActivity
 import com.orgzly.android.ui.showSnackbar
 import com.orgzly.android.util.LogUtils
-import com.orgzly.databinding.FragmentSavedSearchesBinding
+import cc.alensiljak.orgzly.databinding.FragmentSavedSearchesBinding
 import java.io.IOException
 import javax.inject.Inject
 

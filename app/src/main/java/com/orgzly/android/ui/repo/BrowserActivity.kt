@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.LocalStorage
 import com.orgzly.android.repos.DirectoryRepo
@@ -19,7 +19,7 @@ import com.orgzly.android.ui.showSnackbar
 import com.orgzly.android.util.AppPermissions
 import com.orgzly.android.util.LogUtils
 import com.orgzly.android.util.UriUtils
-import com.orgzly.databinding.ActivityBrowserBinding
+import cc.alensiljak.orgzly.databinding.ActivityBrowserBinding
 import java.io.File
 import java.io.FilenameFilter
 import java.util.*

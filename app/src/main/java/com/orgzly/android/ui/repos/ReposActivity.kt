@@ -17,8 +17,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.db.entity.Repo
 import com.orgzly.android.prefs.AppPreferences
@@ -30,7 +30,7 @@ import com.orgzly.android.ui.repo.dropbox.DropboxRepoActivity
 import com.orgzly.android.ui.repo.git.GitRepoActivity
 import com.orgzly.android.ui.repo.webdav.WebdavRepoActivity
 import com.orgzly.android.ui.showSnackbar
-import com.orgzly.databinding.ActivityReposBinding
+import cc.alensiljak.orgzly.databinding.ActivityReposBinding
 import javax.inject.Inject
 
 

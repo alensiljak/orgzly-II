@@ -7,7 +7,7 @@ import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
 
-import com.orgzly.R;
+import cc.alensiljak.orgzly.R;
 import com.orgzly.android.AppIntent;
 import com.orgzly.android.BookUtils;
 import com.orgzly.android.db.entity.Book;

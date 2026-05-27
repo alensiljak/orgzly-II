@@ -11,8 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.orgzly.BuildConfig
-import com.orgzly.R
+import cc.alensiljak.orgzly.BuildConfig
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.db.entity.NoteView
 import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.sync.SyncRunner
@@ -32,7 +32,7 @@ import com.orgzly.android.ui.util.ActivityUtils
 import com.orgzly.android.ui.util.setDecorFitsSystemWindowsForBottomToolbar
 import com.orgzly.android.ui.util.setup
 import com.orgzly.android.util.LogUtils
-import com.orgzly.databinding.FragmentQuerySearchBinding
+import cc.alensiljak.orgzly.databinding.FragmentQuerySearchBinding
 
 /**
  * Displays search results.

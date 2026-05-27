@@ -3,7 +3,7 @@ package com.orgzly.android;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import com.orgzly.BuildConfig;
+import cc.alensiljak.orgzly.BuildConfig;
 import com.orgzly.android.prefs.AppPreferences;
 import com.orgzly.android.sync.AutoSyncScheduler;
 import com.orgzly.android.ui.notifications.Notifications;

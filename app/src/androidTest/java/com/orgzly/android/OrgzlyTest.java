@@ -10,7 +10,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
-import com.orgzly.R;
+import cc.alensiljak.orgzly.R;
 import com.orgzly.android.data.DataRepository;
 import com.orgzly.android.data.DbRepoBookRepository;
 import com.orgzly.android.db.OrgzlyDatabase;

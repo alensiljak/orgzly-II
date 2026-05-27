@@ -12,7 +12,7 @@ import androidx.core.content.edit
 import androidx.security.crypto.EncryptedFile
 import androidx.security.crypto.MasterKey
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.ui.SshKeygenActivity

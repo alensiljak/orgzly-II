@@ -9,7 +9,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.OrgzlyTest
 import com.orgzly.android.RetryTestRule
 import com.orgzly.android.espresso.util.EspressoUtils.onBook

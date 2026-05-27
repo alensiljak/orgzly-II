@@ -3,7 +3,7 @@ package com.orgzly.android.ui
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.ColorInt
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.ui.util.styledAttributes
 import java.util.LinkedHashSet
 

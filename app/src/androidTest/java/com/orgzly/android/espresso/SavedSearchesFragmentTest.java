@@ -32,7 +32,7 @@ import androidx.documentfile.provider.DocumentFile;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.intent.Intents;
 
-import com.orgzly.R;
+import cc.alensiljak.orgzly.R;
 import com.orgzly.android.LocalStorage;
 import com.orgzly.android.OrgzlyTest;
 import com.orgzly.android.RetryTestRule;

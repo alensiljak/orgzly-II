@@ -6,7 +6,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.orgzly.R
+import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.data.logs.AppLogsRepository
 import com.orgzly.android.reminders.LastRun
@@ -15,7 +15,7 @@ import com.orgzly.android.ui.util.copyPlainTextToClipboard
 import com.orgzly.android.ui.util.getAlarmManager
 import com.orgzly.android.ui.util.sharePlainText
 import com.orgzly.android.ui.util.userFriendlyPeriod
-import com.orgzly.databinding.ActivityLogsBinding
+import cc.alensiljak.orgzly.databinding.ActivityLogsBinding
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.joda.time.DateTime

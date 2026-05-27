@@ -1,6 +1,6 @@
 package com.orgzly.android.repos;
 
-import com.orgzly.BuildConfig;
+import cc.alensiljak.orgzly.BuildConfig;
 import com.orgzly.android.OrgzlyTest;
 
 import org.junit.Assume;
