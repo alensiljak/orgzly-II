@@ -55,27 +55,30 @@ fun Typography.adjustForTheme(@StyleRes resource: Int): Typography {
     val density = LocalDensity.current
     return remember(context, density, resource) {
         val style = context.obtainStyledAttributes(resource, themeAttrs)
-
-        fun getSp(@AttrRes attr: Int, default: TextUnit): TextUnit {
-            return style.getDimensionPixelSize(themeAttrs.indexOf(attr), 0).let {
-                when (it) {
-                    0 -> default
-                    else -> with(density) { it.toSp() }
+        try {
+            fun getSp(@AttrRes attr: Int, default: TextUnit): TextUnit {
+                return style.getDimensionPixelSize(themeAttrs.indexOf(attr), 0).let {
+                    when (it) {
+                        0 -> default
+                        else -> with(density) { it.toSp() }
+                    }
                 }
             }
-        }
 
-        fun TextStyle.adjustForTheme(@AttrRes attr: Int): TextStyle {
-            return copy(
-                fontSize = getSp(attr, fontSize)
+            fun TextStyle.adjustForTheme(@AttrRes attr: Int): TextStyle {
+                return copy(
+                    fontSize = getSp(attr, fontSize)
+                )
+            }
+
+            copy(
+                bodySmall = bodySmall.adjustForTheme(R.attr.font_small),
+                bodyMedium = bodyMedium.adjustForTheme(R.attr.font_medium),
+                bodyLarge = bodyLarge.adjustForTheme(R.attr.font_large)
             )
+        } finally {
+            style.recycle()
         }
-
-        copy(
-            bodySmall = bodySmall.adjustForTheme(R.attr.font_small),
-            bodyMedium = bodyMedium.adjustForTheme(R.attr.font_medium),
-            bodyLarge = bodyLarge.adjustForTheme(R.attr.font_large)
-        )
     }
 }
 

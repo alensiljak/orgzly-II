@@ -76,6 +76,7 @@ interface AppComponent {
     fun inject(arg: SearchFragment)
     fun inject(arg: AgendaFragment)
     fun inject(arg: NoteFragment)
+    fun inject(arg: com.orgzly.android.ui.note.NoteFragmentCompose)
     fun inject(arg: SavedSearchesFragment)
     fun inject(arg: SavedSearchFragment)
     fun inject(arg: RefileFragment)

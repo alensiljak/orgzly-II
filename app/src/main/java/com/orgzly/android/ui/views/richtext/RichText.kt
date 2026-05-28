@@ -26,8 +26,7 @@ import com.orgzly.android.ui.views.style.DrawerSpan
 import com.orgzly.android.util.LogUtils
 import com.orgzly.android.util.OrgFormatter
 
-class RichText(context: Context, attrs: AttributeSet?) :
-    FrameLayout(context, attrs), ActionableRichTextView {
+class RichText : FrameLayout, ActionableRichTextView {
 
     fun interface OnUserTextChangeListener {
         fun onUserTextChange(str: String)
@@ -73,12 +72,13 @@ class RichText(context: Context, attrs: AttributeSet?) :
         val paddingVertical: Int = 0
     )
 
-    private lateinit var attributes: Attributes
+    lateinit var attributes: Attributes
+        private set
 
     private val richTextEdit: RichTextEdit
     private val richTextView: RichTextView
 
-    init {
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         parseAttrs(attrs)
 
         inflate(getContext(), R.layout.rich_text, this)
@@ -86,6 +86,21 @@ class RichText(context: Context, attrs: AttributeSet?) :
         richTextEdit = findViewById(R.id.rich_text_edit)
         richTextView = findViewById(R.id.rich_text_view)
 
+        initViews()
+    }
+
+    constructor(context: Context, attributes: Attributes) : super(context) {
+        this.attributes = attributes
+
+        inflate(getContext(), R.layout.rich_text, this)
+
+        richTextEdit = findViewById(R.id.rich_text_edit)
+        richTextView = findViewById(R.id.rich_text_view)
+
+        initViews()
+    }
+
+    private fun initViews() {
         // TODO: if editable
         richTextEdit.apply {
             if (attributes.editId != 0) {
@@ -106,6 +121,14 @@ class RichText(context: Context, attrs: AttributeSet?) :
             } else {
                 setBackgroundColor(0)
             }
+
+            addTextChangedListener(object : android.text.TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: android.text.Editable?) {
+                    listeners.onUserTextChange?.onUserTextChange(s?.toString() ?: "")
+                }
+            })
 
             // If RichTextEdit loses the focus, switch to view mode
             setOnFocusChangeListener { _, hasFocus ->
@@ -134,6 +157,7 @@ class RichText(context: Context, attrs: AttributeSet?) :
 
             setOnActionListener(this@RichText)
         }
+
     }
 
     private fun parseAttrs(attrs: AttributeSet?) {
@@ -141,6 +165,8 @@ class RichText(context: Context, attrs: AttributeSet?) :
             context.styledAttributes(attrs, R.styleable.RichText) { typedArray ->
                 readAttributes(typedArray)
             }
+        } else {
+            attributes = Attributes()
         }
     }
 
@@ -244,6 +270,14 @@ class RichText(context: Context, attrs: AttributeSet?) :
     fun setTypeface(typeface: Typeface) {
         richTextView.typeface = typeface
         richTextEdit.typeface = typeface
+    }
+
+    fun fillParentHeight() {
+        val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+        richTextView.layoutParams = params
+        richTextView.gravity = android.view.Gravity.TOP or android.view.Gravity.START
+        richTextEdit.layoutParams = FrameLayout.LayoutParams(params)
+        richTextEdit.gravity = android.view.Gravity.TOP or android.view.Gravity.START
     }
 
     fun setMaxLines(lines: Int) {

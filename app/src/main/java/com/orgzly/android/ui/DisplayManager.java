@@ -18,7 +18,7 @@ import com.orgzly.android.query.user.InternalQueryParser;
 import com.orgzly.android.ui.books.BooksFragment;
 import com.orgzly.android.ui.compose.base.TestComposeFragment;
 import com.orgzly.android.ui.main.MainActivity;
-import com.orgzly.android.ui.note.NoteFragment;
+import com.orgzly.android.ui.note.NoteFragmentCompose;
 import com.orgzly.android.ui.notes.book.BookFragment;
 import com.orgzly.android.ui.notes.book.BookPrefaceFragment;
 import com.orgzly.android.ui.notes.query.agenda.AgendaFragment;
@@ -149,20 +149,16 @@ public class DisplayManager {
 
     public static void displayExistingNote(FragmentManager fragmentManager, long bookId, long noteId) {
         if (getFragmentDisplayingNote(fragmentManager, noteId) == null) {
-            Fragment fragment = NoteFragment.forExistingNote(bookId, noteId);
+            Fragment fragment = NoteFragmentCompose.Companion.forExistingNote(bookId, noteId);
 
-            if (fragment != null) {
-                displayNoteFragment(fragmentManager, fragment);
-            }
+            displayNoteFragment(fragmentManager, fragment);
         }
     }
 
     public static void displayNewNote(FragmentManager fragmentManager, NotePlace target) {
-        Fragment fragment = NoteFragment.forNewNote(target);
+        Fragment fragment = NoteFragmentCompose.Companion.forNewNote(target, null, null);
 
-        if (fragment != null) {
-            displayNoteFragment(fragmentManager, fragment);
-        }
+        displayNoteFragment(fragmentManager, fragment);
     }
 
     private static void displayNoteFragment(FragmentManager fragmentManager, Fragment fragment) {
@@ -170,7 +166,7 @@ public class DisplayManager {
                 fragmentManager,
                 R.id.single_pane_container,
                 fragment,
-                NoteFragment.FRAGMENT_TAG,
+                NoteFragmentCompose.FRAGMENT_TAG,
                 true);
     }
 
@@ -260,11 +256,11 @@ public class DisplayManager {
         return null;
     }
 
-    private static NoteFragment getFragmentDisplayingNote(FragmentManager fragmentManager, long noteId) {
-        Fragment f = fragmentManager.findFragmentByTag(NoteFragment.FRAGMENT_TAG);
+    private static NoteFragmentCompose getFragmentDisplayingNote(FragmentManager fragmentManager, long noteId) {
+        Fragment f = fragmentManager.findFragmentByTag(NoteFragmentCompose.FRAGMENT_TAG);
 
         if (f != null && f.isVisible()) {
-            NoteFragment noteFragment = (NoteFragment) f;
+            NoteFragmentCompose noteFragment = (NoteFragmentCompose) f;
 
             if (noteFragment.getNoteId() == noteId) {
                 return noteFragment;
