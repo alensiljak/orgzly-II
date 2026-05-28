@@ -3,7 +3,6 @@ package com.orgzly.android.ui.repos
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -15,7 +14,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import cc.alensiljak.orgzly.BuildConfig
 import cc.alensiljak.orgzly.R
@@ -65,30 +64,30 @@ class ReposActivity : CommonActivity(), AdapterView.OnItemClickListener, Activit
         }
 
         val factory = ReposViewModelFactory.getInstance(dataRepository)
-        viewModel = ViewModelProvider(this, factory).get(ReposViewModel::class.java)
+        viewModel = ViewModelProvider(this, factory)[ReposViewModel::class.java]
 
-        viewModel.repos.observe(this, Observer { repos ->
+        viewModel.repos.observe(this) { repos ->
             listAdapter.clear()
             listAdapter.addAll(repos)
             listAdapter.notifyDataSetChanged() // FIXME
 
             binding.activityReposFlipper.displayedChild =
-                    if (repos != null && repos.isNotEmpty()) 0 else 1
+                    if (repos != null && (repos.isNotEmpty())) 0 else 1
 
             topToolbarToDefault()
-        })
+        }
 
-        viewModel.openRepoRequestEvent.observeSingle(this, Observer { repo ->
+        viewModel.openRepoRequestEvent.observeSingle(this) { repo ->
             if (repo != null) {
                 openRepo(repo)
             }
-        })
+        }
 
-        viewModel.errorEvent.observeSingle(this, Observer { error ->
+        viewModel.errorEvent.observeSingle(this) { error ->
             if (error != null) {
                 showSnackbar((error.cause ?: error).localizedMessage)
             }
-        })
+        }
 
         binding.list.let {
             it.onItemClickListener = this
@@ -226,9 +225,10 @@ class ReposActivity : CommonActivity(), AdapterView.OnItemClickListener, Activit
 
             R.id.repos_options_menu_item_new_git -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
-                    val uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID)
+                    val uri = "package:${BuildConfig.APPLICATION_ID}".toUri()
                     startActivity(
-                        Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri))
+                        Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri)
+                    )
                 } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Show explanation why possibly, if ActivityCompat.shouldShowRequestPermissionRationale() says so?
                     ActivityCompat.requestPermissions(
