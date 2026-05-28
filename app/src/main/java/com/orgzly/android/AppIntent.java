@@ -12,6 +12,7 @@ public class AppIntent {
     public static final String ACTION_REMINDER_TRIGGERED = "com.orgzly.intent.action.REMINDER_TRIGGERED";
     public static final String ACTION_REMINDER_SNOOZE_REQUESTED = "com.orgzly.intent.action.REMINDER_SNOOZE_REQUESTED";
     public static final String ACTION_REMINDER_SNOOZE_ENDED = "com.orgzly.intent.action.REMINDER_SNOOZE_ENDED";
+    public static final String ACTION_SHOW_PENDING_REMINDERS = "com.orgzly.intent.action.SHOW_PENDING_REMINDERS";
 
     public static final String ACTION_SYNC_STATUS = "com.orgzly.intent.action.SYNC_STATUS";
     public static final String ACTION_SYNC_START = "com.orgzly.intent.action.SYNC_START";

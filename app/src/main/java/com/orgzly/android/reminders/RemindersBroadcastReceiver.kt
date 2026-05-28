@@ -29,7 +29,8 @@ class RemindersBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action in listOf(Intent.ACTION_BOOT_COMPLETED, AppIntent.ACTION_REMINDER_DATA_CHANGED,
-                AppIntent.ACTION_REMINDER_TRIGGERED, AppIntent.ACTION_REMINDER_SNOOZE_ENDED)) {
+                AppIntent.ACTION_REMINDER_TRIGGERED, AppIntent.ACTION_REMINDER_SNOOZE_ENDED,
+                AppIntent.ACTION_SHOW_PENDING_REMINDERS)) {
 
             App.appComponent.inject(this)
 
@@ -40,26 +41,41 @@ class RemindersBroadcastReceiver : BroadcastReceiver() {
             if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, intent)
 
             async {
-                if (intent.action == AppIntent.ACTION_REMINDER_SNOOZE_ENDED) {
-                    intent.extras?.apply {
-                        val noteId: Long = getLong(AppIntent.EXTRA_NOTE_ID, 0)
-                        val noteTimeType: Int = getInt(AppIntent.EXTRA_NOTE_TIME_TYPE, 0)
-                        val timestamp: Long = getLong(AppIntent.EXTRA_SNOOZE_TIMESTAMP, 0)
+                when (intent.action) {
+                    AppIntent.ACTION_REMINDER_SNOOZE_ENDED -> {
+                        intent.extras?.apply {
+                            val noteId: Long = getLong(AppIntent.EXTRA_NOTE_ID, 0)
+                            val noteTimeType: Int = getInt(AppIntent.EXTRA_NOTE_TIME_TYPE, 0)
+                            val timestamp: Long = getLong(AppIntent.EXTRA_SNOOZE_TIMESTAMP, 0)
 
-                        if (noteId > 0) {
-                            snoozeEnded(context, noteId, noteTimeType, timestamp)
+                            if (noteId > 0) {
+                                snoozeEnded(context, noteId, noteTimeType, timestamp)
+                            }
                         }
                     }
-                } else {
-                    val now = DateTime()
-                    val lastRun = LastRun.fromPreferences(context)
 
-                    remindersScheduler.cancelAll()
+                    AppIntent.ACTION_SHOW_PENDING_REMINDERS -> {
+                        val now = DateTime()
+                        // Use start of today as the window start so all due/overdue notes
+                        // are included, regardless of when the last alarm cycle ran.
+                        val startOfDay = now.withTimeAtStartOfDay()
+                        val pastRun = LastRun(startOfDay, startOfDay, startOfDay)
+                        notifyForRemindersSinceLastRun(context, now, pastRun)
+                        // Intentionally does NOT call LastRun.toPreferences() —
+                        // normal scheduling state must remain intact.
+                    }
 
-                    notifyForRemindersSinceLastRun(context, now, lastRun)
+                    else -> {
+                        val now = DateTime()
+                        val lastRun = LastRun.fromPreferences(context)
 
-                    scheduleNextReminder(context, now, lastRun)
-                    LastRun.toPreferences(context, now)
+                        remindersScheduler.cancelAll()
+
+                        notifyForRemindersSinceLastRun(context, now, lastRun)
+
+                        scheduleNextReminder(context, now, lastRun)
+                        LastRun.toPreferences(context, now)
+                    }
                 }
             }
         }
