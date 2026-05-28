@@ -25,16 +25,6 @@ android {
             buildConfigField "String", "DROPBOX_REFRESH_TOKEN", gradle.ext.appProperties.getProperty("dropbox.refresh_token", '""') 
         }
     }
-    flavorDimensions "store"
-    productFlavors {
-        premium {
-            dimension "store"
-        }
-
-        fdroid {
-            dimension "store"
-        }
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17

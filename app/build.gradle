@@ -25,6 +25,9 @@ android {
         buildConfigField "String", "DROPBOX_APP_KEY", gradle.ext.appProperties.getProperty("dropbox.app_key", '""')
         resValue "string", "dropbox_app_key_schema", gradle.ext.appProperties.getProperty("dropbox.app_key_schema", '')
 
+        buildConfigField "boolean", "IS_DROPBOX_ENABLED", "false"
+        buildConfigField "boolean", "IS_GIT_REMOVED", "false"
+
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = [
@@ -40,6 +43,13 @@ android {
         buildConfig = true
         compose = true
         resValues = true
+    }
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def fileName = "orgzlyII-${variant.versionName}.apk"
+            outputFileName = fileName
+        }
     }
 
     testOptions {
@@ -78,32 +88,6 @@ android {
             buildConfigField "String", "DROPBOX_REFRESH_TOKEN", gradle.ext.appProperties.getProperty("dropbox.refresh_token", '""')
 
             buildConfigField "String", "GIT_COMMIT", "\"${getCheckedOutGitCommitHash()}\""
-        }
-    }
-
-    flavorDimensions "store"
-
-    productFlavors {
-        premium {
-            buildConfigField "boolean", "IS_DROPBOX_ENABLED", "true"
-
-            // Remove Git feature because of Play restrictions on external storage permissions
-            buildConfigField "boolean", "IS_GIT_REMOVED", "true"
-
-            buildConfigField "String", "VERSION_NAME_SUFFIX", '""'
-
-            dimension "store"
-        }
-
-        fdroid {
-            /*
-             * Disable Dropbox.
-             * Properties file which contains the required API key is not included with the code.
-             */
-            buildConfigField "boolean", "IS_DROPBOX_ENABLED", "false"
-            buildConfigField "boolean", "IS_GIT_REMOVED", "false"
-//            buildConfigField "String", "VERSION_NAME_SUFFIX", '" (fdroid)"'
-            dimension "store"
         }
     }
 

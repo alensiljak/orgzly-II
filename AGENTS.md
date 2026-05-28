@@ -24,41 +24,31 @@ This is a standard Android Gradle project with three modules:
 - **`:org-java`** — Pure Java library for parsing/writing Org-mode files
 - **`:shared-test`** — Shared test utilities
 
-### Product Flavors
-
-Two flavors exist, both with `debug` and `release` build types:
-
-- **`fdroid`** — Dropbox disabled (no API key), Git sync enabled
-- **`premium`** — Dropbox enabled, Git sync removed (Play Store restrictions)
-
 ### Build Commands
 
 ```bash
-# Build fdroid debug APK
-./gradlew assembleFdroidDebug
+# Build debug APK
+./gradlew assembleDebug
 
-# Build premium debug APK
-./gradlew assemblePremiumDebug
+# Build release APK
+./gradlew assembleRelease
 
-# Run local JVM unit tests (fdroid flavor)
-./gradlew testFdroidDebugUnitTest
-
-# Run local JVM unit tests (premium flavor)
-./gradlew testPremiumDebugUnitTest
+# Run local JVM unit tests
+./gradlew testDebugUnitTest
 
 # Run a single unit test class
-./gradlew testFdroidDebugUnitTest --tests "com.orgzly.android.query.QueryTest"
+./gradlew testDebugUnitTest --tests "com.orgzly.android.query.QueryTest"
 
 # Run instrumented (on-device) tests
-./gradlew connectedFdroidDebugAndroidTest
+./gradlew connectedDebugAndroidTest
 
 # Run a single instrumented test class
-./gradlew connectedFdroidDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.orgzly.android.espresso.NoteFragmentTest
+./gradlew connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.orgzly.android.espresso.NoteFragmentTest
 ```
 
 ### app.properties
 
-Dropbox credentials are loaded from `app.properties` in the project root (not committed). See `sample.app.properties` for the format. Without it, the fdroid flavor builds fine; premium flavor builds but Dropbox won't authenticate.
+Dropbox credentials are loaded from `app.properties` in the project root (not committed). See `sample.app.properties` for the format. Dropbox is disabled by default (`IS_DROPBOX_ENABLED = false`).
 
 ## Architecture
 
@@ -127,4 +117,4 @@ The app uses a mix of legacy Views and Jetpack Compose (being migrated):
 - Kotlin for all new code in `:app`; `org-java` remains Java
 - Room schema export files are in `app/schemas/` — new migrations must export a schema JSON
 - `BuildConfig.LOG_DEBUG` gates verbose logging (`LogUtils`)
-- `BuildConfig.IS_DROPBOX_ENABLED` and `IS_GIT_REMOVED` gate feature availability per flavor
+- `BuildConfig.IS_DROPBOX_ENABLED` and `IS_GIT_REMOVED` gate feature availability (both `false` — Dropbox disabled, Git enabled)
