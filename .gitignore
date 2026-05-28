@@ -153,4 +153,4 @@ gradle-app.setting
 keystore.properties
 
 # build
-/app/fdroid/release
+/app/release
