@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'com.android.lint'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
