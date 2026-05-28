@@ -22,13 +22,7 @@
             android:title="@string/settings"
             android:orderInCategory="4"/>
 
-        <item
-            android:id="@+id/show_pending_reminders"
-            android:icon="@drawable/ic_alarm"
-            android:title="@string/show_pending_reminders"
-            android:orderInCategory="5"/>
-
-        <!-- FIXME: Space for sync button and progress bar -->
+<!-- FIXME: Space for sync button and progress bar -->
         <item android:title="" android:enabled="false" android:orderInCategory="6" />
     </group>
 </menu>

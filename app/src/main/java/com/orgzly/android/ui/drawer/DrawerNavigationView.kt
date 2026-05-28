@@ -41,7 +41,6 @@ internal class DrawerNavigationView(
         menu.findItem(R.id.searches).intent = Intent(AppIntent.ACTION_OPEN_SAVED_SEARCHES)
         menu.findItem(R.id.books).intent = Intent(AppIntent.ACTION_OPEN_BOOKS)
         menu.findItem(R.id.settings).intent = Intent(AppIntent.ACTION_OPEN_SETTINGS)
-        menu.findItem(R.id.show_pending_reminders).intent = Intent(AppIntent.ACTION_SHOW_PENDING_REMINDERS)
 
         viewModel.books().observe(activity, Observer {
             refreshFromBooks(it)

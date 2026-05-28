@@ -56,11 +56,12 @@ class RemindersBroadcastReceiver : BroadcastReceiver() {
 
                     AppIntent.ACTION_SHOW_PENDING_REMINDERS -> {
                         val now = DateTime()
-                        // Use start of today as the window start so all due/overdue notes
-                        // are included, regardless of when the last alarm cycle ran.
                         val startOfDay = now.withTimeAtStartOfDay()
+                        // Use end-of-today as the upper bound so all items due today are
+                        // included, whether their specific time has passed yet or not.
+                        val endOfDay = startOfDay.plusDays(1)
                         val pastRun = LastRun(startOfDay, startOfDay, startOfDay)
-                        notifyForRemindersSinceLastRun(context, now, pastRun)
+                        notifyForRemindersSinceLastRun(context, endOfDay, pastRun)
                         // Intentionally does NOT call LastRun.toPreferences() —
                         // normal scheduling state must remain intact.
                     }

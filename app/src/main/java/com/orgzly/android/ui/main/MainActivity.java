@@ -1021,7 +1021,7 @@ public class MainActivity extends CommonActivity
                 }
 
                 case AppIntent.ACTION_SHOW_PENDING_REMINDERS: {
-                    sendBroadcast(new Intent(this, com.orgzly.android.reminders.RemindersBroadcastReceiver.class)
+                    sendBroadcast(new Intent(MainActivity.this, com.orgzly.android.reminders.RemindersBroadcastReceiver.class)
                             .setAction(AppIntent.ACTION_SHOW_PENDING_REMINDERS));
                     break;
                 }

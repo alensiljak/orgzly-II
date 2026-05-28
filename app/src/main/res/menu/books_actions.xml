@@ -26,4 +26,10 @@
         android:id="@+id/activity_action_settings"
         app:showAsAction="never"
         android:title="@string/settings"/>
+
+    <item
+        android:id="@+id/show_pending_reminders"
+        android:icon="@drawable/ic_alarm"
+        app:showAsAction="never"
+        android:title="@string/show_pending_reminders"/>
 </menu>

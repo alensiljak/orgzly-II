@@ -25,6 +25,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import cc.alensiljak.orgzly.BuildConfig
 import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
+import com.orgzly.android.AppIntent
 import com.orgzly.android.BookFormat
 import com.orgzly.android.BookName
 import com.orgzly.android.data.DataRepository
@@ -199,6 +200,13 @@ class BooksFragment : CommonFragment(), DrawerItem, OnViewHolderClickListener<Bo
 
                         R.id.activity_action_settings -> {
                             startActivity(Intent(context, SettingsActivity::class.java))
+                        }
+
+                        R.id.show_pending_reminders -> {
+                            requireContext().sendBroadcast(
+                                Intent(requireContext(), com.orgzly.android.reminders.RemindersBroadcastReceiver::class.java)
+                                    .setAction(AppIntent.ACTION_SHOW_PENDING_REMINDERS)
+                            )
                         }
                     }
                     true
