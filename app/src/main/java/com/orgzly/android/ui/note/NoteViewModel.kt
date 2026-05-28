@@ -63,7 +63,12 @@ class NoteViewModel(
     val noteDeleteRequest: SingleLiveEvent<Int> = SingleLiveEvent()
     val bookChangeRequestEvent: SingleLiveEvent<List<BookView>> = SingleLiveEvent()
 
+    val notePayloadLiveData = MutableLiveData<NotePayload?>()
     var notePayload: NotePayload? = null
+        set(value) {
+            field = value
+            notePayloadLiveData.postValue(value)
+        }
 
     val propertyNames = MutableLiveData<List<String>>()
 

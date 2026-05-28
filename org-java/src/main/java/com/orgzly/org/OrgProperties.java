@@ -42,6 +42,14 @@ public class OrgProperties {
      */
     private Map<String, String> appendingKeys = new HashMap<>();
 
+    public OrgProperties() {}
+
+    public OrgProperties(OrgProperties other) {
+        for (OrgProperty property : other.list) {
+            put(property.getName(), property.getValue());
+        }
+    }
+
     public void put(String name, String value) {
         list.add(new OrgProperty(name, value));
 

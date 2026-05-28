@@ -142,6 +142,7 @@ dependencies {
     implementation composeBom
     androidTestImplementation composeBom
     implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.material:material-icons-core'
     implementation "androidx.activity:activity-compose:$versions.compose_activity"
     implementation 'androidx.compose.runtime:runtime-livedata'
     implementation "cl.emilym.compose:units:$versions.compose_emily_units"
