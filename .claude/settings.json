@@ -1,0 +1,10 @@
+{
+  "env": {
+      "ENABLE_LSP_TOOL": "1"
+    },
+	"enabledPlugins": {
+		"vtsls@claude-code-lsps": true,
+		"typescript-lsp@claude-plugins-official": true,
+		"pyright-lsp@claude-plugins-official": true
+	}
+}
