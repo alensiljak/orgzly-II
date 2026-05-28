@@ -188,7 +188,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private fun setupVersionPreference() {
         preference(R.string.pref_key_version)?.let { pref ->
             /* Set summary to the current version string, appending suffix for the flavor. */
-            pref.summary = BuildConfig.VERSION_NAME + BuildConfig.VERSION_NAME_SUFFIX
+//            pref.summary = BuildConfig.VERSION_NAME + BuildConfig.VERSION_NAME_SUFFIX
+            pref.summary = BuildConfig.VERSION_NAME
 
             /* Display changelog dialog when version is clicked. */
             pref.setOnPreferenceClickListener {

@@ -18,6 +18,19 @@ def loadAppProperties() {
 
 gradle.ext.appProperties = loadAppProperties()
 
+def loadKeystoreProperties() {
+    Properties properties = new Properties()
+    def file = new File(settingsDir, 'keystore.properties')
+    if (file.exists()) {
+        properties.load(file.newDataInputStream())
+    } else {
+        logger.warn("Keystore properties file ${file} does not exist")
+    }
+    return properties
+}
+
+gradle.ext.keystoreProperties = loadKeystoreProperties()
+
 include ':org-java'
 include ':app'
 include ':shared-test'
