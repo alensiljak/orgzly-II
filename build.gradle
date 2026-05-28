@@ -8,11 +8,9 @@ buildscript {
 
     versions.kotlin = '2.2.21'
 
-    versions.kotlin_coroutines = '1.10.2'
+    versions.kotlin_coroutines = '1.11.0'
 
     versions.jetbrains_annotations = '26.1.0'
-
-    versions.android_multidex = '2.0.1'
 
     versions.android_appcompat = '1.7.1'
 

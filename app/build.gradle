@@ -1,18 +1,20 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.compose'
+    id 'org.jetbrains.kotlin.kapt'
+}
 
 android {
     namespace = 'cc.alensiljak.orgzly'
 
-    compileSdk 36
+    compileSdk = 36
 
     defaultConfig {
         minSdkVersion 23
         targetSdkVersion 36
-        versionCode 282
-        versionName "1.20.0"
+        versionCode 283
+        versionName "2.0.0"
         applicationId = "cc.alensiljak.orgzly"
         resValue "string", "application_id", "cc.alensiljak.orgzly"
 
@@ -21,7 +23,6 @@ android {
         multiDexEnabled = true
 
         buildConfigField "String", "DROPBOX_APP_KEY", gradle.ext.appProperties.getProperty("dropbox.app_key", '""')
-
         resValue "string", "dropbox_app_key_schema", gradle.ext.appProperties.getProperty("dropbox.app_key_schema", '')
 
         javaCompileOptions {
@@ -38,6 +39,7 @@ android {
         viewBinding = true
         buildConfig = true
         compose = true
+        resValues = true
     }
 
     testOptions {
@@ -89,11 +91,8 @@ android {
              * Properties file which contains the required API key is not included with the code.
              */
             buildConfigField "boolean", "IS_DROPBOX_ENABLED", "false"
-
             buildConfigField "boolean", "IS_GIT_REMOVED", "false"
-
             buildConfigField "String", "VERSION_NAME_SUFFIX", '" (fdroid)"'
-
             dimension "store"
         }
     }
@@ -108,7 +107,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = 17
+        jvmTarget = "17"
     }
 
     packagingOptions {
@@ -129,8 +128,6 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlin_coroutines"
 
     implementation "org.jetbrains:annotations:$versions.jetbrains_annotations"
-
-    implementation "androidx.multidex:multidex:$versions.android_multidex"
 
     implementation "androidx.appcompat:appcompat:$versions.android_appcompat"
 
