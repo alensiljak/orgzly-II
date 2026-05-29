@@ -121,9 +121,10 @@ class BooksViewModel(private val dataRepository: DataRepository) : CommonViewMod
 
     fun renameBookRequest(bookId: Long) {
         App.EXECUTORS.diskIO().execute {
-            val bookView = dataRepository.getBookView(bookId)
-            bookToRenameEvent.postValue(bookView)
-            renameDialogBook.value = bookView
+            dataRepository.getBookView(bookId)?.let { bookView ->
+                bookToRenameEvent.postValue(bookView)
+                renameDialogBook.value = bookView
+            }
         }
     }
 

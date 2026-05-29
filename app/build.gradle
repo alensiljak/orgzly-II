@@ -12,8 +12,8 @@ android {
 
     defaultConfig {
         applicationId = "cc.alensiljak.orgzly"
-        versionCode 283
-        versionName "2.0.0"
+        versionCode 284
+        versionName "2.1.0"
         minSdkVersion 23
         targetSdkVersion 36
         resValue "string", "application_id", "cc.alensiljak.orgzly"

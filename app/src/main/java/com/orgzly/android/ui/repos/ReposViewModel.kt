@@ -18,7 +18,9 @@ class ReposViewModel(private val dataRepository: DataRepository) : CommonViewMod
 
     fun openRepo(id: Long) {
         App.EXECUTORS.diskIO().execute {
-            openRepoRequestEvent.postValue(dataRepository.getRepo(id))
+            dataRepository.getRepo(id)?.let {
+                openRepoRequestEvent.postValue(it)
+            }
         }
     }
 

@@ -252,7 +252,7 @@ public class GitFileSynchronizer {
         }
         App.EXECUTORS.diskIO().execute(() -> {
             try {
-                Iterable<PushResult> results = (Iterable<PushResult>) pushCommand.call();
+                Iterable<PushResult> results = pushCommand.call();
                 // org.eclipse.jgit.api.PushCommand swallows some errors without throwing exceptions.
                 if (!results.iterator().next().getMessages().isEmpty()) {
                     if (currentActivity != null) {

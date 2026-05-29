@@ -2,12 +2,14 @@ package com.orgzly.android.git;
 
 import android.net.Uri;
 
+import org.eclipse.jgit.api.TransportCommand;
+
 import cc.alensiljak.orgzly.R;
 import com.orgzly.android.prefs.AppPreferences;
 import com.orgzly.android.prefs.RepoPreferences;
 
 public class GitPreferencesFromRepoPrefs implements GitPreferences {
-    private RepoPreferences repoPreferences;
+    private final RepoPreferences repoPreferences;
 
     public GitPreferencesFromRepoPrefs(RepoPreferences prefs) {
         repoPreferences = prefs;
@@ -15,17 +17,22 @@ public class GitPreferencesFromRepoPrefs implements GitPreferences {
 
     @Override
     public GitTransportSetter createTransportSetter() {
-        String scheme = remoteUri().getScheme();
-        switch (scheme) {
-            case "https":
-                String username = repoPreferences.getStringValue(R.string.pref_key_git_https_username, "");
-                String password = repoPreferences.getStringValue(R.string.pref_key_git_https_password, "");
-                return new HTTPSTransportSetter(username, password);
-            case "file":
-                return tc -> tc;
-            default:
-                return new GitSshKeyTransportSetter();
+        Uri uri = remoteUri();
+        String scheme = uri != null ? uri.getScheme() : null;
+
+        if ("https".equals(scheme)) {
+            String username = repoPreferences.getStringValue(R.string.pref_key_git_https_username, "");
+            String password = repoPreferences.getStringValue(R.string.pref_key_git_https_password, "");
+            return new HTTPSTransportSetter(username, password);
+        } else if ("file".equals(scheme)) {
+            return new GitTransportSetter() {
+                @Override
+                public <C extends TransportCommand<?, ?>> C setTransport(C tc) {
+                    return tc;
+                }
+            };
         }
+        return new GitSshKeyTransportSetter();
     }
 
     @Override

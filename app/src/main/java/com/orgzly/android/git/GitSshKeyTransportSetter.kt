@@ -59,7 +59,7 @@ class GitSshKeyTransportSetter: GitTransportSetter {
         }
     }
 
-    override fun setTransport(tc: TransportCommand<*, *>): TransportCommand<*, *> {
+    override fun <C : TransportCommand<*, *>> setTransport(tc: C): C {
         tc.setTransportConfigCallback(configCallback)
         tc.setCredentialsProvider(SshCredentialsProvider())
         return tc

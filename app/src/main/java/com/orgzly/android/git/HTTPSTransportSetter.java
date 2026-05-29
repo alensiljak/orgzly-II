@@ -14,7 +14,8 @@ public class HTTPSTransportSetter implements GitTransportSetter {
         this.password = password;
     }
 
-    public TransportCommand setTransport(TransportCommand tc) {
+    @Override
+    public <C extends TransportCommand<?, ?>> C setTransport(C tc) {
         tc.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password));
         return tc;
     }
