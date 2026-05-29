@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -567,80 +568,83 @@ fun NoteContent(
     var isMetadataFolded by remember { mutableStateOf(AppPreferences.noteMetadataFolded(context)) }
     var isContentFolded by remember { mutableStateOf(AppPreferences.isNoteContentFolded(context)) }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            BreadcrumbsView(
-                details = details,
-                onBookBreadcrumbClick = onBookBreadcrumbClick,
-                onNoteBreadcrumbClick = onNoteBreadcrumbClick
-            )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding()
+            .verticalScroll(rememberScrollState())
+    ) {
+        BreadcrumbsView(
+            details = details,
+            onBookBreadcrumbClick = onBookBreadcrumbClick,
+            onNoteBreadcrumbClick = onNoteBreadcrumbClick
+        )
 
-            RichTextComposable(
-                sourceText = payload?.title ?: "",
-                onSourceTextChange = { newTitle ->
-                    viewModel.updatePayload(
-                        title = newTitle,
-                        content = payload?.content ?: "",
-                        state = payload?.state,
-                        priority = payload?.priority,
-                        tags = payload?.tags ?: emptyList(),
-                        properties = payload?.properties ?: OrgProperties()
-                    )
-                },
-                attributes = RichText.Attributes(
-                    hint = stringResource(R.string.fragment_note_title_hint),
-                    textSize = fontLargePx,
-                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES,
-                    imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN,
-                    editId = R.id.title_edit
-                ),
-                viewId = R.id.title_edit,
-                autoFocus = autoFocusTitle,
-                onModeChange = onModeChange,
-                onViewCreated = { richTextViews[R.id.title_edit] = it }
-            )
-
-            HorizontalDivider()
-
-            FoldableHeader(
-                painter = painterResource(R.drawable.ic_info_outline),
-                label = stringResource(R.string.metadata),
-                isFolded = isMetadataFolded,
-                onFoldClick = {
-                    val newFolded = !isMetadataFolded
-                    isMetadataFolded = newFolded
-                    AppPreferences.noteMetadataFolded(context, newFolded)
-                }
-            )
-
-            if (!isMetadataFolded) {
-                MetadataSection(
-                    viewModel = viewModel,
-                    payload = payload,
-                    onShowTimestampDialog = onShowTimestampDialog,
-                    onStateClick = onStateClick,
-                    onPriorityClick = onPriorityClick,
-                    onTagsClick = onTagsClick,
-                    metadataVisibility = metadataVisibility,
-                    alwaysShowSet = alwaysShowSet,
-                    selectedMetadata = selectedMetadata,
-                    propertyNames = propertyNames
+        RichTextComposable(
+            sourceText = payload?.title ?: "",
+            onSourceTextChange = { newTitle ->
+                viewModel.updatePayload(
+                    title = newTitle,
+                    content = payload?.content ?: "",
+                    state = payload?.state,
+                    priority = payload?.priority,
+                    tags = payload?.tags ?: emptyList(),
+                    properties = payload?.properties ?: OrgProperties()
                 )
+            },
+            attributes = RichText.Attributes(
+                hint = stringResource(R.string.fragment_note_title_hint),
+                textSize = fontLargePx,
+                inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES,
+                imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN,
+                editId = R.id.title_edit
+            ),
+            viewId = R.id.title_edit,
+            autoFocus = autoFocusTitle,
+            onModeChange = onModeChange,
+            onViewCreated = { richTextViews[R.id.title_edit] = it }
+        )
+
+        HorizontalDivider()
+
+        FoldableHeader(
+            painter = painterResource(R.drawable.ic_info_outline),
+            label = stringResource(R.string.metadata),
+            isFolded = isMetadataFolded,
+            onFoldClick = {
+                val newFolded = !isMetadataFolded
+                isMetadataFolded = newFolded
+                AppPreferences.noteMetadataFolded(context, newFolded)
             }
+        )
 
-            HorizontalDivider()
-
-            FoldableHeader(
-                painter = painterResource(R.drawable.ic_notes),
-                label = stringResource(R.string.content),
-                isFolded = isContentFolded,
-                onFoldClick = {
-                    val newFolded = !isContentFolded
-                    isContentFolded = newFolded
-                    AppPreferences.isNoteContentFolded(context, newFolded)
-                }
+        if (!isMetadataFolded) {
+            MetadataSection(
+                viewModel = viewModel,
+                payload = payload,
+                onShowTimestampDialog = onShowTimestampDialog,
+                onStateClick = onStateClick,
+                onPriorityClick = onPriorityClick,
+                onTagsClick = onTagsClick,
+                metadataVisibility = metadataVisibility,
+                alwaysShowSet = alwaysShowSet,
+                selectedMetadata = selectedMetadata,
+                propertyNames = propertyNames
             )
         }
+
+        HorizontalDivider()
+
+        FoldableHeader(
+            painter = painterResource(R.drawable.ic_notes),
+            label = stringResource(R.string.content),
+            isFolded = isContentFolded,
+            onFoldClick = {
+                val newFolded = !isContentFolded
+                isContentFolded = newFolded
+                AppPreferences.isNoteContentFolded(context, newFolded)
+            }
+        )
 
         if (!isContentFolded) {
             RichTextComposable(
@@ -667,13 +671,10 @@ fun NoteContent(
                 viewId = R.id.content_edit,
                 useMonospaceFont = useMonospaceFont,
                 onModeChange = onModeChange,
-                onViewCreated = {
-                    richTextViews[R.id.content_edit] = it
-                    it.fillParentHeight()
-                },
+                onViewCreated = { richTextViews[R.id.content_edit] = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .heightIn(min = 200.dp)
             )
         }
     }

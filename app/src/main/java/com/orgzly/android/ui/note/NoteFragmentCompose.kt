@@ -80,9 +80,21 @@ class NoteFragmentCompose : ComposeFragment(), TimestampDialogFragment.OnDateTim
         requireActivity().onBackPressedDispatcher.addCallback(this, userCancelBackPressHandler)
     }
 
+    override fun onResume() {
+        super.onResume()
+        @Suppress("DEPRECATION")
+        requireActivity().window.setSoftInputMode(
+            android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
+        )
+    }
+
     override fun onPause() {
         super.onPause()
         ActivityUtils.keepScreenOnClear(activity)
+        @Suppress("DEPRECATION")
+        requireActivity().window.setSoftInputMode(
+            android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        )
     }
 
     private fun setupObservers() {

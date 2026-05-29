@@ -1,0 +1,22 @@
+#+TITLE: Orgzly
+#+DESCRIPTION: Feature tree, project documentation
+
+* Navigation
+
+* Notebooks
+
+The list of all projects. The initial screen.
+Projects are shown as a list, with 
+
+- name
+- last modified
+- repository link
+- last sync results
+
+** TODO Remove the change list on startup
+
+* Agenda
+
+List of scheduled and due tasks.
+
+* Note Creation and Editing
