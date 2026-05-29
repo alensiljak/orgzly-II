@@ -202,9 +202,13 @@ object WidgetStyle {
 
         return TitleGenerator.TitleAttributes(
             getColor(context, stateColorsKey, "todo"),
+            getColor(context, stateColorsKey, "next"),
+            getColor(context, stateColorsKey, "wait"),
             getColor(context, stateColorsKey, "done"),
+            getColor(context, stateColorsKey, "todo"),
             postTitleTextSize(context).toInt(),
-            getColor(context, stateColorsKey, "post title"))
+            getColor(context, stateColorsKey, "post title"),
+            AppPreferences.stateIcons(context))
     }
 
     private fun titleTextSize(context: Context): Float {

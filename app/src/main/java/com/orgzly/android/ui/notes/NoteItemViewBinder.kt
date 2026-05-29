@@ -38,9 +38,13 @@ class NoteItemViewBinder(private val context: Context, private val inBook: Boole
 
         val titleAttributes = TitleGenerator.TitleAttributes(
                 attrs.todoColor,
+                attrs.nextColor,
+                attrs.waitColor,
                 attrs.doneColor,
+                attrs.customColor,
                 attrs.postTitleTextSize,
-                attrs.postTitleTextColor)
+                attrs.postTitleTextColor,
+                AppPreferences.stateIcons(context))
 
         titleGenerator = TitleGenerator(context, inBook, titleAttributes)
 
@@ -475,7 +479,10 @@ class NoteItemViewBinder(private val context: Context, private val inBook: Boole
 
     private data class Attrs(
         @param:ColorInt val todoColor: Int,
+        @param:ColorInt val nextColor: Int,
+        @param:ColorInt val waitColor: Int,
         @param:ColorInt val doneColor: Int,
+        @param:ColorInt val customColor: Int,
         val postTitleTextSize: Int,
         @param:ColorInt val postTitleTextColor: Int
     ) {
@@ -485,15 +492,21 @@ class NoteItemViewBinder(private val context: Context, private val inBook: Boole
                 return context.styledAttributes(
                     intArrayOf(
                         R.attr.item_head_state_todo_color,
+                        R.attr.item_head_state_next_color,
+                        R.attr.item_head_state_wait_color,
                         R.attr.item_head_state_done_color,
+                        R.attr.item_head_state_custom_color,
                         R.attr.item_head_post_title_text_size,
                         android.R.attr.textColorTertiary)) { typedArray ->
 
                     Attrs(
                         typedArray.getColor(0, 0),
                         typedArray.getColor(1, 0),
-                        typedArray.getDimensionPixelSize(2, 0),
-                        typedArray.getColor(3, 0))
+                        typedArray.getColor(2, 0),
+                        typedArray.getColor(3, 0),
+                        typedArray.getColor(4, 0),
+                        typedArray.getDimensionPixelSize(5, 0),
+                        typedArray.getColor(6, 0))
                 }
             }
         }

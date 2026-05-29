@@ -544,6 +544,9 @@
     <string name="style_text_title">Style text</string>
     <string name="style_text_summary">Use special marks for emphasis and monospace</string>
 
+    <string name="state_icons_title">State icons</string>
+    <string name="state_icons_summary">Show icons next to state keywords (→ NEXT, ⌛ WAIT, ✓ DONE)</string>
+
     <string name="styled_text_with_marks_title">Styled text with marks</string>
     <string name="styled_text_with_marks_summary">Keep marks displayed (e.g. *bold*)</string>
 

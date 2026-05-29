@@ -50,8 +50,11 @@
 
         <item name="android:colorBackground">?attr/colorSurface</item>
 
-        <item name="item_head_state_done_color">@color/green_900</item>
         <item name="item_head_state_todo_color">@color/red_900</item>
+        <item name="item_head_state_next_color">@color/blue_900</item>
+        <item name="item_head_state_wait_color">@color/amber_800</item>
+        <item name="item_head_state_done_color">@color/green_900</item>
+        <item name="item_head_state_custom_color">@color/yellow_700</item>
     </style>
 
     <style name="AppDarkThemeCommon" parent="Theme.Material3.DynamicColors.Dark">
@@ -99,8 +102,11 @@
 
         <item name="android:colorBackground">?attr/colorSurface</item>
 
-        <item name="item_head_state_done_color">@color/green_200</item>
         <item name="item_head_state_todo_color">@color/red_200</item>
+        <item name="item_head_state_next_color">@color/blue_200</item>
+        <item name="item_head_state_wait_color">@color/amber_200</item>
+        <item name="item_head_state_done_color">@color/green_200</item>
+        <item name="item_head_state_custom_color">@color/yellow_200</item>
     </style>
 
     <style name="AppLightTheme" parent="AppLightThemeCommon">

@@ -126,16 +126,19 @@ class TitleGenerator(
     }
 
     private fun generateState(note: Note): CharSequence {
-        val str = SpannableString(note.state)
+        val state = note.state ?: return ""
+        val isDone = AppPreferences.doneKeywordsSet(context).contains(state)
 
-        val color = if (AppPreferences.doneKeywordsSet(context).contains(note.state)) {
-            attributes.colorDone
-        } else {
-            attributes.colorTodo
+        val (icon, colorSpan) = when {
+            isDone -> (if (attributes.showStateIcons) "✓ " else "") to attributes.colorDone
+            state == "NEXT" -> (if (attributes.showStateIcons) "→ " else "") to attributes.colorNext
+            state == "WAIT" -> (if (attributes.showStateIcons) "⌛ " else "") to attributes.colorWait
+            state == "TODO" -> "" to attributes.colorTodo
+            else -> "" to attributes.colorCustom
         }
 
-        str.setSpan(color, 0, str.length, 0)
-
+        val str = SpannableString("$icon$state")
+        str.setSpan(colorSpan, 0, str.length, 0)
         return str
     }
 
@@ -145,12 +148,19 @@ class TitleGenerator(
 
     class TitleAttributes(
         colorTodo: Int,
+        colorNext: Int,
+        colorWait: Int,
         colorDone: Int,
+        colorCustom: Int,
         postTitleTextSize: Int,
-        postTitleTextColor: Int
+        postTitleTextColor: Int,
+        val showStateIcons: Boolean = false
     ) {
         val colorTodo: ForegroundColorSpan = ForegroundColorSpan(colorTodo)
+        val colorNext: ForegroundColorSpan = ForegroundColorSpan(colorNext)
+        val colorWait: ForegroundColorSpan = ForegroundColorSpan(colorWait)
         val colorDone: ForegroundColorSpan = ForegroundColorSpan(colorDone)
+        val colorCustom: ForegroundColorSpan = ForegroundColorSpan(colorCustom)
         val postTitleTextSize: AbsoluteSizeSpan = AbsoluteSizeSpan(postTitleTextSize)
         val postTitleTextColor: ForegroundColorSpan = ForegroundColorSpan(postTitleTextColor)
     }

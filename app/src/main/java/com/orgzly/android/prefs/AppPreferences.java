@@ -211,6 +211,12 @@ public class AppPreferences {
                 context.getResources().getBoolean(R.bool.pref_default_style_text));
     }
 
+    public static boolean stateIcons(Context context) {
+        return getDefaultSharedPreferences(context).getBoolean(
+                context.getResources().getString(R.string.pref_key_state_icons),
+                context.getResources().getBoolean(R.bool.pref_default_state_icons));
+    }
+
     public static boolean styledTextWithMarks(Context context) {
         return getDefaultSharedPreferences(context).getBoolean(
                 context.getResources().getString(R.string.pref_key_styled_text_with_marks),

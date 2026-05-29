@@ -43,8 +43,11 @@
     </declare-styleable>
 
     <declare-styleable name="ColorScheme">
-        <attr name="item_head_state_done_color" format="color"/>
         <attr name="item_head_state_todo_color" format="color"/>
+        <attr name="item_head_state_next_color" format="color"/>
+        <attr name="item_head_state_wait_color" format="color"/>
+        <attr name="item_head_state_done_color" format="color"/>
+        <attr name="item_head_state_custom_color" format="color"/>
     </declare-styleable>
 
     <declare-styleable name="RichText">

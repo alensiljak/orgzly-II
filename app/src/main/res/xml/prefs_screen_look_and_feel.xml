@@ -66,6 +66,12 @@
             android:defaultValue="@bool/pref_default_style_text"/>
 
         <SwitchPreference
+            android:key="@string/pref_key_state_icons"
+            android:title="@string/state_icons_title"
+            android:summary="@string/state_icons_summary"
+            android:defaultValue="@bool/pref_default_state_icons"/>
+
+        <SwitchPreference
             android:key="@string/pref_key_styled_text_with_marks"
             android:dependency="@string/pref_key_style_text"
             android:title="@string/styled_text_with_marks_title"
