@@ -70,11 +70,11 @@ You can have multiple event times:
 
 ** メモにはリンクを含めることができます
 
-電話をかける (tel:555-0199), SMS送信 (sms:555-0199), メール編集 (mailto:support@orgzly.com) Webページを開く ([[https://www.orgzly.com][Orgzly.com]]).
+電話をかける (tel:555-0199), SMS送信 (sms:555-0199), メール編集 (mailto:support@orgzly.com) Webページを開く ([[https://orgzly.alensiljak.cc][Orgzly II]).
 
 アプリ内の、別のメモやメモ帳にも、リンクができます。
 
-詳しくは https://www.orgzly.com/docs#links を見てください。
+詳しくは https://orgzly.alensiljak.cc/docs#links を見てください。
 
 ** 基本的なタイポグラフィをサポートします
 
@@ -99,7 +99,7 @@ You can have multiple event times:
 
 状態、タグ、予定日時、期限日時などで、メモを検索できます。
 
-詳しくは [[https://www.orgzly.com/docs#search]] を見てください。
+詳しくは [[https://orgzly.alensiljak.cc/docs#search]] を見てください。
 
 ** 検索クエリは、クイックアクセスに保存できます
 

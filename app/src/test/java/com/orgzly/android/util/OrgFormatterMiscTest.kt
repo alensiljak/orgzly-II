@@ -16,28 +16,28 @@ class OrgFormatterMiscTest : OrgFormatterTest() {
     @Test
     fun testLinksMultiLine() {
         val spannable = ParseResult(
-            "[[https://www.orgzly.com]]\n" +
-            "[[https://www.orgzly.com]]"
+            "[[https://orgzly.alensiljak.cc]]\n" +
+            "[[https://orgzly.alensiljak.cc]]"
         )
 
-        assertThat(spannable.outputString, `is`("https://www.orgzly.com\nhttps://www.orgzly.com"))
+        assertThat(spannable.outputString, `is`("https://orgzly.alensiljak.cc\nhttps://orgzly.alensiljak.cc"))
 
         assertThat(spannable.foundSpans.size, `is`(2))
 
         assertThat(spannable.foundSpans[0].start, `is`(0))
         assertThat(spannable.foundSpans[0].end, `is`(29))
         assertThat(spannable.foundSpans[0].span, instanceOf(UrlLinkSpan::class.java))
-        assertThat(spannable.foundSpans[0].url, `is`("https://www.orgzly.com"))
+        assertThat(spannable.foundSpans[0].url, `is`("https://orgzly.alensiljak.cc"))
 
         assertThat(spannable.foundSpans[1].start, `is`(30))
         assertThat(spannable.foundSpans[1].end, `is`(59))
         assertThat(spannable.foundSpans[0].span, instanceOf(UrlLinkSpan::class.java))
-        assertThat(spannable.foundSpans[1].url, `is`("https://www.orgzly.com"))
+        assertThat(spannable.foundSpans[1].url, `is`("https://orgzly.alensiljak.cc"))
     }
 
     @Test
     fun testLinksNamed() {
-        val spannable = ParseResult("[[https://www.orgzly.com][Orgzly]]")
+        val spannable = ParseResult("[[https://orgzly.alensiljak.cc][Orgzly]]")
 
         assertThat(spannable.outputString, `is`("Orgzly"))
 
@@ -46,7 +46,7 @@ class OrgFormatterMiscTest : OrgFormatterTest() {
         assertThat(spannable.foundSpans[0].start, `is`(0))
         assertThat(spannable.foundSpans[0].end, `is`(6))
         assertThat(spannable.foundSpans[0].span, instanceOf(UrlLinkSpan::class.java))
-        assertThat(spannable.foundSpans[0].url, `is`("https://www.orgzly.com"))
+        assertThat(spannable.foundSpans[0].url, `is`("https://orgzly.alensiljak.cc"))
     }
 
     @Test
@@ -103,7 +103,7 @@ class OrgFormatterMiscTest : OrgFormatterTest() {
 
     @Test
     fun testPlainLinkWithTrailingSlash() {
-        val spannable = ParseResult("https://www.orgzly.com/")
-        assertThat(spannable.outputString, `is`("https://www.orgzly.com/"))
+        val spannable = ParseResult("https://orgzly.alensiljak.cc/")
+        assertThat(spannable.outputString, `is`("https://orgzly.alensiljak.cc/"))
     }
 }

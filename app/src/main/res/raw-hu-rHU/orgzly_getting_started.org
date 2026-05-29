@@ -70,11 +70,11 @@ A prioritások számát megadhatod a Beállításokban. Az alap prioritást is �
 
 ** Linket is tartalmazhat egy bejegyzés
 
-Hívj fel egy számot (tel:555-0199), küldj SMS-t (sms:555-0199), írj emailt (mailto:support@orgzly.com) vagy látogass meg egy weboldalt ([[https://www.orgzly.com][Orgzly.com]]).
+Hívj fel egy számot (tel:555-0199), küldj SMS-t (sms:555-0199), írj emailt (mailto:support@orgzly.com) vagy látogass meg egy weboldalt ([[https://orgzly.alensiljak.cc][Orgzly II]).
 
 Lehet más bejegyzéshez vagy az appon belül másik jegyzetfüzethez is linket megadni.
 
-További információ a [[https://www.orgzly.com/docs#links]] címen.
+További információ a [[https://orgzly.alensiljak.cc/docs#links]] címen.
 
 ** Az alapvető tipográfiai kiemeléseket támogatja a program
 
@@ -99,7 +99,7 @@ Kattintás a jelölőnégyzetre átváltja azt. Új elem létrehozása a sor vé
 
 Rá lehet keresni például állapotra, címkékre, ütemezésre vagy határidőre, stb.
 
-Erről többet a [[https://www.orgzly.com/docs#search]] oldalon tanulhatsz.
+Erről többet a [[https://orgzly.alensiljak.cc/docs#search]] oldalon tanulhatsz.
 
 ** A keresési kifejezéseket el lehet menteni, hogy gyorsan hozzáférjünk később
 

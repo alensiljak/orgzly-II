@@ -467,7 +467,7 @@
 
         <com.orgzly.android.ui.views.WhatsNewChange
             style="@style/WhatsNewChange"
-            app:text="Support &lt;a href=&quot;https://www.orgzly.com/docs#orgc553add&quot;&gt;the .orgzlyignore file&lt;/a&gt; in all repo types" />
+            app:text="Support &lt;a href=&quot;https://orgzly.alensiljak.cc/docs#orgc553add&quot;&gt;the .orgzlyignore file&lt;/a&gt; in all repo types" />
 
         <TextView
             style="@style/WhatsNewVersion"

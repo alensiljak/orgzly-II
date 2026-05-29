@@ -70,11 +70,11 @@ Priority můžete nastavit v Nastavení. Můžete také nastavit výchozí prior
 
 ** Poznámky mohou obsahovat odkazy
 
-Vytočení telefonního čísla (tel:555-0199), poslání textové zprávy (sms:555-0199), email (mailto:support@orgzly.com) nebo webová stránky ([[https://www.orgzly.com][Orgzly.com]]).
+Vytočení telefonního čísla (tel:555-0199), poslání textové zprávy (sms:555-0199), email (mailto:support@orgzly.com) nebo webová stránky ([[https://orgzly.alensiljak.cc][Orgzly II]).
 
 Linkovat lze i ostatní poznámky nebo sešity v rámci aplikace.
 
-Navštivte [[https://www.orgzly.com/docs#links]] pro více informací.
+Navštivte [[https://orgzly.alensiljak.cc/docs#links]] pro více informací.
 
 ** Základní typografická zvýraznění jsou podporována
 
@@ -99,7 +99,7 @@ Klikněte na zaškrtávací políčko pro odškrtnutí. Klikněte na ikonu nové
 
 Můžete hledat dle stavu, štítku, času plánovaného nebo termínu a podobně.
 
-Navšivte [[https://www.orgzly.com/docs#search]] pro další podrobnosti.
+Navšivte [[https://orgzly.alensiljak.cc/docs#search]] pro další podrobnosti.
 
 ** Hledání je možno uložit pro rychlý přístup
 
