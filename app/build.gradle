@@ -16,6 +16,7 @@ android {
         versionName "2.2.0"
         minSdkVersion 23
         targetSdkVersion 36
+        resValue "string", "app_name", "Orgzly II"
 
         testInstrumentationRunner "com.orgzly.android.OrgzlyTestRunner"
 
@@ -75,6 +76,7 @@ android {
         debug {
             applicationIdSuffix ".debug"
             resValue "string", "application_id", "cc.alensiljak.orgzly.debug"
+            resValue "string", "app_name", "Orgzly II Debug"
             buildConfigField "boolean", "LOG_DEBUG", "true"
             buildConfigField "String", "DROPBOX_REFRESH_TOKEN", gradle.ext.appProperties.getProperty("dropbox.refresh_token", '""')
             buildConfigField "String", "GIT_COMMIT", "\"${getCheckedOutGitCommitHash()}\""
