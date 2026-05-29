@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.semantics.Role
-import cl.emilym.compose.units.rdp
+import com.orgzly.android.ui.compose.rdp
 
 @Composable
 fun CollapsePanel(

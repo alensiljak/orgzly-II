@@ -35,7 +35,7 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import cl.emilym.compose.units.rdp
+import com.orgzly.android.ui.compose.rdp
 import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.db.entity.SavedSearch

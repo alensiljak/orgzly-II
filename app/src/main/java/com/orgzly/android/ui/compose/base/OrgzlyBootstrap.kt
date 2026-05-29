@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
-import cl.emilym.compose.units.LocalBaseDp
+import com.orgzly.android.ui.compose.LocalBaseDp
 import com.orgzly.android.ui.compose.theme.OrgzlyTheme
 import com.orgzly.android.ui.compose.theme.typography
 

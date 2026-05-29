@@ -13,7 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import cl.emilym.compose.units.rdp
+import com.orgzly.android.ui.compose.rdp
 import com.orgzly.android.ui.compose.theme.asMonospacedIfConfigured
 import com.orgzly.android.ui.compose.widgets.BackButton
 import com.orgzly.android.ui.compose.widgets.Icons

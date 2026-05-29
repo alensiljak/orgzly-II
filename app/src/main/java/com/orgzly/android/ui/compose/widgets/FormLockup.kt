@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
-import cl.emilym.compose.units.rdp
+import com.orgzly.android.ui.compose.rdp
 import com.orgzly.android.ui.compose.modifiers.noRippleClickable
 
 @Composable

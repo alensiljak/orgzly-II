@@ -31,7 +31,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
-import cl.emilym.compose.units.rdp
+import com.orgzly.android.ui.compose.rdp
 import cc.alensiljak.orgzly.R
 import com.orgzly.android.query.SimpleFilter
 import com.orgzly.android.ui.compose.base.PreviewOrgzlyBootstrap
