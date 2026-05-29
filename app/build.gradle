@@ -74,19 +74,14 @@ android {
             minifyEnabled true
 
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
             buildConfigField "boolean", "LOG_DEBUG", "false"
-
             buildConfigField "String", "GIT_COMMIT", "\"${getCheckedOutGitCommitHash()}\""
-
             signingConfig signingConfigs.release
         }
 
         debug {
             buildConfigField "boolean", "LOG_DEBUG", "true"
-
             buildConfigField "String", "DROPBOX_REFRESH_TOKEN", gradle.ext.appProperties.getProperty("dropbox.refresh_token", '""')
-
             buildConfigField "String", "GIT_COMMIT", "\"${getCheckedOutGitCommitHash()}\""
         }
     }
@@ -118,13 +113,9 @@ android {
 
 dependencies {
     implementation project(':org-java')
-
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlin_coroutines"
-
     implementation "org.jetbrains:annotations:$versions.jetbrains_annotations"
-
     implementation "androidx.appcompat:appcompat:$versions.android_appcompat"
-
     implementation "androidx.documentfile:documentfile:$versions.android_documentfile"
     implementation "androidx.localbroadcastmanager:localbroadcastmanager:$versions.android_localbroadcastmanager"
 
