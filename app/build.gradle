@@ -107,7 +107,7 @@ android {
 androidComponents {
     onVariants(selector().all()) { variant ->
         variant.outputs.each { output ->
-            output.outputFileName.set("orgzlyII-${variant.versionName.get()}.apk")
+            output.outputFileName.set("orgzlyII-${output.versionName.get()}.apk")
         }
     }
 }
