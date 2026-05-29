@@ -38,6 +38,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -77,6 +78,8 @@ import com.orgzly.android.ui.compose.widgets.OrgzlyTopAppBar
 fun BooksScreen(
     viewModel: BooksViewModel,
     withActionBar: Boolean,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
     onBookClick: (Long) -> Unit,
     onOpenDrawer: () -> Unit,
     onNewBook: () -> Unit,
@@ -149,45 +152,51 @@ fun BooksScreen(
             }
         },
     ) { innerPadding ->
-        Box(
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize(),
+                .fillMaxSize()
         ) {
-            when (viewState) {
-                BooksViewModel.ViewState.LOADING -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-                BooksViewModel.ViewState.EMPTY -> {
-                    Text(
-                        text = stringResource(R.string.no_notebooks),
-                        modifier = Modifier.align(Alignment.Center),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                BooksViewModel.ViewState.LOADED -> {
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
-                        items(books, key = { it.book.id }) { bookView ->
-                            BookItem(
-                                bookView = bookView,
-                                isSelected = bookView.book.id in selectedIds,
-                                displayedDetails = displayedDetails,
-                                onClick = {
-                                    if (inSelectionMode) {
-                                        viewModel.toggleSelection(bookView.book.id)
-                                    } else {
-                                        onBookClick(bookView.book.id)
-                                    }
-                                },
-                                onLongClick = {
-                                    if (!withActionBar) {
-                                        onBookClick(bookView.book.id)
-                                    } else {
-                                        viewModel.toggleSelection(bookView.book.id)
-                                    }
-                                },
-                            )
+            Box(
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                when (viewState) {
+                    BooksViewModel.ViewState.LOADING -> {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    }
+                    BooksViewModel.ViewState.EMPTY -> {
+                        Text(
+                            text = stringResource(R.string.no_notebooks),
+                            modifier = Modifier.align(Alignment.Center),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    BooksViewModel.ViewState.LOADED -> {
+                        LazyColumn(modifier = Modifier.fillMaxSize()) {
+                            items(books, key = { it.book.id }) { bookView ->
+                                BookItem(
+                                    bookView = bookView,
+                                    isSelected = bookView.book.id in selectedIds,
+                                    displayedDetails = displayedDetails,
+                                    onClick = {
+                                        if (inSelectionMode) {
+                                            viewModel.toggleSelection(bookView.book.id)
+                                        } else {
+                                            onBookClick(bookView.book.id)
+                                        }
+                                    },
+                                    onLongClick = {
+                                        if (!withActionBar) {
+                                            onBookClick(bookView.book.id)
+                                        } else {
+                                            viewModel.toggleSelection(bookView.book.id)
+                                        }
+                                    },
+                                )
+                            }
                         }
                     }
                 }
@@ -492,7 +501,7 @@ private fun BookItem(
             }
 
             val errorColor = MaterialTheme.colorScheme.error
-    val detailRows = buildDetailRows(context, bookView, displayedDetails, errorColor)
+            val detailRows = buildDetailRows(context, bookView, displayedDetails, errorColor)
             if (detailRows.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
                 detailRows.forEach { (iconRes, text) ->

@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -61,6 +60,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.orgzly.android.ui.compose.modifiers.scaffoldPadding
 import cc.alensiljak.orgzly.R
 import com.orgzly.android.db.entity.Note
 import com.orgzly.android.prefs.AppPreferences
@@ -303,7 +303,7 @@ fun NoteScreen(
     ) { padding ->
         Column(
             modifier = Modifier
-                .padding(padding)
+                .scaffoldPadding(padding)
                 .fillMaxSize()
         ) {
             when {
@@ -558,12 +558,16 @@ fun NoteContent(
     var isMetadataFolded by remember { mutableStateOf(AppPreferences.noteMetadataFolded(context)) }
     var isContentFolded by remember { mutableStateOf(AppPreferences.isNoteContentFolded(context)) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .imePadding()
-            .verticalScroll(rememberScrollState())
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Scrollable header: breadcrumbs, title and metadata. The content editor is kept
+        // out of this scroll container on purpose — an EditText embedded via AndroidView
+        // consumes touch gestures itself, so it can't be scrolled by Compose's
+        // verticalScroll. It lives below as a weighted, internally-scrolling region.
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+        ) {
         BreadcrumbsView(
             details = details,
             onBookBreadcrumbClick = onBookBreadcrumbClick,
@@ -634,6 +638,7 @@ fun NoteContent(
                 AppPreferences.isNoteContentFolded(context, newFolded)
             }
         )
+        } // end of scrollable header
 
         if (!isContentFolded) {
             ContentToolbar(
@@ -665,10 +670,20 @@ fun NoteContent(
                 ),
                 viewId = R.id.content_edit,
                 useMonospaceFont = useMonospaceFont,
-                onViewCreated = { richTextViews[R.id.content_edit] = it },
+                onViewCreated = { richText ->
+                    richTextViews[R.id.content_edit] = richText
+                    // Make the inner EditText/TextView fill the whole box so a tap
+                    // anywhere in the content area focuses the editor, not just the
+                    // (initially single-line) text itself.
+                    richText.fillParentHeight()
+                },
+                // Fill the space left below the header and scroll internally (the
+                // EditText handles its own scrolling natively), instead of living
+                // inside the header's Compose verticalScroll where it can't be scrolled.
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = 200.dp)
+                    .weight(1f)
+                    .heightIn(min = 120.dp)
             )
         }
     }
@@ -1060,7 +1075,7 @@ fun MetadataItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 38.dp)
+            .heightIn(min = 40.dp)
             .padding(horizontal = 16.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

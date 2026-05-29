@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
  * Used by all MainActivity's fragments
  */
 open class CommonFragment : Fragment() {
-    private lateinit var syncProgressViewModel: SyncProgressViewModel
+    protected lateinit var syncProgressViewModel: SyncProgressViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

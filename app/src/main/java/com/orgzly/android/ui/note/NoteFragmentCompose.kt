@@ -84,7 +84,7 @@ class NoteFragmentCompose : ComposeFragment(), TimestampDialogFragment.OnDateTim
         super.onResume()
         @Suppress("DEPRECATION")
         requireActivity().window.setSoftInputMode(
-            android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
+            android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
         )
     }
 

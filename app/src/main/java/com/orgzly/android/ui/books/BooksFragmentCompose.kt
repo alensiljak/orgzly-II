@@ -8,6 +8,8 @@ import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.core.os.BundleCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -148,10 +150,14 @@ class BooksFragmentCompose : ComposeFragment() {
     @Composable
     override fun Content() {
         val withActionBar = arguments?.getBoolean(ARG_WITH_ACTION_BAR) ?: true
+        val syncState by syncProgressViewModel.syncState.collectAsState(initial = null)
+        val isRefreshing = syncState?.isRunning() == true
 
         BooksScreen(
             viewModel = viewModel,
             withActionBar = withActionBar,
+            isRefreshing = isRefreshing,
+            onRefresh = { com.orgzly.android.sync.SyncRunner.startSync() },
             onBookClick = { bookId -> listener?.onBookClicked(bookId) },
             onOpenDrawer = { sharedMainActivityViewModel.openDrawer() },
             onNewBook = {
