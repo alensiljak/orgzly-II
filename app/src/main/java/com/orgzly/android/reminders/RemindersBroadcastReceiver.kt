@@ -172,9 +172,10 @@ class RemindersBroadcastReceiver : BroadcastReceiver() {
             val hasTime = firstNote.payload.orgDateTime.hasTime()
 
             // Schedule in this many milliseconds
-            var inMs = runAt - now.millis
-            if (inMs < 0) {
-                inMs = 1
+            val inMs = runAt - now.millis
+            if (inMs <= 0) {
+                // Time already passed; notifyForRemindersSinceLastRun already handled it
+                return
             }
 
             if (LogMajorEvents.isEnabled()) {
