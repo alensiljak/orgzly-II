@@ -1,7 +1,15 @@
 #+TITLE: Orgzly
 #+DESCRIPTION: Feature tree, project documentation
 
+* Common Features
+
+** Pull to Refresh
+
+Pulling down on the project list will trigger a sync of all projects. Pulling down on the project view will trigger a sync of that project.
+
 * Navigation
+
+Navigation bar is located at the left side of the screen.
 
 * Notebooks
 
@@ -20,3 +28,25 @@ Projects are shown as a list, with
 List of scheduled and due tasks.
 
 * Note Creation and Editing
+
+Tapping on a note inside a project will open the note for editing.
+Tapping on the "New Note" button will create a new note in the current project.
+
+* Reminders
+
+Reminders in the form of notifications are provided through the following fields:
+
+- SCHEDULED: A date and time when the task is scheduled to start.
+- DEADLINE: A date and time when the task is due.
+- EVENT: A date and time of an event, in the Note content.
+
+* Syncing
+
+Syncing is done through the "Sync" button in the navigation bar.
+It will sync all projects and notes with the connected repositories.
+
+Suported repository types are:
+
+- Local directory
+- Git repository
+- WebDAV repository
