@@ -100,9 +100,6 @@ fun NoteScreen(
     val context = LocalContext.current
     val activity = remember { context as? android.app.Activity }
 
-    // Show timestamp button only when a RichText is in edit mode
-    var showTimestampButton by remember { mutableStateOf(false) }
-
     // Metadata visibility (persisted to preferences)
     var metadataVisibility by remember { mutableStateOf(AppPreferences.noteMetadataVisibility(context)) }
     var alwaysShowSet by remember { mutableStateOf(AppPreferences.alwaysShowSetNoteMetadata(context)) }
@@ -126,19 +123,6 @@ fun NoteScreen(
                     }
                 },
                 actions = {
-                    if (showTimestampButton) {
-                        IconButton(onClick = {
-                            val focusedViewId =
-                                richTextViews.values.find { it.isBeingEdited() }?.id
-                                    ?: R.id.content_edit
-                            onShowTimestampDialog(focusedViewId, TimeType.EVENT, null)
-                        }) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_today),
-                                contentDescription = stringResource(R.string.insert_timestamp)
-                            )
-                        }
-                    }
                     IconButton(onClick = { viewModel.saveNote() }) {
                         Icon(Icons.Default.Done, contentDescription = stringResource(R.string.done))
                     }
@@ -341,7 +325,12 @@ fun NoteScreen(
                             onStateClick = { showStateDialog = true },
                             onPriorityClick = { showPriorityDialog = true },
                             onTagsClick = { showTagsDialog = true },
-                            onModeChange = { isEditing -> showTimestampButton = isEditing },
+                            onInsertTimestamp = {
+                                val focusedViewId =
+                                    richTextViews.values.find { it.isBeingEdited() }?.id
+                                        ?: R.id.content_edit
+                                onShowTimestampDialog(focusedViewId, TimeType.EVENT, null)
+                            },
                             metadataVisibility = metadataVisibility,
                             alwaysShowSet = alwaysShowSet,
                             selectedMetadata = selectedMetadata,
@@ -541,7 +530,7 @@ fun NoteContent(
     onStateClick: () -> Unit,
     onPriorityClick: () -> Unit,
     onTagsClick: () -> Unit,
-    onModeChange: (Boolean) -> Unit,
+    onInsertTimestamp: () -> Unit,
     metadataVisibility: String,
     alwaysShowSet: Boolean,
     selectedMetadata: Set<String>,
@@ -601,7 +590,6 @@ fun NoteContent(
             ),
             viewId = R.id.title_edit,
             autoFocus = autoFocusTitle,
-            onModeChange = onModeChange,
             onViewCreated = { richTextViews[R.id.title_edit] = it }
         )
 
@@ -647,6 +635,7 @@ fun NoteContent(
         )
 
         if (!isContentFolded) {
+            ContentToolbar(onInsertTimestamp = onInsertTimestamp)
             RichTextComposable(
                 sourceText = payload?.content ?: "",
                 onSourceTextChange = { newContent ->
@@ -670,11 +659,28 @@ fun NoteContent(
                 ),
                 viewId = R.id.content_edit,
                 useMonospaceFont = useMonospaceFont,
-                onModeChange = onModeChange,
                 onViewCreated = { richTextViews[R.id.content_edit] = it },
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 200.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun ContentToolbar(onInsertTimestamp: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
+            .padding(horizontal = 4.dp, vertical = 2.dp)
+    ) {
+        IconButton(onClick = onInsertTimestamp) {
+            Icon(
+                painter = painterResource(R.drawable.ic_today),
+                contentDescription = stringResource(R.string.insert_timestamp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

@@ -16,7 +16,7 @@ import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.ui.TimeType
 import com.orgzly.android.ui.util.KeyboardUtils
 import com.orgzly.android.ui.util.getLayoutInflater
-import com.orgzly.android.ui.views.richtext.RichTextEdit
+import com.orgzly.android.ui.views.richtext.RichText
 import com.orgzly.android.util.LogUtils
 import com.orgzly.android.util.UserTimeFormatter
 import cc.alensiljak.orgzly.databinding.DialogTimestampBinding
@@ -289,7 +289,7 @@ class TimestampDialogFragment : DialogFragment(), View.OnClickListener {
         super.onDetach()
         if (timestampIsInline()) {
             originViewId.let {
-                val view = requireParentFragment().view?.findViewById<RichTextEdit>(it)
+                val view = requireParentFragment().view?.findViewById<RichText>(it)
                 if (view != null)
                     KeyboardUtils.openSoftKeyboard(view)
             }
