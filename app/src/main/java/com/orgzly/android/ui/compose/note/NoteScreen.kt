@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -635,7 +636,12 @@ fun NoteContent(
         )
 
         if (!isContentFolded) {
-            ContentToolbar(onInsertTimestamp = onInsertTimestamp)
+            ContentToolbar(
+                onInsertTimestamp = onInsertTimestamp,
+                onInsertFormatting = { prefix, suffix ->
+                    richTextViews[R.id.content_edit]?.insertFormattingAtCursor(prefix, suffix)
+                }
+            )
             RichTextComposable(
                 sourceText = payload?.content ?: "",
                 onSourceTextChange = { newContent ->
@@ -669,10 +675,25 @@ fun NoteContent(
 }
 
 @Composable
-fun ContentToolbar(onInsertTimestamp: () -> Unit) {
+fun ContentToolbar(
+    onInsertTimestamp: () -> Unit,
+    onInsertFormatting: (prefix: String, suffix: String) -> Unit = { _, _ -> }
+) {
+    val tint = MaterialTheme.colorScheme.onSurfaceVariant
+    data class FormatButton(val iconRes: Int, val contentDesc: String, val prefix: String, val suffix: String)
+    val formattingButtons = listOf(
+        FormatButton(R.drawable.ic_format_bold,          "Bold",          "*",              "*"),
+        FormatButton(R.drawable.ic_format_italic,        "Italic",        "/",              "/"),
+        FormatButton(R.drawable.ic_format_underline,     "Underline",     "_",              "_"),
+        FormatButton(R.drawable.ic_format_strikethrough, "Strikethrough", "+",              "+"),
+        FormatButton(R.drawable.ic_format_code,          "Code",          "~",              "~"),
+        FormatButton(R.drawable.ic_format_verbatim,      "Verbatim",      "=",              "="),
+        FormatButton(R.drawable.ic_format_quote,         "Quote block",   "#+BEGIN_QUOTE\n", "\n#+END_QUOTE"),
+    )
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
             .padding(horizontal = 4.dp, vertical = 2.dp)
     ) {
@@ -680,8 +701,17 @@ fun ContentToolbar(onInsertTimestamp: () -> Unit) {
             Icon(
                 painter = painterResource(R.drawable.ic_today),
                 contentDescription = stringResource(R.string.insert_timestamp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = tint
             )
+        }
+        formattingButtons.forEach { btn ->
+            IconButton(onClick = { onInsertFormatting(btn.prefix, btn.suffix) }) {
+                Icon(
+                    painter = painterResource(btn.iconRes),
+                    contentDescription = btn.contentDesc,
+                    tint = tint
+                )
+            }
         }
     }
 }

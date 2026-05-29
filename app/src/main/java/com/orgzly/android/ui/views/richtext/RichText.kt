@@ -263,6 +263,24 @@ class RichText : FrameLayout, ActionableRichTextView {
         }
     }
 
+    fun insertFormattingAtCursor(prefix: String, suffix: String) {
+        val view = this.richTextEdit
+        if (!view.isVisible) return
+        val text = view.text ?: return
+        val start = view.selectionStart
+        val end = view.selectionEnd
+        if (start == end) {
+            // No selection: insert markers and place cursor between them
+            text.replace(start, end, "$prefix$suffix")
+            view.setSelection(start + prefix.length)
+        } else {
+            // Wrap the selection
+            val selected = text.substring(start, end)
+            text.replace(start, end, "$prefix$selected$suffix")
+            view.setSelection(start + prefix.length, start + prefix.length + selected.length)
+        }
+    }
+
     fun isBeingEdited(): Boolean {
         return this.richTextEdit.isVisible
     }
