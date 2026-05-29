@@ -70,6 +70,7 @@ interface AppComponent {
     fun inject(arg: AppLogsActivity)
 
     fun inject(arg: BooksFragment)
+    fun inject(arg: com.orgzly.android.ui.books.BooksFragmentCompose)
     fun inject(arg: NotesFragment)
     fun inject(arg: BookFragment)
     fun inject(arg: BookPrefaceFragment)

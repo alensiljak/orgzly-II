@@ -16,6 +16,7 @@ import com.orgzly.android.query.Query;
 import com.orgzly.android.query.QueryParser;
 import com.orgzly.android.query.user.InternalQueryParser;
 import com.orgzly.android.ui.books.BooksFragment;
+import com.orgzly.android.ui.books.BooksFragmentCompose;
 import com.orgzly.android.ui.compose.base.TestComposeFragment;
 import com.orgzly.android.ui.main.MainActivity;
 import com.orgzly.android.ui.note.NoteFragmentCompose;
@@ -107,17 +108,17 @@ public class DisplayManager {
      * @param addToBackStack add to back stack or not
      */
     public static void displayBooks(FragmentManager fragmentManager, boolean addToBackStack) {
-        if (isFragmentDisplayed(fragmentManager, BooksFragment.Companion.getFRAGMENT_TAG()) != null) {
+        if (isFragmentDisplayed(fragmentManager, BooksFragmentCompose.FRAGMENT_TAG) != null) {
             return;
         }
 
-        Fragment fragment = BooksFragment.getInstance();
+        Fragment fragment = BooksFragmentCompose.getInstance();
 
         replaceFragment(
                 fragmentManager,
                 R.id.single_pane_container,
                 fragment,
-                BooksFragment.Companion.getFRAGMENT_TAG(),
+                BooksFragmentCompose.FRAGMENT_TAG,
                 addToBackStack);
     }
 

@@ -25,6 +25,10 @@ import com.orgzly.android.usecase.BookRename
 import com.orgzly.android.usecase.UseCaseResult
 import com.orgzly.android.usecase.UseCaseRunner
 import com.orgzly.android.util.LogUtils
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 
 class BooksViewModel(private val dataRepository: DataRepository) : CommonViewModel() {
@@ -40,6 +44,14 @@ class BooksViewModel(private val dataRepository: DataRepository) : CommonViewMod
     val bookExportedEvent: SingleLiveEvent<String> = SingleLiveEvent()
     val setBookLinkRequestEvent: SingleLiveEvent<BookLinkOptions> = SingleLiveEvent()
 
+    // Selection state for Compose
+    private val _selectedIds = MutableStateFlow<Set<Long>>(emptySet())
+    val selectedIds: StateFlow<Set<Long>> = _selectedIds.asStateFlow()
+
+    // Dialog states for Compose
+    val renameDialogBook = MutableStateFlow<BookView?>(null)
+    val deleteDialogBooks = MutableStateFlow<Set<BookView>?>(null)
+    val linkDialogOptions = MutableStateFlow<BookLinkOptions?>(null)
 
     enum class ViewState {
         LOADING,
@@ -56,6 +68,9 @@ class BooksViewModel(private val dataRepository: DataRepository) : CommonViewMod
             } else {
                 ViewState.EMPTY
             }
+            val existingIds = books.mapTo(hashSetOf()) { it.book.id }
+            _selectedIds.update { it.intersect(existingIds) }
+            appBar.toModeFromSelectionCount(_selectedIds.value.size)
             books
         }
     }
@@ -73,10 +88,25 @@ class BooksViewModel(private val dataRepository: DataRepository) : CommonViewMod
         }
     }
 
+    fun toggleSelection(id: Long) {
+        _selectedIds.update { if (id in it) it - id else it + id }
+        appBar.toModeFromSelectionCount(_selectedIds.value.size)
+    }
+
+    fun clearSelection() {
+        _selectedIds.value = emptySet()
+        appBar.toMode(APP_BAR_DEFAULT_MODE)
+    }
+
+    fun dismissRenameDialog() { renameDialogBook.value = null }
+    fun dismissDeleteDialog() { deleteDialogBooks.value = null }
+    fun dismissLinkDialog() { linkDialogOptions.value = null }
+
     fun deleteBooksRequest(bookIds: Set<Long>) {
-        val bookViews = bookIds.map { requireNotNull(dataRepository.getBookView(it)) }.toSet()
         App.EXECUTORS.diskIO().execute {
+            val bookViews = bookIds.map { requireNotNull(dataRepository.getBookView(it)) }.toSet()
             booksToDeleteEvent.postValue(bookViews)
+            deleteDialogBooks.value = bookViews
         }
     }
 
@@ -91,7 +121,9 @@ class BooksViewModel(private val dataRepository: DataRepository) : CommonViewMod
 
     fun renameBookRequest(bookId: Long) {
         App.EXECUTORS.diskIO().execute {
-            bookToRenameEvent.postValue(dataRepository.getBookView(bookId))
+            val bookView = dataRepository.getBookView(bookId)
+            bookToRenameEvent.postValue(bookView)
+            renameDialogBook.value = bookView
         }
     }
 
@@ -129,6 +161,7 @@ class BooksViewModel(private val dataRepository: DataRepository) : CommonViewMod
                 }
 
                 setBookLinkRequestEvent.postValue(options)
+                linkDialogOptions.value = options
             }
         }
     }
