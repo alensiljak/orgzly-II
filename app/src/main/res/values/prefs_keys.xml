@@ -383,7 +383,7 @@
     </string-array>
 
     <string name="pref_key_states" translatable="false">pref_key_states</string>
-    <string name="pref_default_states" translatable="false">TODO NEXT | DONE</string>
+    <string name="pref_default_states" translatable="false">TODO NEXT WAIT | DONE</string>
 
     <string name="pref_key_note_popup_buttons_in_book_left" translatable="false">pref_key_note_popup_buttons_in_book_left</string>
     <string name="pref_default_note_popup_buttons_in_book_left" translatable="false">delete new-above new-under new-below refile</string>
