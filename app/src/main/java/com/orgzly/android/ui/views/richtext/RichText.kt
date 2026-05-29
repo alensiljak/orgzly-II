@@ -69,7 +69,8 @@ class RichText : FrameLayout, ActionableRichTextView {
         val hint: String? = null,
         val textSize: Int = 0,
         val paddingHorizontal: Int = 0,
-        val paddingVertical: Int = 0
+        val paddingVertical: Int = 0,
+        val alwaysEditMode: Boolean = false
     )
 
     lateinit var attributes: Attributes
@@ -130,10 +131,12 @@ class RichText : FrameLayout, ActionableRichTextView {
                 }
             })
 
-            // If RichTextEdit loses the focus, switch to view mode
-            setOnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    toViewMode(true)
+            // If RichTextEdit loses the focus, switch to view mode (disabled in alwaysEditMode)
+            if (!attributes.alwaysEditMode) {
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (!hasFocus) {
+                        toViewMode(true)
+                    }
                 }
             }
         }
@@ -228,7 +231,7 @@ class RichText : FrameLayout, ActionableRichTextView {
         listeners.onModeChange?.onEditMode()
     }
 
-    private fun toViewMode(reparseSource: Boolean = false) {
+    fun toViewMode(reparseSource: Boolean = false) {
         if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, "reparseSource:$reparseSource")
 
         if (reparseSource) {
@@ -254,6 +257,11 @@ class RichText : FrameLayout, ActionableRichTextView {
         } else {
             richTextView.text = null
         }
+    }
+
+    fun startInEditMode() {
+        richTextEdit.visibility = View.VISIBLE
+        richTextView.visibility = View.GONE
     }
 
     fun insertStringAtCursorPosition(string: String) {

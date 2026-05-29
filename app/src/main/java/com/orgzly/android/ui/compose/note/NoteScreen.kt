@@ -51,6 +51,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -558,16 +559,14 @@ fun NoteContent(
     var isMetadataFolded by remember { mutableStateOf(AppPreferences.noteMetadataFolded(context)) }
     var isContentFolded by remember { mutableStateOf(AppPreferences.isNoteContentFolded(context)) }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        // Scrollable header: breadcrumbs, title and metadata. The content editor is kept
-        // out of this scroll container on purpose — an EditText embedded via AndroidView
-        // consumes touch gestures itself, so it can't be scrolled by Compose's
-        // verticalScroll. It lives below as a weighted, internally-scrolling region.
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-        ) {
+    // Single scroll container for the entire form. The content EditText works fine here
+    // because it is wrap_content (expands to show all text, no internal scrolling), so it
+    // doesn't intercept the parent's scroll gestures.
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+    ) {
         BreadcrumbsView(
             details = details,
             onBookBreadcrumbClick = onBookBreadcrumbClick,
@@ -638,10 +637,16 @@ fun NoteContent(
                 AppPreferences.isNoteContentFolded(context, newFolded)
             }
         )
-        } // end of scrollable header
 
         if (!isContentFolded) {
+            var isPreviewMode by remember { mutableStateOf(false) }
             ContentToolbar(
+                isPreviewMode = isPreviewMode,
+                onTogglePreview = {
+                    isPreviewMode = !isPreviewMode
+                    val richText = richTextViews[R.id.content_edit]
+                    if (isPreviewMode) richText?.toViewMode(true) else richText?.toEditMode(0)
+                },
                 onInsertTimestamp = onInsertTimestamp,
                 onInsertFormatting = { prefix, suffix ->
                     richTextViews[R.id.content_edit]?.insertFormattingAtCursor(prefix, suffix)
@@ -666,24 +671,19 @@ fun NoteContent(
                             InputType.TYPE_TEXT_FLAG_MULTI_LINE or
                             InputType.TYPE_TEXT_FLAG_CAP_SENTENCES,
                     imeOptions = EditorInfo.IME_FLAG_NO_FULLSCREEN,
-                    editId = R.id.content_edit
+                    editId = R.id.content_edit,
+                    alwaysEditMode = true
                 ),
                 viewId = R.id.content_edit,
                 useMonospaceFont = useMonospaceFont,
+                onModeChange = { isEditMode -> isPreviewMode = !isEditMode },
                 onViewCreated = { richText ->
                     richTextViews[R.id.content_edit] = richText
-                    // Make the inner EditText/TextView fill the whole box so a tap
-                    // anywhere in the content area focuses the editor, not just the
-                    // (initially single-line) text itself.
-                    richText.fillParentHeight()
+                    richText.startInEditMode()
                 },
-                // Fill the space left below the header and scroll internally (the
-                // EditText handles its own scrolling natively), instead of living
-                // inside the header's Compose verticalScroll where it can't be scrolled.
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
-                    .heightIn(min = 120.dp)
+                    .heightIn(min = 240.dp)
             )
         }
     }
@@ -691,10 +691,13 @@ fun NoteContent(
 
 @Composable
 fun ContentToolbar(
+    isPreviewMode: Boolean = false,
+    onTogglePreview: () -> Unit = {},
     onInsertTimestamp: () -> Unit,
     onInsertFormatting: (prefix: String, suffix: String) -> Unit = { _, _ -> }
 ) {
     val tint = MaterialTheme.colorScheme.onSurfaceVariant
+    val previewTint = if (isPreviewMode) MaterialTheme.colorScheme.primary else tint
     data class FormatButton(val iconRes: Int, val contentDesc: String, val prefix: String, val suffix: String)
     val formattingButtons = listOf(
         FormatButton(R.drawable.ic_format_bold,          "Bold",          "*",              "*"),
@@ -712,20 +715,29 @@ fun ContentToolbar(
             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
             .padding(horizontal = 4.dp, vertical = 2.dp)
     ) {
-        IconButton(onClick = onInsertTimestamp) {
+        IconButton(onClick = onTogglePreview) {
             Icon(
-                painter = painterResource(R.drawable.ic_today),
-                contentDescription = stringResource(R.string.insert_timestamp),
-                tint = tint
+                painter = painterResource(if (isPreviewMode) R.drawable.ic_edit else R.drawable.ic_visibility),
+                contentDescription = if (isPreviewMode) "Edit mode" else "Preview",
+                tint = previewTint
             )
         }
-        formattingButtons.forEach { btn ->
-            IconButton(onClick = { onInsertFormatting(btn.prefix, btn.suffix) }) {
+        if (!isPreviewMode) {
+            IconButton(onClick = onInsertTimestamp) {
                 Icon(
-                    painter = painterResource(btn.iconRes),
-                    contentDescription = btn.contentDesc,
+                    painter = painterResource(R.drawable.ic_today),
+                    contentDescription = stringResource(R.string.insert_timestamp),
                     tint = tint
                 )
+            }
+            formattingButtons.forEach { btn ->
+                IconButton(onClick = { onInsertFormatting(btn.prefix, btn.suffix) }) {
+                    Icon(
+                        painter = painterResource(btn.iconRes),
+                        contentDescription = btn.contentDesc,
+                        tint = tint
+                    )
+                }
             }
         }
     }
@@ -1118,6 +1130,12 @@ fun RichTextComposable(
     onViewCreated: (RichText) -> Unit = {},
     modifier: Modifier = Modifier.fillMaxWidth()
 ) {
+    // rememberUpdatedState ensures the factory-set listener always calls the latest
+    // callback, even though the factory lambda only runs once at view creation.
+    // Without this, the listener captures the initial (stale) lambda, which holds
+    // a stale reference to `payload` from the first composition.
+    val currentOnSourceTextChange by rememberUpdatedState(onSourceTextChange)
+
     AndroidView(
         factory = { context ->
             RichText(context, attributes).apply {
@@ -1126,7 +1144,7 @@ fun RichTextComposable(
                     setTypeface(Typeface.MONOSPACE)
                 }
                 setOnUserTextChangeListener { str ->
-                    onSourceTextChange(str)
+                    currentOnSourceTextChange(str)
                 }
                 if (onModeChange != null) {
                     setOnModeChangeListener(object : RichText.OnModeChangeListener {

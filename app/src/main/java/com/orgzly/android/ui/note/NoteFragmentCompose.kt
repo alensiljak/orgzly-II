@@ -82,9 +82,12 @@ class NoteFragmentCompose : ComposeFragment(), TimestampDialogFragment.OnDateTim
 
     override fun onResume() {
         super.onResume()
+        // ADJUST_NOTHING: prevent the window from panning (which pushes the TopAppBar off screen)
+        // or resizing (which double-counts keyboard height alongside imePadding in Compose).
+        // imePadding() in the Compose layout handles reserving space for the keyboard.
         @Suppress("DEPRECATION")
         requireActivity().window.setSoftInputMode(
-            android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+            android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
         )
     }
 
