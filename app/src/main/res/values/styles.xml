@@ -415,6 +415,7 @@
         <item name="android:layout_marginBottom">@dimen/screen_edge</item>
         <item name="fabCradleRoundedCornerRadius">0dp</item>
         <item name="fabCradleVerticalOffset">0dp</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Full</item>
     </style>
 
     <style name="Fab.Done">

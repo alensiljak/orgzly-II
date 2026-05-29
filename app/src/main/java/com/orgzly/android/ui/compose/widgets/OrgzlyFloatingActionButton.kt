@@ -2,6 +2,7 @@ package com.orgzly.android.ui.compose.widgets
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -32,7 +33,7 @@ fun OrgzlyFloatingActionButton(
             OrgzlyButtonColorScheme.DEFAULT -> MaterialTheme.colorScheme.onPrimaryContainer
             OrgzlyButtonColorScheme.ERROR -> MaterialTheme.colorScheme.onError
         },
-        shape = FloatingActionButtonDefaults.shape,
+        shape = CircleShape,
         elevation = elevation,
         interactionSource = interactionSource,
         content = content
@@ -59,7 +60,7 @@ fun OrgzlySmallFloatingActionButton(
             OrgzlyButtonColorScheme.DEFAULT -> MaterialTheme.colorScheme.onPrimaryContainer
             OrgzlyButtonColorScheme.ERROR -> MaterialTheme.colorScheme.onError
         },
-        shape = FloatingActionButtonDefaults.smallShape,
+        shape = CircleShape,
         elevation = elevation,
         interactionSource = interactionSource,
         content = content
@@ -86,7 +87,7 @@ fun OrgzlyLargeFloatingActionButton(
             OrgzlyButtonColorScheme.DEFAULT -> MaterialTheme.colorScheme.onPrimaryContainer
             OrgzlyButtonColorScheme.ERROR -> MaterialTheme.colorScheme.onError
         },
-        shape = FloatingActionButtonDefaults.largeShape,
+        shape = CircleShape,
         elevation = elevation,
         interactionSource = interactionSource,
         content = content
