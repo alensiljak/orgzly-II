@@ -81,7 +81,8 @@ class SharingShortcutsManager {
     companion object {
         @JvmStatic
         fun bookIdFromShortcutId(shortcutId: String): Long {
-            return shortcutId.split("-")[1].toLong()
+            val parts = shortcutId.split("-")
+            return if (parts.size >= 2) parts[1].toLong() else 0L
         }
 
         private fun shortcutIdFromBookId(bookId: Long): String {

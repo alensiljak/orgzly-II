@@ -195,19 +195,20 @@ public class ShareActivity extends CommonActivity
 
         if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, intent);
 
-        if (action != null && type != null) {
+        if (action != null) {
             switch (action) {
                 case Intent.ACTION_SEND:
-                    if (type.startsWith("text/")) {
+                    if (type != null && type.startsWith("text/")) {
                         data = getTextDataFromIntent(intent);
-                    } else if (type.startsWith("image/")) {
+                    } else if (type != null && type.startsWith("image/")) {
                         handleSendImage(intent, data); // Handle single image being sent
-                    } else {
+                    } else if (type != null) {
                         mError = getString(R.string.share_type_not_supported, type);
                     }
+                    // type == null: launched from home screen shortcut, open blank note
                     break;
                 case "com.google.android.gm.action.AUTO_SEND":
-                    if (type.startsWith("text/") && intent.hasExtra(Intent.EXTRA_TEXT)) {
+                    if (type != null && type.startsWith("text/") && intent.hasExtra(Intent.EXTRA_TEXT)) {
                         data.title = intent.getStringExtra(Intent.EXTRA_TEXT);
                     }
                     break;
