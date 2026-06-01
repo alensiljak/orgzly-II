@@ -1,6 +1,7 @@
 package com.orgzly.android.ui.util
 
 import android.app.Activity
+import android.app.ActivityOptions
 import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
@@ -57,11 +58,19 @@ object ActivityUtils {
         intent.putExtra(AppIntent.EXTRA_BOOK_ID, bookId)
         intent.putExtra(AppIntent.EXTRA_NOTE_ID, noteId)
 
+        val options = if (Build.VERSION.SDK_INT >= 34) {
+            ActivityOptions.makeBasic()
+                .setPendingIntentCreatorBackgroundActivityStartMode(
+                    ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+                ).toBundle()
+        } else null
+
         return PendingIntent.getActivity(
             context,
             noteId.toInt(),
             intent,
-            immutable(PendingIntent.FLAG_UPDATE_CURRENT))
+            immutable(PendingIntent.FLAG_UPDATE_CURRENT),
+            options)
     }
 
     fun keepScreenOnToggle(activity: Activity?, item: MenuItem): AlertDialog? {
