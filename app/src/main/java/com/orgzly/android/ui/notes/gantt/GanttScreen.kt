@@ -56,6 +56,8 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
+import androidx.compose.material.icons.Icons as MIcons
+import androidx.compose.material.icons.filled.Today
 import kotlin.math.max
 
 private val MAX_TITLE_WIDTH = 160.dp
@@ -96,6 +98,14 @@ fun GanttScreen(
     var scaleX by rememberSaveable { mutableStateOf(1f) }
     var offsetXPx by rememberSaveable { mutableStateOf(0f) }
 
+    // Returns offsetXPx clamped so the date range can't scroll off-screen.
+    // barWidthPx: the pixel width of the chart area (not title column).
+    fun clampOffset(offset: Float, scale: Float, barWidthPx: Float): Float {
+        val totalWidth = barWidthPx * scale
+        val minOffset = -(totalWidth - barWidthPx).coerceAtLeast(0f)
+        return offset.coerceIn(minOffset, 0f)
+    }
+
     val textMeasurer = rememberTextMeasurer()
     val density = LocalDensity.current
     val titleStyle = TextStyle(fontSize = 13.sp)
@@ -127,6 +137,13 @@ fun GanttScreen(
                     }
                 },
                 actions = {
+                    IconButton(onClick = {
+                        // Reset to default view (scale=1, today near centre)
+                        scaleX = 1f
+                        offsetXPx = 0f
+                    }) {
+                        Icon(MIcons.Default.Today, contentDescription = "Jump to today")
+                    }
                     IconButton(onClick = { viewModel.toggleShowUnscheduled() }) {
                         Icon(
                             painter = painterResource(R.drawable.ic_visibility),
@@ -147,12 +164,17 @@ fun GanttScreen(
                 .padding(paddingValues),
         ) {
             val barWidth: Dp = maxWidth - titleColumnWidth
+            val barWidthPx = with(density) { barWidth.toPx() }
 
             // Gesture modifier shared by header and all rows — updates the same state.
-            val gestureModifier = Modifier.pointerInput(Unit) {
-                detectTransformGestures { _, pan, zoom, _ ->
-                    scaleX = (scaleX * zoom).coerceIn(MIN_SCALE, MAX_SCALE)
-                    offsetXPx += pan.x
+            // Pinch zoom keeps the centroid (pan centroid x) fixed on screen.
+            val gestureModifier = Modifier.pointerInput(barWidthPx) {
+                detectTransformGestures { centroid, pan, zoom, _ ->
+                    val newScale = (scaleX * zoom).coerceIn(MIN_SCALE, MAX_SCALE)
+                    // Adjust offset so the point under the centroid stays fixed after zoom.
+                    val newOffset = (offsetXPx - centroid.x) * (newScale / scaleX) + centroid.x + pan.x
+                    scaleX = newScale
+                    offsetXPx = clampOffset(newOffset, newScale, barWidthPx)
                 }
             }
 
