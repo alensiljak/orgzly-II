@@ -1,11 +1,12 @@
 package com.orgzly.android.ui.notes.gantt
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,6 +36,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalDensity
@@ -158,7 +160,7 @@ fun GanttScreen(
                         .height(AXIS_HEIGHT_DP.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Spacer(modifier = Modifier.width(titleColumnWidth))
+                    Box(modifier = Modifier.width(titleColumnWidth).fillMaxHeight().background(MaterialTheme.colorScheme.surface))
                     // Explicit width — never fillMaxWidth inside a gesture/scroll area
                     Canvas(
                         modifier = Modifier
@@ -171,7 +173,7 @@ fun GanttScreen(
                 }
 
                 // ── Rows ──────────────────────────────────────────────────
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(modifier = Modifier.fillMaxWidth().weight(1f)) {
                     itemsIndexed(items) { index, item ->
                         Row(
                             modifier = Modifier
@@ -187,13 +189,15 @@ fun GanttScreen(
                                     .fillMaxHeight()
                                     .then(gestureModifier),
                             ) {
-                                if (index % 2 == 1) drawRect(surfaceVariant.copy(alpha = 0.4f))
-                                drawGrid(rangeStartMs, rangeEndMs, rangeDays, scaleX, offsetXPx, tz, outlineColor)
-                                val todayX = xOf(todayMs, rangeStartMs, rangeDays, scaleX, offsetXPx)
-                                if (todayX in 0f..size.width) {
-                                    drawLine(Color.Red.copy(alpha = 0.7f), Offset(todayX, 0f), Offset(todayX, size.height), 2.dp.toPx())
+                                clipRect {
+                                    if (index % 2 == 1) drawRect(surfaceVariant.copy(alpha = 0.4f))
+                                    drawGrid(rangeStartMs, rangeEndMs, rangeDays, scaleX, offsetXPx, tz, outlineColor)
+                                    val todayX = xOf(todayMs, rangeStartMs, rangeDays, scaleX, offsetXPx)
+                                    if (todayX in 0f..size.width) {
+                                        drawLine(Color.Red.copy(alpha = 0.7f), Offset(todayX, 0f), Offset(todayX, size.height), 2.dp.toPx())
+                                    }
+                                    drawBar(item, rangeStartMs, rangeDays, scaleX, offsetXPx, primaryColor, secondaryColor, todayMs)
                                 }
-                                drawBar(item, rangeStartMs, rangeDays, scaleX, offsetXPx, primaryColor, secondaryColor, todayMs)
                             }
                         }
                     }
@@ -220,6 +224,7 @@ private fun TitleCell(
         modifier = Modifier
             .width(titleWidth)
             .fillMaxHeight()
+            .background(MaterialTheme.colorScheme.surface)
             .padding(start = indentDp, end = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
