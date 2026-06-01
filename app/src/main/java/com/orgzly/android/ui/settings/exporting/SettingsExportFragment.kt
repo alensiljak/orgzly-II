@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import cc.alensiljak.orgzly.BuildConfig
 import cc.alensiljak.orgzly.R
+import androidx.appcompat.R as AppCompatR
+import com.google.android.material.R as MaterialR
 import com.orgzly.android.App
 import com.orgzly.android.data.DataRepository
 import com.orgzly.android.db.entity.Book
@@ -81,7 +83,7 @@ class SettingsExportFragment : DialogFragment() {
 
         binding.dialogExportSettingsWarning.apply {
             /* Get error color attribute. */
-            setTextColor(context.styledAttributes(intArrayOf(R.attr.colorError)) { typedArray ->
+            setTextColor(context.styledAttributes(intArrayOf(AppCompatR.attr.colorError)) { typedArray ->
                 typedArray.getColor(0, 0)
             })
             text = context.getString(R.string.export_settings_warning_text)

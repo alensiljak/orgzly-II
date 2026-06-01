@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.ColorInt
 import cc.alensiljak.orgzly.R
+import com.google.android.material.R as MaterialR
 import com.orgzly.android.ui.util.styledAttributes
 import java.util.LinkedHashSet
 
@@ -104,7 +105,7 @@ class Selection {
     fun setBackgroundIfSelected(view: View, id: Long) {
         if (contains(id)) {
             if (selectionBgColor == 0) {
-                selectionBgColor = view.context.styledAttributes(intArrayOf(R.attr.colorSecondaryContainer)) { typedArray ->
+                selectionBgColor = view.context.styledAttributes(intArrayOf(MaterialR.attr.colorSecondaryContainer)) { typedArray ->
                     typedArray.getColor(0, 0)
                 }
             }

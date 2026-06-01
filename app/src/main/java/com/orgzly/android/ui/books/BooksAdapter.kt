@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.R as AppCompatR
 import cc.alensiljak.orgzly.R
 import com.orgzly.android.db.entity.Book
 import com.orgzly.android.db.entity.BookAction
@@ -202,7 +203,7 @@ class BooksAdapter(
 
         if (book.lastAction?.type === BookAction.Type.ERROR) {
             /* Get error color attribute. */
-            val color = context.styledAttributes(intArrayOf(R.attr.colorError)) { typedArray ->
+            val color = context.styledAttributes(intArrayOf(AppCompatR.attr.colorError)) { typedArray ->
                 typedArray.getColor(0, 0)
             }
 

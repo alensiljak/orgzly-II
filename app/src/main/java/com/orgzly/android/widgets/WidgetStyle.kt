@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import cc.alensiljak.orgzly.BuildConfig
 import cc.alensiljak.orgzly.R
+import com.google.android.material.R as MaterialR
 import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.ui.util.TitleGenerator
 import com.orgzly.android.util.LogUtils
@@ -23,9 +24,9 @@ object WidgetStyle {
     @JvmStatic
     fun updateActivity(activity: AppCompatActivity) {
         when (AppPreferences.widgetColorScheme(activity)) {
-            "light" -> activity.setTheme(R.style.Theme_Material3_Light_Dialog_Alert)
-            "dark", "black" -> activity.setTheme(R.style.Theme_Material3_Dark_Dialog_Alert)
-            else -> activity.setTheme(R.style.Theme_Material3_DayNight_Dialog_Alert)
+            "light" -> activity.setTheme(MaterialR.style.Theme_Material3_Light_Dialog_Alert)
+            "dark", "black" -> activity.setTheme(MaterialR.style.Theme_Material3_Dark_Dialog_Alert)
+            else -> activity.setTheme(MaterialR.style.Theme_Material3_DayNight_Dialog_Alert)
         }
 
         activity.supportRequestWindowFeature(Window.FEATURE_NO_TITLE)

@@ -18,6 +18,7 @@ import android.widget.MultiAutoCompleteTextView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import cc.alensiljak.orgzly.BuildConfig
 import cc.alensiljak.orgzly.R
+import com.google.android.material.R as MaterialR
 import com.orgzly.android.BookUtils
 import com.orgzly.android.NotesOrgExporter
 import com.orgzly.android.db.NotesClipboard
@@ -451,7 +452,7 @@ class BookFragment :
 
     @SuppressLint("ClickableViewAccessibility")
     private fun highlightScrolledToView(view: View) {
-        val selectionBgColor = view.context.styledAttributes(intArrayOf(R.attr.colorSurface)) { typedArray ->
+        val selectionBgColor = view.context.styledAttributes(intArrayOf(MaterialR.attr.colorSurface)) { typedArray ->
             typedArray.getColor(0, 0)
         }
 

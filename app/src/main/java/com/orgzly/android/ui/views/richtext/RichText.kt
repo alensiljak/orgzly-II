@@ -16,6 +16,7 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import cc.alensiljak.orgzly.BuildConfig
 import cc.alensiljak.orgzly.R
+import com.google.android.material.R as MaterialR
 import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.ui.ImageLoader
 import com.orgzly.android.ui.main.MainActivity
@@ -53,7 +54,7 @@ class RichText : FrameLayout, ActionableRichTextView {
     }
 
     private val sourceBackgroundColor: Int by lazy {
-        context.styledAttributes(intArrayOf(R.attr.colorSecondaryContainer)) { typedArray ->
+        context.styledAttributes(intArrayOf(MaterialR.attr.colorSecondaryContainer)) { typedArray ->
             typedArray.getColor(0, 0)
         }
     }
