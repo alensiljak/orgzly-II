@@ -79,6 +79,8 @@ class RichText : FrameLayout, ActionableRichTextView {
     private val richTextEdit: RichTextEdit
     private val richTextView: RichTextView
 
+    private var isSettingText = false
+
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         parseAttrs(attrs)
 
@@ -127,7 +129,9 @@ class RichText : FrameLayout, ActionableRichTextView {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: android.text.Editable?) {
-                    listeners.onUserTextChange?.onUserTextChange(s?.toString() ?: "")
+                    if (!isSettingText) {
+                        listeners.onUserTextChange?.onUserTextChange(s?.toString() ?: "")
+                    }
                 }
             })
 
@@ -208,7 +212,9 @@ class RichText : FrameLayout, ActionableRichTextView {
     }
 
     fun setSourceText(text: CharSequence?) {
+        isSettingText = true
         richTextEdit.setText(text)
+        isSettingText = false
 
         if (richTextView.visibility == View.VISIBLE) {
             parseAndSetViewText()
