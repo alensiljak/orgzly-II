@@ -72,10 +72,6 @@ class BookPrefaceFragment : CommonFragment() {
             binding.fragmentBookPrefaceContent.setTypeface(Typeface.MONOSPACE)
         }
 
-        binding.fragmentBookPrefaceContent.setOnUserTextChangeListener { str ->
-            binding.fragmentBookPrefaceContent.setSourceText(str)
-        }
-
         /* Parse arguments - set content. */
         requireArguments().apply {
             require(containsKey(ARG_BOOK_ID)) { "No book id passed" }
