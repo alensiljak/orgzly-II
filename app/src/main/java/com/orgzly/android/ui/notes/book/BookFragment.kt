@@ -40,6 +40,7 @@ import com.orgzly.android.ui.notes.book.BookViewModel.Companion.APP_BAR_DEFAULT_
 import com.orgzly.android.ui.notes.book.BookViewModel.Companion.APP_BAR_SELECTION_MODE
 import com.orgzly.android.ui.notes.book.BookViewModel.Companion.APP_BAR_SELECTION_MOVE_MODE
 import com.orgzly.android.ui.refile.RefileFragment
+import com.orgzly.android.ui.DisplayManager
 import com.orgzly.android.ui.settings.SettingsActivity
 import com.orgzly.android.ui.util.ActivityUtils
 import com.orgzly.android.ui.util.setDecorFitsSystemWindowsForBottomToolbar
@@ -944,6 +945,10 @@ class BookFragment :
 
             R.id.sync -> {
                 SyncRunner.startSync()
+            }
+
+            R.id.book_actions_gantt -> {
+                DisplayManager.displayGantt(parentFragmentManager, mBookId)
             }
 
             R.id.activity_action_settings -> {

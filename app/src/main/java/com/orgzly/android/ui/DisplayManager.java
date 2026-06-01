@@ -15,12 +15,11 @@ import com.orgzly.android.db.entity.Book;
 import com.orgzly.android.query.Query;
 import com.orgzly.android.query.QueryParser;
 import com.orgzly.android.query.user.InternalQueryParser;
-import com.orgzly.android.ui.books.BooksFragment;
 import com.orgzly.android.ui.books.BooksFragmentCompose;
-import com.orgzly.android.ui.compose.base.TestComposeFragment;
 import com.orgzly.android.ui.main.MainActivity;
 import com.orgzly.android.ui.note.NoteFragmentCompose;
 import com.orgzly.android.ui.notes.book.BookFragment;
+import com.orgzly.android.ui.notes.gantt.GanttFragment;
 import com.orgzly.android.ui.notes.book.BookPrefaceFragment;
 import com.orgzly.android.ui.notes.query.agenda.AgendaFragment;
 import com.orgzly.android.ui.notes.query.search.SearchFragment;
@@ -148,6 +147,16 @@ public class DisplayManager {
         }
     }
 
+    public static void displayGantt(FragmentManager fragmentManager, long bookId) {
+        Fragment fragment = GanttFragment.getInstance(bookId);
+        replaceFragment(
+                fragmentManager,
+                R.id.single_pane_container,
+                fragment,
+                GanttFragment.FRAGMENT_TAG,
+                true);
+    }
+
     public static void displayExistingNote(FragmentManager fragmentManager, long bookId, long noteId) {
         if (getFragmentDisplayingNote(fragmentManager, noteId) == null) {
             Fragment fragment = NoteFragmentCompose.Companion.forExistingNote(bookId, noteId);
@@ -168,17 +177,6 @@ public class DisplayManager {
                 R.id.single_pane_container,
                 fragment,
                 NoteFragmentCompose.FRAGMENT_TAG,
-                true);
-    }
-
-    public static void displayTestFragment(FragmentManager fragmentManager) {
-        Fragment fragment = TestComposeFragment.getInstance();
-
-        replaceFragment(
-                fragmentManager,
-                R.id.single_pane_container,
-                fragment,
-                TestComposeFragment.getFRAGMENT_TAG(),
                 true);
     }
 

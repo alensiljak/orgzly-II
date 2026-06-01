@@ -84,6 +84,8 @@ interface AppComponent {
     fun inject(arg: SettingsExportFragment)
     fun inject(arg: SettingsImportFragment)
     fun inject(arg: SyncFragment)
+    fun inject(arg: com.orgzly.android.ui.notes.gantt.GanttFragment)
+
 
     fun inject(arg: SettingsFragment)
 
