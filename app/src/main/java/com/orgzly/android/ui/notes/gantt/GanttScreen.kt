@@ -40,7 +40,10 @@ import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -49,7 +52,9 @@ import androidx.compose.ui.unit.sp
 import cc.alensiljak.orgzly.R
 import com.orgzly.android.ui.compose.widgets.Icons
 import com.orgzly.android.ui.compose.widgets.painterIcon
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 import java.util.TimeZone
 import kotlin.math.max
 
@@ -168,7 +173,7 @@ fun GanttScreen(
                             .fillMaxHeight()
                             .then(gestureModifier),
                     ) {
-                        drawAxisHeader(rangeStartMs, rangeEndMs, rangeDays, scaleX, offsetXPx, tz, outlineColor)
+                        drawAxisHeader(rangeStartMs, rangeEndMs, rangeDays, scaleX, offsetXPx, tz, outlineColor, onSurface, textMeasurer)
                     }
                 }
 
@@ -191,7 +196,7 @@ fun GanttScreen(
                             ) {
                                 clipRect {
                                     if (index % 2 == 1) drawRect(surfaceVariant.copy(alpha = 0.4f))
-                                    drawGrid(rangeStartMs, rangeEndMs, rangeDays, scaleX, offsetXPx, tz, outlineColor)
+                                    drawGrid(rangeStartMs, rangeEndMs, rangeDays, scaleX, offsetXPx, tz, outlineColor, onSurface, textMeasurer)
                                     val todayX = xOf(todayMs, rangeStartMs, rangeDays, scaleX, offsetXPx)
                                     if (todayX in 0f..size.width) {
                                         drawLine(Color.Red.copy(alpha = 0.7f), Offset(todayX, 0f), Offset(todayX, size.height), 2.dp.toPx())
@@ -248,29 +253,136 @@ private fun TitleCell(
     }
 }
 
+// ── Time-scale tier ──────────────────────────────────────────────────────────
+
+private enum class TimeTier { YEARS, MONTHS, WEEKS, DAYS }
+
+private fun timeTier(pixelsPerDay: Float): TimeTier = when {
+    pixelsPerDay < 3f  -> TimeTier.YEARS
+    pixelsPerDay < 15f -> TimeTier.MONTHS
+    pixelsPerDay < 60f -> TimeTier.WEEKS
+    else               -> TimeTier.DAYS
+}
+
+/** Returns (primaryMs list, secondaryMs list) for the visible range. */
+private fun buildTicks(
+    rangeStartMs: Long, rangeEndMs: Long, tz: TimeZone, tier: TimeTier,
+): Pair<List<Long>, List<Long>> {
+    val lookahead = 366 * 86_400_000L  // generous overrun for partial periods
+    val end = rangeEndMs + lookahead
+
+    fun collect(start: Long, truncate: (Long) -> Long, advance: (Long) -> Long): List<Long> {
+        val list = mutableListOf<Long>()
+        var cur = truncate(start)
+        while (cur <= end) { list += cur; cur = advance(cur) }
+        return list
+    }
+
+    return when (tier) {
+        TimeTier.YEARS -> {
+            val primary   = collect(rangeStartMs, { truncateToYear(it, tz) },  { nextYear(it, tz) })
+            val secondary = collect(rangeStartMs, { truncateToMonth(it, tz) }, { nextMonth(it, tz) })
+            primary to secondary
+        }
+        TimeTier.MONTHS -> {
+            val primary   = collect(rangeStartMs, { truncateToMonth(it, tz) }, { nextMonth(it, tz) })
+            val secondary = collect(rangeStartMs, { truncateToWeek(it, tz) },  { nextWeek(it, tz) })
+            primary to secondary
+        }
+        TimeTier.WEEKS -> {
+            val primary   = collect(rangeStartMs, { truncateToWeek(it, tz) },  { nextWeek(it, tz) })
+            val secondary = collect(rangeStartMs, { truncateToDay(it, tz) },   { nextDay(it) })
+            primary to secondary
+        }
+        TimeTier.DAYS -> {
+            val primary   = collect(rangeStartMs, { truncateToDay(it, tz) },   { nextDay(it) })
+            primary to emptyList()
+        }
+    }
+}
+
+private fun labelFor(ms: Long, tz: TimeZone, tier: TimeTier): String {
+    val cal = Calendar.getInstance(tz).apply { timeInMillis = ms }
+    return when (tier) {
+        TimeTier.YEARS  -> "${cal.get(Calendar.YEAR)}"
+        TimeTier.MONTHS -> SimpleDateFormat("MMM yyyy", Locale.getDefault()).apply { this.timeZone = tz }.format(ms)
+        TimeTier.WEEKS  -> {
+            val fmt = SimpleDateFormat("MMM d", Locale.getDefault()).apply { this.timeZone = tz }
+            "W${cal.get(Calendar.WEEK_OF_YEAR)} ${fmt.format(ms)}"
+        }
+        TimeTier.DAYS   -> SimpleDateFormat("d MMM", Locale.getDefault()).apply { this.timeZone = tz }.format(ms)
+    }
+}
+
+// ── Drawing ───────────────────────────────────────────────────────────────────
+
 private fun DrawScope.drawAxisHeader(
     rangeStartMs: Long, rangeEndMs: Long, rangeDays: Float,
-    scaleX: Float, offsetXPx: Float, tz: TimeZone, gridColor: Color,
+    scaleX: Float, offsetXPx: Float, tz: TimeZone,
+    gridColor: Color, labelColor: Color, textMeasurer: TextMeasurer,
 ) {
-    var cur = truncateToMonth(rangeStartMs, tz)
-    while (cur <= rangeEndMs + 31 * 86_400_000L) {
-        val x = xOf(cur, rangeStartMs, rangeDays, scaleX, offsetXPx)
+    val pixelsPerDay = size.width / rangeDays * scaleX
+    val tier = timeTier(pixelsPerDay)
+    val (primary, secondary) = buildTicks(rangeStartMs, rangeEndMs, tz, tier)
+
+    val labelStyle = TextStyle(fontSize = 10.sp, color = labelColor)
+    val midY = size.height / 2f
+
+    // Secondary ticks — short marks in the bottom half
+    for (ms in secondary) {
+        val x = xOf(ms, rangeStartMs, rangeDays, scaleX, offsetXPx)
         if (x in -1f..size.width + 1f)
-            drawLine(gridColor.copy(alpha = 0.6f), Offset(x, size.height * 0.4f), Offset(x, size.height), 1f)
-        cur = nextMonth(cur, tz)
+            drawLine(gridColor.copy(alpha = 0.4f), Offset(x, midY), Offset(x, size.height), 1f)
+    }
+
+    // Primary ticks + labels
+    val primarySorted = primary.sorted()
+    for (i in primarySorted.indices) {
+        val ms   = primarySorted[i]
+        val x    = xOf(ms, rangeStartMs, rangeDays, scaleX, offsetXPx)
+        val xEnd = if (i + 1 < primarySorted.size)
+            xOf(primarySorted[i + 1], rangeStartMs, rangeDays, scaleX, offsetXPx)
+        else
+            size.width + 200f
+
+        // Full-height tick at the primary boundary
+        if (x in -1f..size.width + 1f)
+            drawLine(gridColor.copy(alpha = 0.7f), Offset(x, 0f), Offset(x, size.height), 1.5f)
+
+        // Label — draw only if the slot is at least wide enough to show something
+        val slotWidth = xEnd - x
+        if (slotWidth > 20f) {
+            val label  = labelFor(ms, tz, tier)
+            val layout: TextLayoutResult = textMeasurer.measure(label, labelStyle)
+            val tw     = layout.size.width.toFloat()
+            // Start just after the tick; clip to slot so it never overlaps the next tick
+            val labelX = (x + 3f).coerceAtMost(xEnd - tw - 2f)
+            if (labelX + tw > 0f && labelX < size.width) {
+                drawText(layout, topLeft = Offset(labelX, (midY - layout.size.height) / 2f))
+            }
+        }
     }
 }
 
 private fun DrawScope.drawGrid(
     rangeStartMs: Long, rangeEndMs: Long, rangeDays: Float,
-    scaleX: Float, offsetXPx: Float, tz: TimeZone, gridColor: Color,
+    scaleX: Float, offsetXPx: Float, tz: TimeZone,
+    gridColor: Color, @Suppress("UNUSED_PARAMETER") labelColor: Color,
+    @Suppress("UNUSED_PARAMETER") textMeasurer: TextMeasurer,
 ) {
-    var cur = truncateToMonth(rangeStartMs, tz)
-    while (cur <= rangeEndMs + 31 * 86_400_000L) {
-        val x = xOf(cur, rangeStartMs, rangeDays, scaleX, offsetXPx)
+    val pixelsPerDay = size.width / rangeDays * scaleX
+    val tier = timeTier(pixelsPerDay)
+    val (primary, secondary) = buildTicks(rangeStartMs, rangeEndMs, tz, tier)
+
+    for (ms in secondary) {
+        val x = xOf(ms, rangeStartMs, rangeDays, scaleX, offsetXPx)
         if (x in 0f..size.width)
-            drawLine(gridColor.copy(alpha = 0.2f), Offset(x, 0f), Offset(x, size.height), 1f)
-        cur = nextMonth(cur, tz)
+            drawLine(gridColor.copy(alpha = 0.1f), Offset(x, 0f), Offset(x, size.height), 1f)
+    }
+    for (ms in primary) {
+        val x = xOf(ms, rangeStartMs, rangeDays, scaleX, offsetXPx)
+        if (x in 0f..size.width)
+            drawLine(gridColor.copy(alpha = 0.25f), Offset(x, 0f), Offset(x, size.height), 1f)
     }
 }
 
@@ -317,6 +429,19 @@ private fun DrawScope.drawBar(
 private fun DrawScope.xOf(ms: Long, rangeStartMs: Long, rangeDays: Float, scaleX: Float, offsetXPx: Float): Float =
     ((ms - rangeStartMs) / (rangeDays * 86_400_000.0) * size.width * scaleX + offsetXPx).toFloat()
 
+// ── Date helpers ─────────────────────────────────────────────────────────────
+
+private fun truncateToYear(ms: Long, tz: TimeZone): Long =
+    Calendar.getInstance(tz).apply {
+        timeInMillis = ms
+        set(Calendar.DAY_OF_YEAR, 1)
+        set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+    }.timeInMillis
+
+private fun nextYear(ms: Long, tz: TimeZone): Long =
+    Calendar.getInstance(tz).apply { timeInMillis = ms; add(Calendar.YEAR, 1) }.timeInMillis
+
 private fun truncateToMonth(ms: Long, tz: TimeZone): Long =
     Calendar.getInstance(tz).apply {
         timeInMillis = ms
@@ -326,6 +451,24 @@ private fun truncateToMonth(ms: Long, tz: TimeZone): Long =
     }.timeInMillis
 
 private fun nextMonth(ms: Long, tz: TimeZone): Long =
+    Calendar.getInstance(tz).apply { timeInMillis = ms; add(Calendar.MONTH, 1) }.timeInMillis
+
+private fun truncateToWeek(ms: Long, tz: TimeZone): Long =
     Calendar.getInstance(tz).apply {
-        timeInMillis = ms; add(Calendar.MONTH, 1)
+        timeInMillis = ms
+        set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
+        set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
     }.timeInMillis
+
+private fun nextWeek(ms: Long, tz: TimeZone): Long =
+    Calendar.getInstance(tz).apply { timeInMillis = ms; add(Calendar.WEEK_OF_YEAR, 1) }.timeInMillis
+
+private fun truncateToDay(ms: Long, tz: TimeZone): Long =
+    Calendar.getInstance(tz).apply {
+        timeInMillis = ms
+        set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+    }.timeInMillis
+
+private fun nextDay(ms: Long): Long = ms + 86_400_000L
