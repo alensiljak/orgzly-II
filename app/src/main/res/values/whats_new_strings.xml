@@ -2,32 +2,11 @@
 <resources>
     <string name="whats_new_title">What\'s New</string>
 
-    <string name="whats_new_intro"><![CDATA[
-        Visit
-        <a href="https://orgzly.alensiljak.cc">Orgzly.com</a>
-        for documentation.
-
+    <string name="whats_new_message"><![CDATA[
+        Your app has been updated to version %1$s.
         <br><br>
-
-        Use
-        <a href="https://github.com/orgzly-/orgzly-android-/issues">GitHub</a>
-        to check for existing feature requests and bug reports and to report new ones.
-
-        <br><br>
-
-        Check for older feature requests and bug reports in the
-        <a href="https://github.com/orgzly/orgzly-android/issues">original repository</a>.
-
-        <br><br>
-
-        Help us
-        <a href="https://toolate.othing.xyz/projects/orgzly-/">translate</a>
-        the app on Weblate.
-    ]]></string>
-
-    <string name="whats_new_outro"><![CDATA[
-        Visit
-        <a href="https://orgzly.alensiljak.cc/changelog">Changelog</a>
-        for the full list.
+        You can find more information in the
+        <a href="https://github.com/alensiljak/orgzly-II/releases/tag/v%1$s">changelog</a>
+        on GitHub.
     ]]></string>
 </resources>

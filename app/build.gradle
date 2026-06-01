@@ -12,8 +12,8 @@ android {
 
     defaultConfig {
         applicationId = "cc.alensiljak.orgzly"
-        versionCode 286
-        versionName "2.2.1"
+        versionCode 287
+        versionName "2.2.2"
         minSdkVersion 23
         targetSdkVersion 36
         resValue "string", "app_name", "Orgzly II"

@@ -5,24 +5,19 @@ import android.text.method.LinkMovementMethod
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import cc.alensiljak.orgzly.BuildConfig
 import cc.alensiljak.orgzly.R
 import com.orgzly.android.ui.util.getLayoutInflater
 import com.orgzly.android.util.MiscUtils
 
 object WhatsNewDialog {
-    /**
-     * Display dialog with changes.
-     */
     fun create(context: Context): AlertDialog {
         val layoutView = context.getLayoutInflater().inflate(R.layout.dialog_whats_new, null, false)
 
-        layoutView.findViewById<TextView>(R.id.dialog_whats_new_intro).apply {
-            text = MiscUtils.fromHtml(context.getString(R.string.whats_new_intro))
-            movementMethod = LinkMovementMethod.getInstance()
-        }
-
-        layoutView.findViewById<TextView>(R.id.dialog_whats_new_outro).apply {
-            text = MiscUtils.fromHtml(context.getString(R.string.whats_new_outro))
+        layoutView.findViewById<TextView>(R.id.dialog_whats_new_message).apply {
+            text = MiscUtils.fromHtml(
+                context.getString(R.string.whats_new_message, BuildConfig.VERSION_NAME)
+            )
             movementMethod = LinkMovementMethod.getInstance()
         }
 

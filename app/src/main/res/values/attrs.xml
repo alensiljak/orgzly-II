@@ -12,10 +12,6 @@
         <attr name="max" format="integer"/>
     </declare-styleable>
 
-    <declare-styleable name="WhatsNewChange">
-        <attr name="text" format="string"/>
-    </declare-styleable>
-
     <declare-styleable name="FontSize">
         <attr name="font_micro" format="dimension"/>
         <attr name="font_small" format="dimension"/>
