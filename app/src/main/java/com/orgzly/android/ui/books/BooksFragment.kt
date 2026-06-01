@@ -41,7 +41,7 @@ import com.orgzly.android.ui.CommonFragment
 import com.orgzly.android.ui.OnViewHolderClickListener
 import com.orgzly.android.ui.books.BooksViewModel.Companion.APP_BAR_DEFAULT_MODE
 import com.orgzly.android.ui.books.BooksViewModel.Companion.APP_BAR_SELECTION_MODE
-import com.orgzly.android.ui.compose.base.bootstrapContent
+import com.orgzly.android.ui.compose.base.OrgzlyBootstrap
 import com.orgzly.android.ui.compose.widgets.Icons
 import com.orgzly.android.ui.compose.widgets.OrgzlyFloatingActionButton
 import com.orgzly.android.ui.compose.widgets.painterIcon
@@ -157,19 +157,21 @@ class BooksFragment : CommonFragment(), DrawerItem, OnViewHolderClickListener<Bo
 
         binding.swipeContainer.setup()
 
-        binding.fabContainer.bootstrapContent {
-            val appBarMode by viewModel.appBar.currentMode.collectAsStateWithLifecycle()
-            AnimatedVisibility(
-                visible = appBarMode == APP_BAR_DEFAULT_MODE && withActionBar,
-                enter = slideInVertically(initialOffsetY = { it }),
-                exit = slideOutVertically(targetOffsetY = { it })
-            ) {
-                OrgzlyFloatingActionButton(onClick = {
-                    SimpleOneLinerDialog
-                        .getInstance("name-new-book", R.string.new_notebook, R.string.create, null)
-                        .show(childFragmentManager, SimpleOneLinerDialog.FRAGMENT_TAG)
-                }) {
-                    Icon(painterIcon(Icons.ADD), contentDescription = null)
+        binding.fabContainer.setContent {
+            OrgzlyBootstrap {
+                val appBarMode by viewModel.appBar.currentMode.collectAsStateWithLifecycle()
+                AnimatedVisibility(
+                    visible = appBarMode == APP_BAR_DEFAULT_MODE && withActionBar,
+                    enter = slideInVertically(initialOffsetY = { it }),
+                    exit = slideOutVertically(targetOffsetY = { it })
+                ) {
+                    OrgzlyFloatingActionButton(onClick = {
+                        SimpleOneLinerDialog
+                            .getInstance("name-new-book", R.string.new_notebook, R.string.create, null)
+                            .show(childFragmentManager, SimpleOneLinerDialog.FRAGMENT_TAG)
+                    }) {
+                        Icon(painterIcon(Icons.ADD), contentDescription = null)
+                    }
                 }
             }
         }
