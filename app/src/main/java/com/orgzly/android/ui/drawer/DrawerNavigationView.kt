@@ -90,7 +90,7 @@ internal class DrawerNavigationView(
             intent.putExtra(AppIntent.EXTRA_QUERY_STRING, savedSearch.query)
             intent.putExtra(AppIntent.EXTRA_SEARCH_NAME, savedSearch.name)
 
-            val id = generateRandomUniqueId()
+            val id = (savedSearch.id + 100000).toInt()
             val item = menu.add(R.id.drawer_group, id, 1, savedSearch.name)
 
             menuItemIdMap[QueryFragment.getDrawerItemId(savedSearch.query)] = id
@@ -113,7 +113,7 @@ internal class DrawerNavigationView(
             val intent = Intent(AppIntent.ACTION_OPEN_BOOK)
             intent.putExtra(AppIntent.EXTRA_BOOK_ID, book.book.id)
 
-            val id = generateRandomUniqueId()
+            val id = (book.book.id + 200000).toInt()
             val name = book.book.run { title ?: name }
 
             val item = menu.add(R.id.drawer_group, id, 3, name)
@@ -134,20 +134,6 @@ internal class DrawerNavigationView(
 
         activeFragmentTag?.let {
             setActiveItem(it)
-        }
-    }
-
-    private fun generateRandomUniqueId(): Int {
-        val rand = Random()
-
-        while (true) {
-            val id = rand.nextInt(Integer.MAX_VALUE) + 1
-
-            try {
-                activity.resources.getResourceName(id)
-            } catch (e: Resources.NotFoundException) {
-                return id
-            }
         }
     }
 
