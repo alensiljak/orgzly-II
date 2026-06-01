@@ -16,8 +16,14 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.getValue
 import androidx.core.os.BundleCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import cc.alensiljak.orgzly.BuildConfig
@@ -35,6 +41,10 @@ import com.orgzly.android.ui.CommonFragment
 import com.orgzly.android.ui.OnViewHolderClickListener
 import com.orgzly.android.ui.books.BooksViewModel.Companion.APP_BAR_DEFAULT_MODE
 import com.orgzly.android.ui.books.BooksViewModel.Companion.APP_BAR_SELECTION_MODE
+import com.orgzly.android.ui.compose.base.bootstrapContent
+import com.orgzly.android.ui.compose.widgets.Icons
+import com.orgzly.android.ui.compose.widgets.OrgzlyFloatingActionButton
+import com.orgzly.android.ui.compose.widgets.painterIcon
 import com.orgzly.android.ui.dialogs.SimpleOneLinerDialog
 import com.orgzly.android.ui.drawer.DrawerItem
 import com.orgzly.android.ui.main.SharedMainActivityViewModel
@@ -147,6 +157,23 @@ class BooksFragment : CommonFragment(), DrawerItem, OnViewHolderClickListener<Bo
 
         binding.swipeContainer.setup()
 
+        binding.fabContainer.bootstrapContent {
+            val appBarMode by viewModel.appBar.currentMode.collectAsStateWithLifecycle()
+            AnimatedVisibility(
+                visible = appBarMode == APP_BAR_DEFAULT_MODE && withActionBar,
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it })
+            ) {
+                OrgzlyFloatingActionButton(onClick = {
+                    SimpleOneLinerDialog
+                        .getInstance("name-new-book", R.string.new_notebook, R.string.create, null)
+                        .show(childFragmentManager, SimpleOneLinerDialog.FRAGMENT_TAG)
+                }) {
+                    Icon(painterIcon(Icons.ADD), contentDescription = null)
+                }
+            }
+        }
+
         viewModel.viewState.observe(viewLifecycleOwner) {
             binding.fragmentBooksViewFlipper.displayedChild = when (it) {
                 BooksViewModel.ViewState.LOADING -> 0
@@ -235,20 +262,6 @@ class BooksFragment : CommonFragment(), DrawerItem, OnViewHolderClickListener<Bo
 
                     topToolbarToDefault()
 
-                    if (withActionBar) {
-                        binding.fab.run {
-                            setOnClickListener {
-                                SimpleOneLinerDialog
-                                    .getInstance("name-new-book", R.string.new_notebook, R.string.create, null)
-                                    .show(childFragmentManager, SimpleOneLinerDialog.FRAGMENT_TAG)
-                            }
-
-                            show()
-                        }
-                    } else {
-                        binding.fab.visibility = View.GONE
-                    }
-
                     sharedMainActivityViewModel.unlockDrawer()
 
                     appBarBackPressHandler.isEnabled = false
@@ -256,10 +269,6 @@ class BooksFragment : CommonFragment(), DrawerItem, OnViewHolderClickListener<Bo
 
                 APP_BAR_SELECTION_MODE -> {
                     topToolbarToMainSelection()
-
-                    binding.fab.run {
-                        hide()
-                    }
 
                     sharedMainActivityViewModel.lockDrawer()
 
