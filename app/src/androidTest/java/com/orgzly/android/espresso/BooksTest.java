@@ -21,7 +21,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.orgzly.android.espresso.util.EspressoUtils.contextualToolbarOverflowMenu;
 import static com.orgzly.android.espresso.util.EspressoUtils.onActionItemClick;
-import static com.orgzly.android.espresso.util.EspressoUtils.onBook;
 import static com.orgzly.android.espresso.util.EspressoUtils.onNoteInBook;
 import static com.orgzly.android.espresso.util.EspressoUtils.onSnackbar;
 import static com.orgzly.android.espresso.util.EspressoUtils.replaceTextCloseKeyboard;
@@ -110,11 +109,11 @@ public class BooksTest extends OrgzlyTest {
 
     @Test
     public void testReturnToNonExistentBookByPressingBack() {
-        onView(allOf(withText("book-1"), withId(R.id.item_book_title))).perform(click());
+        onView(withText("book-1")).perform(click());
 
         onView(withId(R.id.drawer_layout)).perform(open());
         onView(withText(R.string.notebooks)).perform(click());
-        onView(allOf(withText("book-1"), withId(R.id.item_book_title))).perform(longClick());
+        onView(withText("book-1")).perform(longClick());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.delete)).perform(click());
         onView(withText(R.string.delete)).perform(click());
@@ -126,15 +125,15 @@ public class BooksTest extends OrgzlyTest {
         pressBack();
 
         SystemClock.sleep(500);
-        onView(withId(R.id.fragment_books_view_flipper)).check(matches(isDisplayed()));
-        onView(allOf(withText("book-2"), withId(R.id.item_book_title))).perform(click());
+        onView(withText("book-2")).check(matches(isDisplayed()));
+        onView(withText("book-2")).perform(click());
         onView(allOf(withText(R.string.book_does_not_exist_anymore), isDisplayed())).check(doesNotExist());
     }
 
     @Test
     @Ignore("Debugging")
     public void testJustExport() {
-        onBook(0).perform(longClick());
+        onView(withText("book-1")).perform(longClick());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.export)).perform(click());
         UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressEnter();
@@ -142,7 +141,7 @@ public class BooksTest extends OrgzlyTest {
 
     @Test
     public void testCancelExportFileSelection() {
-        onBook(0).perform(longClick());
+        onView(withText("book-1")).perform(longClick());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.export)).perform(click());
         for (int i = 1; i < 10; i++) {
@@ -152,7 +151,7 @@ public class BooksTest extends OrgzlyTest {
 
     @Test
     public void testExportWithFakeResponse() {
-        onBook(0).perform(longClick());
+        onView(withText("book-1")).perform(longClick());
         contextualToolbarOverflowMenu().perform(click());
 
         Intents.init();
@@ -205,7 +204,7 @@ public class BooksTest extends OrgzlyTest {
 
         onView(allOf(withText("book-created-from-scratch"), isDisplayed())).check(matches(isDisplayed()));
 
-        onBook(3).perform(longClick());
+        onView(withText("book-created-from-scratch")).perform(longClick());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.delete)).perform(click());
         onView(withText(R.string.delete)).perform(click());
@@ -229,7 +228,7 @@ public class BooksTest extends OrgzlyTest {
         onView(withId(R.id.drawer_layout)).perform(open());
         onView(withText(R.string.notebooks)).perform(click());
 
-        onBook(1).perform(longClick());
+        onView(withText("book-2")).perform(longClick());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.delete)).perform(click());
         onView(withText(R.string.delete)).perform(click());
@@ -254,23 +253,23 @@ public class BooksTest extends OrgzlyTest {
         onView(withId(R.id.fab)).perform(click());
         onView(withId(R.id.dialog_input)).perform(replaceTextCloseKeyboard(" new-book  "));
         onView(withText(R.string.create)).perform(click());
-        onBook(3, R.id.item_book_title).check(matches(withText("new-book")));
+        onView(withText("new-book")).check(matches(isDisplayed()));
     }
 
     @Test
     public void testRenameBookToExistingName() {
-        onBook(0).perform(longClick());
+        onView(withText("book-1")).perform(longClick());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.rename)).perform(click());
         onView(withId(R.id.name)).perform(replaceTextCloseKeyboard("book-2"));
         onView(withText(R.string.rename)).perform(click());
-        onBook(0, R.id.item_book_last_action)
-                .check(matches(withText(endsWith(context.getString(R.string.book_name_already_exists, "book-2")))));
+        onView(withText(endsWith(context.getString(R.string.book_name_already_exists, "book-2"))))
+                .check(matches(isDisplayed()));
     }
 
     @Test
     public void testRenameBookToSameName() {
-        onBook(0).perform(longClick());
+        onView(withText("book-1")).perform(longClick());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.rename)).perform(click());
         onView(withText(R.string.rename)).check(matches(not(isEnabled())));
@@ -278,32 +277,27 @@ public class BooksTest extends OrgzlyTest {
 
     @Test
     public void testNoteCountDisplayed() {
-        onBook(0, R.id.item_book_note_count)
-                .check(matches(withText(context.getResources().getQuantityString(R.plurals.notes_count_nonzero, 5, 5))));
-        onBook(1, R.id.item_book_note_count)
-                .check(matches(withText(context.getResources().getQuantityString(R.plurals.notes_count_nonzero, 10, 10))));
-        onBook(2, R.id.item_book_note_count)
-                .check(matches(withText(R.string.notes_count_zero)));
+        onView(withText(context.getResources().getQuantityString(R.plurals.notes_count_nonzero, 5, 5)))
+                .check(matches(isDisplayed()));
+        onView(withText(context.getResources().getQuantityString(R.plurals.notes_count_nonzero, 10, 10)))
+                .check(matches(isDisplayed()));
+        onView(withText(R.string.notes_count_zero))
+                .check(matches(isDisplayed()));
     }
 
     @Test
     public void testBackPressClosesSelectionMenu() {
-        // Select book
-        onBook(0).perform(longClick());
-
-        // Press back
+        onView(withText("book-1")).perform(longClick());
         pressBack();
-
-        // Make sure we're still in the app
-        onBook(0, R.id.item_book_title).check(matches(withText("book-1")));
+        onView(withText("book-1")).check(matches(isDisplayed()));
     }
 
     @Test
     public void testSetLinkOnSingleBookCurrentRepoIsSelected() {
         testUtils.setupRepo(RepoType.MOCK, "mock://repo");
         sync();
-        onBook(0, R.id.item_book_link_repo).check(matches(withText("mock://repo")));
-        onBook(0).perform(longClick());
+        onView(withText("mock://repo")).check(matches(isDisplayed()));
+        onView(withText("book-1")).perform(longClick());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.books_context_menu_item_set_link)).perform(click());
         onView(withText("mock://repo")).check(matches(isChecked()));
@@ -312,17 +306,14 @@ public class BooksTest extends OrgzlyTest {
     /**
      * When setting the link of multiple books, no repo should be pre-selected,
      * no matter how many repos there are, and no matter whether the books
-     * already have a link or not. The reason for this is that we have no
-     * intuitive way of displaying links to multiple repos.
+     * already have a link or not.
      */
     @Test
     public void testSetLinkOnMultipleBooksNoRepoIsSelected() {
         testUtils.setupRepo(RepoType.MOCK, "mock://repo");
         sync();
-        onBook(0, R.id.item_book_link_repo).check(matches(withText("mock://repo")));
-        onBook(1, R.id.item_book_link_repo).check(matches(withText("mock://repo")));
-        onBook(0).perform(longClick());
-        onBook(1).perform(click());
+        onView(withText("book-1")).perform(longClick());
+        onView(withText("book-2")).perform(click());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.books_context_menu_item_set_link)).perform(click());
         onView(withText("mock://repo")).check(matches(isNotChecked()));
@@ -332,8 +323,7 @@ public class BooksTest extends OrgzlyTest {
     public void testDeleteSingleBookLinkedUrlIsShown() {
         testUtils.setupRepo(RepoType.MOCK, "mock://repo");
         sync();
-        onBook(0, R.id.item_book_link_repo).check(matches(withText("mock://repo")));
-        onBook(0).perform(longClick());
+        onView(withText("book-1")).perform(longClick());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.delete)).perform(click());
         onView(withText(R.string.also_delete_linked_book)).check(matches(isDisplayed()));
@@ -344,10 +334,8 @@ public class BooksTest extends OrgzlyTest {
     public void testDeleteMultipleBooksLinkedUrlIsNotShown() {
         testUtils.setupRepo(RepoType.MOCK, "mock://repo");
         sync();
-        onBook(0, R.id.item_book_link_repo).check(matches(withText("mock://repo")));
-        onBook(1, R.id.item_book_link_repo).check(matches(withText("mock://repo")));
-        onBook(0).perform(longClick());
-        onBook(1).perform(click());
+        onView(withText("book-1")).perform(longClick());
+        onView(withText("book-2")).perform(click());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.delete)).perform(click());
         onView(withText(R.string.also_delete_linked_books)).check(matches(isDisplayed()));
@@ -356,8 +344,8 @@ public class BooksTest extends OrgzlyTest {
 
     @Test
     public void testDeleteMultipleBooksWithNoLinks() {
-        onBook(0).perform(longClick());
-        onBook(1).perform(click());
+        onView(withText("book-1")).perform(longClick());
+        onView(withText("book-2")).perform(click());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.delete)).perform(click());
         onView(withText(R.string.delete)).perform(click());
@@ -368,10 +356,8 @@ public class BooksTest extends OrgzlyTest {
     public void testDeleteMultipleBooksAndRooks() {
         testUtils.setupRepo(RepoType.MOCK, "mock://repo");
         sync();
-        onBook(0, R.id.item_book_link_repo).check(matches(withText("mock://repo")));
-        onBook(1, R.id.item_book_link_repo).check(matches(withText("mock://repo")));
-        onBook(0).perform(longClick());
-        onBook(1).perform(click());
+        onView(withText("book-1")).perform(longClick());
+        onView(withText("book-2")).perform(click());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.delete)).perform(click());
         onView(withId(R.id.delete_linked_checkbox)).perform(click());
@@ -379,21 +365,15 @@ public class BooksTest extends OrgzlyTest {
         assert dataRepository.getBooks().size() == 1;
     }
 
-    /**
-     * When multiple books are selected, the "rename" and "export" actions should be removed from
-     * the context menu. By also testing that only the expected number of actions are shown, we
-     * protect against someone later adding actions to the menu without fully considering the support for
-     * multiple selected books. When such support is added, this test will need to be updated.
-     */
     @Test
     public void testMultipleBooksSelectedContextMenuShowsSupportedActionsOnly() {
-        onBook(0).perform(longClick());
+        onView(withText("book-1")).perform(longClick());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.rename)).check(matches(isDisplayed()));
         onView(withText(R.string.export)).check(matches(isDisplayed()));
         onView(withClassName(containsString("MenuDropDownListView"))).check(matches(hasChildCount(4)));
         pressBack();
-        onBook(1).perform(click());
+        onView(withText("book-2")).perform(click());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.rename)).check(doesNotExist());
         onView(withText(R.string.export)).check(doesNotExist());

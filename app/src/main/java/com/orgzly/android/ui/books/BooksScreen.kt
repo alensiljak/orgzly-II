@@ -54,6 +54,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -452,6 +453,7 @@ private fun BookItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 4.dp)
+            .testTag("book_item_${book.name}")
             .combinedClickable(onClick = onClick, onLongClick = onLongClick)
             .graphicsLayer { alpha = if (book.isDummy) 0.4f else 1f },
         colors = if (isSelected) {

@@ -324,14 +324,14 @@ public class QueryFragmentTest extends OrgzlyTest {
         onView(withId(R.id.drawer_layout)).perform(open());
         onView(withText(R.string.notebooks)).perform(click());
 
-        onBook(0).perform(longClick());
+        onView(withText("book-one")).perform(longClick());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.rename)).perform(click());
         onView(withId(R.id.name)).perform(replaceTextCloseKeyboard("renamed book-one"));
         onView(withText(R.string.rename)).perform(click());
 
         /* The other book is now first. Rename it too to keep the order of notes the same. */
-        onBook(0).perform(longClick());
+        onView(withText("book-two")).perform(longClick());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.rename)).perform(click());
         onView(withId(R.id.name)).perform(replaceTextCloseKeyboard("renamed book-two"));
@@ -436,7 +436,7 @@ public class QueryFragmentTest extends OrgzlyTest {
 
         scenario = ActivityScenario.launch(MainActivity.class);
 
-        onBook(0).perform(click());
+        onView(withText("notebook-1")).perform(click());
 
         // Remove time usage
         onView(allOf(withText(endsWith("Note A")), isDisplayed())).perform(longClick());

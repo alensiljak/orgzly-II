@@ -85,7 +85,7 @@ public class SettingsChangeTest extends OrgzlyTest {
 
     @Test
     public void testDisplayedContentInBook() {
-        onBook(0).perform(click());
+        onView(withText("book-a")).perform(click());
 
         onNoteInBook(1, R.id.item_head_content_view)
                 .check(matches(allOf(withText(containsString("Content for [a-1]")), isDisplayed())));

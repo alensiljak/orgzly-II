@@ -15,7 +15,7 @@ import com.orgzly.android.AppIntent;
 import com.orgzly.android.BookUtils;
 import com.orgzly.android.data.DataRepository;
 import com.orgzly.android.db.entity.Book;
-import com.orgzly.android.ui.books.BooksFragment;
+import com.orgzly.android.ui.books.BooksFragmentCompose;
 import com.orgzly.android.ui.main.MainActivity;
 import com.orgzly.android.util.LogUtils;
 
@@ -25,7 +25,7 @@ import javax.inject.Inject;
  * Activity for creating a notebook shortcut.
  */
 public class BookChooserActivity extends CommonActivity
-        implements BooksFragment.Listener {
+        implements BooksFragmentCompose.Listener {
 
     public static final String TAG = BookChooserActivity.class.getName();
 
@@ -51,11 +51,11 @@ public class BookChooserActivity extends CommonActivity
 
     private void setupFragments(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            BooksFragment mBooksFragment = BooksFragment.getInstance(false);
+            BooksFragmentCompose mBooksFragment = BooksFragmentCompose.getInstance(false);
 
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.activity_bookchooser_main, mBooksFragment, BooksFragment.Companion.getFRAGMENT_TAG())
+                    .replace(R.id.activity_bookchooser_main, mBooksFragment, BooksFragmentCompose.FRAGMENT_TAG)
                     .commit();
         }
     }

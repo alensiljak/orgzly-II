@@ -5,6 +5,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import cc.alensiljak.orgzly.R
@@ -12,7 +13,6 @@ import com.orgzly.android.OrgzlyTest
 import com.orgzly.android.RetryTestRule
 import com.orgzly.android.db.entity.Repo
 import com.orgzly.android.espresso.util.EspressoUtils.contextualToolbarOverflowMenu
-import com.orgzly.android.espresso.util.EspressoUtils.onBook
 import com.orgzly.android.espresso.util.EspressoUtils.sync
 import com.orgzly.android.git.GitPreferencesFromRepoPrefs
 import com.orgzly.android.prefs.AppPreferences
@@ -71,12 +71,10 @@ class GitRepoTest : OrgzlyTest() {
         assertEquals(3, dataRepository.getBooks().size)
         ActivityScenario.launch(MainActivity::class.java).use {
             sync()
-            onBook(0, R.id.item_book_link_repo).check(ViewAssertions.matches(withText(repo.url)))
-            onBook(1, R.id.item_book_link_repo).check(ViewAssertions.matches(withText(repo.url)))
-            onBook(2, R.id.item_book_link_repo).check(ViewAssertions.matches(withText(repo.url)))
-            onBook(0).perform(ViewActions.longClick())
-            onBook(1).perform(ViewActions.click())
-            onBook(2).perform(ViewActions.click())
+            Espresso.onView(withText(repo.url)).check(ViewAssertions.matches(isDisplayed()))
+            Espresso.onView(withText("book-1")).perform(ViewActions.longClick())
+            Espresso.onView(withText("book-2")).perform(ViewActions.click())
+            Espresso.onView(withText("book-3")).perform(ViewActions.click())
             contextualToolbarOverflowMenu().perform(ViewActions.click())
             Espresso.onView(withText(R.string.delete)).perform(ViewActions.click())
             Espresso.onView(withId(R.id.delete_linked_checkbox)).perform(ViewActions.click())

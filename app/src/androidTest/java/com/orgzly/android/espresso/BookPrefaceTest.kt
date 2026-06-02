@@ -41,7 +41,7 @@ class BookPrefaceTest : OrgzlyTest() {
 
         ActivityScenario.launch(MainActivity::class.java)
 
-        onBook(0).perform(click())
+        onView(withText("book-name")).perform(click())
     }
 
     @Test

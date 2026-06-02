@@ -194,10 +194,16 @@ public class EspressoUtils {
         return onRecyclerViewItem(R.id.design_navigation_view, position, childView);
     }
 
+    /** @deprecated BooksFragment has been replaced by BooksFragmentCompose (Compose LazyColumn).
+     *  Use {@code onView(withText(bookName))} instead of position-based access. */
+    @Deprecated
     public static ViewInteraction onBook(int position) {
         return onBook(position, -1);
     }
 
+    /** @deprecated BooksFragment has been replaced by BooksFragmentCompose (Compose LazyColumn).
+     *  Use {@code onView(withText(bookName))} instead of position-based access. */
+    @Deprecated
     public static ViewInteraction onBook(int position, @IdRes int childView) {
         return onRecyclerViewItem(R.id.fragment_books_recycler_view, position, childView);
     }

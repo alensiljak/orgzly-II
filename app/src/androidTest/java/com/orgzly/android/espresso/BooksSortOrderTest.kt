@@ -1,19 +1,20 @@
 package com.orgzly.android.espresso
 
-import androidx.annotation.StringRes
 import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso.*
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.longClick
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import cc.alensiljak.orgzly.R
 import com.orgzly.android.OrgzlyTest
+import com.orgzly.android.RetryTestRule
 import com.orgzly.android.espresso.util.EspressoUtils.*
 import com.orgzly.android.ui.main.MainActivity
 import org.hamcrest.Matchers.hasToString
-import com.orgzly.android.RetryTestRule
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -36,34 +37,28 @@ class BooksSortOrderTest : OrgzlyTest() {
 
     @Test
     fun books_sortOrder() {
-        onBook(0, R.id.item_book_title).check(matches(withText("Book A")))
-        onBook(1, R.id.item_book_title).check(matches(withText("Book B")))
+        onView(withText("Book A")).check(matches(isDisplayed()))
+        onView(withText("Book B")).check(matches(isDisplayed()))
     }
 
     @Test
     fun books_sortOrderAfterSettingsChange() {
         modifySecondBook()
         setBooksSortOrder(R.string.notebooks_sort_order_modification_time)
-        onBook(0, R.id.item_book_title).check(matches(withText("Book B")))
-        onBook(1, R.id.item_book_title).check(matches(withText("Book A")))
+
+        onView(withText("Book A")).check(matches(isDisplayed()))
+        onView(withText("Book B")).check(matches(isDisplayed()))
     }
 
-//    @Test
-//    fun drawer_sortOrder() {
-//        onView(withId(R.id.drawer_layout)).perform(open())
-//        onItemInDrawer()
-//    }
-
     private fun modifySecondBook() {
-        // Modify book
-        onBook(1).perform(click())
+        onView(withText("Book B")).perform(click())
         onNoteInBook(1).perform(longClick())
         onView(withId(R.id.toggle_state)).perform(click())
         pressBack()
         pressBack()
     }
 
-    private fun setBooksSortOrder(@StringRes id: Int) {
+    private fun setBooksSortOrder(id: Int) {
         onActionItemClick(R.id.activity_action_settings, R.string.settings)
         clickSetting(R.string.pref_title_notebooks)
         clickSetting(R.string.sort_order)

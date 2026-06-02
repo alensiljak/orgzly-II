@@ -86,7 +86,7 @@ class InternalLinksTest : OrgzlyTest() {
 
         scenario = ActivityScenario.launch(MainActivity::class.java)
 
-        onBook(0).perform(click())
+        onView(withText("book-a")).perform(click())
         onView(isRoot()).perform(waitId(R.id.fragment_book_recycler_view, 5000))
     }
 

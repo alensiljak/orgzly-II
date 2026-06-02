@@ -134,9 +134,8 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$versions.android_swiperefreshlayout"
 
     // Compose
-    def composeBom = platform("androidx.compose:compose-bom:$versions.compose")
-    implementation composeBom
-    androidTestImplementation composeBom
+    implementation platform("androidx.compose:compose-bom:$versions.compose")
+    androidTestImplementation platform("androidx.compose:compose-bom:$versions.compose")
     implementation 'androidx.compose.material3:material3'
     implementation 'androidx.compose.material:material-icons-core'
     implementation 'androidx.compose.material:material-icons-extended'

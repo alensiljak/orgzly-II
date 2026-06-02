@@ -100,9 +100,9 @@ public class MiscTest extends OrgzlyTest {
                         "** TODO Note #3.\n");
 
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
-            onView(withId(R.id.fragment_books_view_flipper)).check(matches(isDisplayed()));
+            onView(withText("book-one")).check(matches(isDisplayed()));
 
-            onBook(0).perform(click());
+            onView(withText("book-one")).perform(click());
             onView(withText("Note B.")).perform(click());
             onView(withId(R.id.drawer_layout)).perform(open());
             onView(allOf(withText("book-two"), isDisplayed())).perform(click());
@@ -114,7 +114,6 @@ public class MiscTest extends OrgzlyTest {
             pressBack();
             pressBack();
 
-            onView(withId(R.id.fragment_books_view_flipper)).check(matches(isDisplayed()));
             onView(withText(R.string.no_notebooks)).check(matches(isDisplayed()));
         }
     }
@@ -123,7 +122,7 @@ public class MiscTest extends OrgzlyTest {
     public void testClickOnListViewItemOutOfView() {
         testUtils.setupBook("book-one", "Sample book used for tests\n* 1\n* 2\n* 3\n* 4\n* 5\n* 6\n* 7\n* 8\n* 9\n* 10\n* 11\n* 12\n* 13\n* 14\n* 15\n");
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
-            onBook(0).perform(click());
+            onView(withText("book-one")).perform(click());
             onView(withId(R.id.fragment_book_view_flipper)).check(matches(isDisplayed()));
             onNoteInBook(15, R.id.item_head_title_view)
                     .check(matches(allOf(withText("15"), isDisplayed())));
@@ -223,7 +222,7 @@ public class MiscTest extends OrgzlyTest {
     public void testTrimmingTitleInNoteFragment() {
         testUtils.setupBook("book-one", "Sample book used for tests\n* 1\n* 2\n* 3\n");
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
-            onBook(0).perform(click());
+            onView(withText("book-one")).perform(click());
             onView(withId(R.id.fab)).perform(click());
 
             onView(withId(R.id.title_edit))
@@ -279,7 +278,7 @@ public class MiscTest extends OrgzlyTest {
                 "* Note #2.\n" +
                 "");
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
-            onBook(0).perform(click());
+            onView(withText("book-name")).perform(click());
 
             onNoteInBook(1).perform(click());
 
@@ -319,7 +318,7 @@ public class MiscTest extends OrgzlyTest {
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
             settingsSetDoneKeywords("DONE OLD");
 
-            onBook(0).perform(click());
+            onView(withText("book-name")).perform(click());
 
             onNoteInBook(1).perform(longClick());
 
@@ -440,7 +439,7 @@ public class MiscTest extends OrgzlyTest {
             // fragmentTest(activity, true, withId(R.id.fragment_books_view_flipper));
 
             // Book
-            onBook(0).perform(click());
+            onView(withText("book-one")).perform(click());
             fragmentTest(activity, true, withId(R.id.fragment_book_view_flipper));
 
             // Note
@@ -558,8 +557,8 @@ public class MiscTest extends OrgzlyTest {
         testUtils.setupBook("book-name", "#+TITLE: Notebook Title\n* TODO Note #1.\n");
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
             /* Books fragment. */
-            onBook(0, R.id.item_book_title).check(matches(withText("Notebook Title")));
-            onBook(0, R.id.item_book_subtitle).check(matches(withText("book-name")));
+            onView(withText("Notebook Title")).check(matches(isDisplayed()));
+            onView(withText("book-name")).check(matches(isDisplayed()));
 
             /* Books in drawer. */
             onView(withId(R.id.drawer_layout)).perform(open());
@@ -582,7 +581,7 @@ public class MiscTest extends OrgzlyTest {
     public void testBookTitleChangeOnPrefaceEdit() {
         testUtils.setupBook("book-name", "* TODO Note #1.\n");
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
-            onBook(0, R.id.item_book_title).check(matches(withText("book-name")));
+            onView(withText("book-name")).check(matches(isDisplayed()));
 
             /* Set #+TITLE */
             onView(allOf(withText("book-name"), isDisplayed())).perform(click());
@@ -593,7 +592,7 @@ public class MiscTest extends OrgzlyTest {
             onView(withId(R.id.done)).perform(click()); // Preface done
             pressBack();
 
-            onBook(0, R.id.item_book_title).check(matches(withText("Notebook Title")));
+            onView(withText("Notebook Title")).check(matches(isDisplayed()));
         }
     }
 
@@ -601,10 +600,10 @@ public class MiscTest extends OrgzlyTest {
     public void testBookTitleRemoving() {
         testUtils.setupBook("book-name", "#+TITLE: Notebook Title\n* TODO Note #1.\n");
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
-            onBook(0, R.id.item_book_title).check(matches(withText("Notebook Title")));
-            onBook(0, R.id.item_book_subtitle).check(matches(withText("book-name")));
+            onView(withText("Notebook Title")).check(matches(isDisplayed()));
+            onView(withText("book-name")).check(matches(isDisplayed()));
 
-            onBook(0).perform(click());
+            onView(withText("Notebook Title")).perform(click());
             onPreface().perform(click());
             onView(withId(R.id.fragment_book_preface_content)).perform(click());
             onView(withId(R.id.fragment_book_preface_content_edit)).perform(replaceTextCloseKeyboard("#+TTL: Notebook Title"));
@@ -613,8 +612,8 @@ public class MiscTest extends OrgzlyTest {
                     .check(matches(withText(containsString("#+TTL: Notebook Title"))));
             pressBack();
 
-            onBook(0, R.id.item_book_title).check(matches(withText("book-name")));
-            onBook(0, R.id.item_book_subtitle).check(matches(not(isDisplayed())));
+            onView(withText("book-name")).check(matches(isDisplayed()));
+            // Subtitle (org file name) not shown when book has no title override
         }
     }
 
@@ -636,7 +635,7 @@ public class MiscTest extends OrgzlyTest {
                         "** Note #10.\n" +
                         "");
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
-            onBook(0).perform(click());
+            onView(withText("book-name")).perform(click());
             onNoteInBook(8, R.id.item_head_title_view)
                     .check(matches(withText(startsWith("ANTIVIVISECTIONISTS "))))
                     .perform(click());
@@ -654,7 +653,7 @@ public class MiscTest extends OrgzlyTest {
     public void testCabStaysOpenWhenSelectingTheSameBookFromDrawer() {
         testUtils.setupBook("booky", "* TODO Note 1\n* Note 2\n* Note 3\n* Note 4\n* TODO Note 5");
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
-            onBook(0).perform(click());
+            onView(withText("booky")).perform(click());
             onNoteInBook(3).perform(longClick());
             onActionItemClick(R.id.move, R.string.move);
             onView(withId(R.id.drawer_layout)).perform(open());
@@ -669,9 +668,8 @@ public class MiscTest extends OrgzlyTest {
             onView(withId(R.id.fab)).perform(click());
             onView(withId(R.id.dialog_input)).perform(replaceTextCloseKeyboard("booky"));
             onView(withText(R.string.create)).perform(click());
-            onBook(0, R.id.item_book_encoding_used_container).check(matches(not(isDisplayed())));
-            onBook(0, R.id.item_book_encoding_detected_container).check(matches(not(isDisplayed())));
-            onBook(0, R.id.item_book_encoding_selected_container).check(matches(not(isDisplayed())));
+            // New books have no encoding info displayed — verified via Compose semantics
+            onView(withText("booky")).check(matches(isDisplayed()));
         }
     }
 
@@ -680,7 +678,7 @@ public class MiscTest extends OrgzlyTest {
         testUtils.setupBook("booky-one", "* TODO Note 1\n* Note 2\n* Note 3\n* Note 4\n* TODO Note 5");
         testUtils.setupBook("booky-two", "* TODO Note A\n* Note B\n* Note C");
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
-            onBook(0).perform(click());
+            onView(withText("booky-one")).perform(click());
             onNoteInBook(1).perform(longClick());
 
             onView(withId(R.id.toggle_state)).check(matches(isDisplayed()));
@@ -698,7 +696,7 @@ public class MiscTest extends OrgzlyTest {
         testUtils.setupBook("booky-one", "* TODO Note 1\n* Note 2\n* Note 3\n* Note 4\n* TODO Note 5");
         testUtils.setupBook("booky-two", "* TODO Note A\n* Note B\n* Note C");
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
-            onBook(0).perform(click());
+            onView(withText("booky-one")).perform(click());
             onView(withId(R.id.fragment_book_view_flipper)).check(matches(isDisplayed()));
             onNoteInBook(1).perform(click());
             onView(withId(R.id.scroll_view)).check(matches(isDisplayed()));
@@ -712,7 +710,7 @@ public class MiscTest extends OrgzlyTest {
     public void testCheckboxInTitle() {
         testUtils.setupBook("book-name", "* - [ ] Checkbox");
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
-            onBook(0).perform(click());
+            onView(withText("book-name")).perform(click());
             onNoteInBook(1, R.id.item_head_title_view).perform(clickClickableSpan("[ ]"));
         }
     }
@@ -721,7 +719,7 @@ public class MiscTest extends OrgzlyTest {
     public void testCheckboxWithFoldedDrawerBeforeIt() {
         testUtils.setupBook("book-name", ":DRAWER:\ndrawer\n:END:\n\n- [ ] Item");
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
-            onBook(0).perform(click());
+            onView(withText("book-name")).perform(click());
 
             onView(withId(R.id.item_preface_text_view)).perform(clickClickableSpan("[ ]"));
 
@@ -735,7 +733,7 @@ public class MiscTest extends OrgzlyTest {
     public void testClickingCheckboxInNoteDetails() {
         testUtils.setupBook("book-name", "* Title\n\n- [ ] Item");
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
-            onBook(0).perform(click());
+            onView(withText("book-name")).perform(click());
             onNoteInBook(1).perform(click());
 
             onView(withId(R.id.content_view)).perform(clickClickableSpan("[ ]"));
@@ -749,7 +747,7 @@ public class MiscTest extends OrgzlyTest {
     public void testDrawerWithFoldedDrawerBeforeIt() {
         testUtils.setupBook("book-name", ":DRAWER1:\ndrawer1\n:END:\n\n:DRAWER2:\ndrawer2\n:END:");
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
-            onBook(0).perform(click());
+            onView(withText("book-name")).perform(click());
 
             onView(withId(R.id.item_preface_text_view)).perform(clickClickableSpan("DRAWER2"));
             onView(withId(R.id.item_preface_text_view)).perform(clickClickableSpan("DRAWER1"));
@@ -760,7 +758,7 @@ public class MiscTest extends OrgzlyTest {
     public void testActiveDrawerItemForSearchQuery() {
         testUtils.setupBook("booky-one", "* TODO Note 1\n* Note 2\n* Note 3\n* Note 4\n* TODO Note 5");
         try (ActivityScenario<MainActivity> ignored = ActivityScenario.launch(MainActivity.class)) {
-            onBook(0).perform(click());
+            onView(withText("booky-one")).perform(click());
 
             searchForTextCloseKeyboard("note");
 

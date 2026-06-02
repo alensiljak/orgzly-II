@@ -34,7 +34,7 @@ public class NewNoteTest extends OrgzlyTest {
         testUtils.setupBook("notebook", "");
         ActivityScenario.launch(MainActivity.class);
 
-        onBook(0).perform(click());
+        onView(withText("notebook")).perform(click());
 
         onView(withId(R.id.fab)).perform(click());
         onView(withId(R.id.title_edit))
@@ -50,7 +50,7 @@ public class NewNoteTest extends OrgzlyTest {
         testUtils.setupBook("notebook", "description\n* 1\n** 2\n*** 3\n*** 4\n** 5\n* 6");
         ActivityScenario.launch(MainActivity.class);
 
-        onBook(0).perform(click());
+        onView(withText("notebook")).perform(click());
 
         onNoteInBook(2).perform(longClick());
         onActionItemClick(R.id.new_note, R.string.new_note);
@@ -69,7 +69,7 @@ public class NewNoteTest extends OrgzlyTest {
         testUtils.setupBook("notebook", "description\n* 1\n** 2\n*** 3\n*** 4\n** 5\n* 6");
         ActivityScenario.launch(MainActivity.class);
 
-        onBook(0).perform(click());
+        onView(withText("notebook")).perform(click());
 
         onNoteInBook(2).perform(longClick());
         onActionItemClick(R.id.new_note, R.string.new_note);
@@ -93,7 +93,7 @@ public class NewNoteTest extends OrgzlyTest {
                                           "* 6");
         ActivityScenario.launch(MainActivity.class);
 
-        onBook(0).perform(click());
+        onView(withText("booky")).perform(click());
 
         onNoteInBook(2).perform(longClick());
         onActionItemClick(R.id.new_note, R.string.new_note);
@@ -122,7 +122,7 @@ public class NewNoteTest extends OrgzlyTest {
         testUtils.setupBook("notebook-1", "");
         ActivityScenario.launch(MainActivity.class);
 
-        onBook(0).perform(click());
+        onView(withText("notebook-1")).perform(click());
 
         onView(withId(R.id.fab)).perform(click());
         onView(withId(R.id.title_edit)).perform(replaceTextCloseKeyboard("A"));

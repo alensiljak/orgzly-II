@@ -39,7 +39,7 @@ class BooksFragmentCompose : ComposeFragment() {
     private lateinit var viewModel: BooksViewModel
     private lateinit var sharedMainActivityViewModel: SharedMainActivityViewModel
 
-    private var listener: BooksFragment.Listener? = null
+    private var listener: Listener? = null
 
     private val selectionBackPressHandler = object : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
@@ -71,7 +71,7 @@ class BooksFragmentCompose : ComposeFragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         App.appComponent.inject(this)
-        listener = activity as? BooksFragment.Listener
+        listener = activity as? Listener
     }
 
     override fun onDetach() {
@@ -189,11 +189,15 @@ class BooksFragmentCompose : ComposeFragment() {
         }
     }
 
+    interface Listener {
+        fun onBookClicked(bookId: Long)
+    }
+
     companion object {
         private val TAG = BooksFragmentCompose::class.java.name
 
         @JvmField
-        val FRAGMENT_TAG: String = BooksFragment.FRAGMENT_TAG
+        val FRAGMENT_TAG: String = BooksFragmentCompose::class.java.name
 
         private const val ARG_WITH_ACTION_BAR = "with_action_bar"
 

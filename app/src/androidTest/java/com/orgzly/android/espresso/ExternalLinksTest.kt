@@ -75,7 +75,7 @@ class ExternalLinksTest(private val param: Parameter) : OrgzlyTest() {
 
         ActivityScenario.launch(MainActivity::class.java).use {
             // Open book
-            onBook(0).perform(click())
+            onView(withText("book")).perform(click())
 
             // Click on link
             onNoteInBook(1, R.id.item_head_content_view).perform(clickClickableSpan(param.link))

@@ -102,7 +102,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
         scenario = ActivityScenario.launch(MainActivity::class.java)
 
-        onBook(0).perform(click())
+        onView(withText("book-name")).perform(click())
     }
 
     @After

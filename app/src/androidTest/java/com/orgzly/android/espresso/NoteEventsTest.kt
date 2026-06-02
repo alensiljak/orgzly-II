@@ -308,7 +308,7 @@ class NoteEventsTest : OrgzlyTest() {
         testUtils.setupBook("Book A", "* Note A-01 <2000-01-10 +1d>")
         scenario = ActivityScenario.launch(MainActivity::class.java)
 
-        onBook(0).perform(click())
+        onView(withText("Book A")).perform(click())
         onNoteInBook(1, R.id.item_head_title_view).check(matches(withText("Note A-01 <2000-01-10 +1d>")))
         onNoteInBook(1).perform(longClick())
         onView(withId(R.id.toggle_state)).perform(click())
@@ -320,7 +320,7 @@ class NoteEventsTest : OrgzlyTest() {
         testUtils.setupBook("Book A", "* Note A-01 <2000-01-10 +1d>")
         scenario = ActivityScenario.launch(MainActivity::class.java)
 
-        onBook(0).perform(click())
+        onView(withText("Book A")).perform(click())
         onNoteInBook(1).perform(click())
         onView(withId(R.id.title_view)).check(matches(withText("Note A-01 <2000-01-10 +1d>")))
         onView(withId(R.id.state_button)).perform(click())

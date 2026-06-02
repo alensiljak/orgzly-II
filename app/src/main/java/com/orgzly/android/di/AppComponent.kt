@@ -14,7 +14,6 @@ import com.orgzly.android.sync.ScheduledSyncWorker
 import com.orgzly.android.sync.SyncWorker
 import com.orgzly.android.ui.BookChooserActivity
 import com.orgzly.android.ui.TemplateChooserActivity
-import com.orgzly.android.ui.books.BooksFragment
 import com.orgzly.android.ui.logs.AppLogsActivity
 import com.orgzly.android.ui.main.MainActivity
 import com.orgzly.android.ui.note.NoteFragment
@@ -69,7 +68,6 @@ interface AppComponent {
     fun inject(arg: ListWidgetSelectionActivity)
     fun inject(arg: AppLogsActivity)
 
-    fun inject(arg: BooksFragment)
     fun inject(arg: com.orgzly.android.ui.books.BooksFragmentCompose)
     fun inject(arg: NotesFragment)
     fun inject(arg: BookFragment)

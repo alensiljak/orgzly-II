@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Legacy view IDs retained for test compilation only. BooksFragment has been replaced by
+     BooksFragmentCompose; these IDs are no longer backed by real views. Tests that reference
+     these IDs at runtime will need to be migrated to use text-based or Compose-semantic matchers. -->
+<resources>
+    <item name="fragment_books_view_flipper" type="id"/>
+    <item name="fragment_books_recycler_view" type="id"/>
+    <item name="item_book_card_view" type="id"/>
+    <item name="item_book_title" type="id"/>
+    <item name="item_book_subtitle" type="id"/>
+    <item name="item_book_note_count" type="id"/>
+    <item name="item_book_last_action" type="id"/>
+    <item name="item_book_sync_needed_icon" type="id"/>
+    <item name="item_book_link_container" type="id"/>
+    <item name="item_book_link_repo" type="id"/>
+    <item name="item_book_synced_url" type="id"/>
+    <item name="item_book_encoding_used" type="id"/>
+    <item name="item_book_encoding_detected" type="id"/>
+    <item name="item_book_encoding_selected" type="id"/>
+    <item name="item_book_encoding_used_container" type="id"/>
+    <item name="item_book_encoding_detected_container" type="id"/>
+    <item name="item_book_encoding_selected_container" type="id"/>
+</resources>

@@ -442,7 +442,7 @@ public class BookTest extends OrgzlyTest {
         onView(withText(R.string.notebooks)).perform(click());
 
         // Delete notebook
-        onView(allOf(withText("book-name"), withId(R.id.item_book_title))).perform(longClick());
+        onView(withText("book-name")).perform(longClick());
         contextualToolbarOverflowMenu().perform(click());
         onView(withText(R.string.delete)).perform(click());
         onView(withText(R.string.delete)).perform(click());

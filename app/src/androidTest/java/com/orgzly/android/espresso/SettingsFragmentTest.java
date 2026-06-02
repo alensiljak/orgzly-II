@@ -48,7 +48,7 @@ public class SettingsFragmentTest extends OrgzlyTest {
         clickSetting(R.string.reload_getting_started);
         pressBack();
         pressBack();
-        onView(withId(R.id.fragment_books_view_flipper)).check(matches(isDisplayed()));
+        onView(withText(R.string.getting_started_notebook_name)).check(matches(isDisplayed()));
         onView(allOf(withText(R.string.getting_started_notebook_name), isDisplayed())).perform(click());
         onView(withId(R.id.fragment_book_view_flipper)).check(matches(isDisplayed()));
         onActionItemClick(R.id.activity_action_settings, R.string.settings);
