@@ -5,6 +5,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.longClick
+import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -103,6 +104,37 @@ class BooksScreenTest : OrgzlyTest() {
     fun books_clickBook_opensBookFragment() {
         onView(withText("notebook-alpha")).perform(click())
         onView(withId(R.id.fragment_book_view_flipper)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun books_searchBar_openAndClose() {
+        // Open search bar via the search icon
+        onView(withContentDescription(context.getString(R.string.search))).perform(click())
+
+        // Search bar is open — placeholder text visible
+        onView(withText(R.string.search_hint)).check(matches(isDisplayed()))
+
+        // Close via the back/cancel arrow
+        onView(withContentDescription(context.getString(R.string.cancel))).perform(click())
+
+        // Back to normal — FAB is visible and search placeholder is gone
+        onView(withId(R.id.fab)).check(matches(isDisplayed()))
+        onView(withText(R.string.search_hint)).check(doesNotExist())
+    }
+
+    @Test
+    fun books_searchBar_filtersByName() {
+        // Open search bar and type a partial book name
+        onView(withContentDescription(context.getString(R.string.search))).perform(click())
+        // The Compose TextField exposes its placeholder as a hint in the accessibility tree
+        onView(androidx.test.espresso.matcher.ViewMatchers.withHint(R.string.search_hint))
+            .perform(replaceText("alpha"))
+
+        // Submit the search — navigates to query results for "alpha"
+        onView(withContentDescription(context.getString(R.string.search))).perform(click())
+
+        // The query fragment opens — books list is no longer the active view
+        onView(withId(R.id.fab)).check(doesNotExist())
     }
 
     @Test

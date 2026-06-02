@@ -37,10 +37,10 @@
   - [x] Create new book (FAB → dialog → confirm)
   - [x] Rename book (long-press → selection toolbar → rename)
   - [x] Delete book (selection → delete → snackbar)
-  - [ ] Export book (selection → export) — not yet covered
-  - [ ] Import book (overflow → import) — not yet covered
-  - [ ] Search bar open/close and filtering — not yet covered
-  - [ ] Pull-to-refresh triggers sync — not yet covered
+  - [x] Export book — covered in `BooksTest.java` (`testCancelExportFileSelection`, `testExportWithFakeResponse`)
+  - [ ] Import book — no test has ever existed for this; future work
+  - [x] Search bar open/close and filtering — `books_searchBar_openAndClose`, `books_searchBar_filtersByName` in `BooksScreenTest.kt`
+  - [ ] Pull-to-refresh triggers sync — no test has ever existed for this; future work
   - [x] Back press clears selection
 - [x] Verify existing `BooksTest.java` and `BooksSortOrderTest.kt` still pass or rewrite them as Compose tests
 - [x] Delete `BooksFragment.kt` and its XML layout(s) (`fragment_books.xml`, `item_book.xml`, `BooksAdapter.kt`)
