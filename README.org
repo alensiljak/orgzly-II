@@ -24,7 +24,7 @@ The app can be installed and kept up-to-date by using Obtainium and referencing 
 
 #+BEGIN_EXPORT html
 <a href="http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/alensiljak/orgzly-II">
-  <img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium"/>
+  <img src="https://github.com/ImranR98/Obtainium/blob/main/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium"/>
 </a>
 #+END_EXPORT
 
