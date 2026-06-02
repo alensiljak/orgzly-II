@@ -23,15 +23,15 @@ The project aims to keep the application alive and up-to-date with the current A
 The app can be installed and kept up-to-date by using Obtainium and referencing this repository.
 
 <a href="http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/alensiljak/orgzly-II">
-  <img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium" height="50"/>
+  <img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium" height="75"/>
 </a>
 
 ## Development
 
 If you don't use Android Studio and wish to build and test the app from command line, the standard set of Gradle tasks is available. For example:
 
-- ~./gradlew build~ builds the project and generates APK files
-- ~./gradlew connectedAndroidTest~ runs instrumented unit tests
+- `./gradlew build` builds the project and generates APK files
+- `./gradlew connectedAndroidTest` runs instrumented unit tests
 
 Make sure you [turn off animations](https://developer.android.com/training/testing/espresso/setup) for the device you're testing on.
 
