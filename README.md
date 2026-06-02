@@ -22,7 +22,9 @@ The project aims to keep the application alive and up-to-date with the current A
 
 The app can be installed and kept up-to-date by using Obtainium and referencing this repository.
 
-[![Get it on Obtainium](https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png)](http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/alensiljak/orgzly-II)
+<a href="http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/alensiljak/orgzly-II">
+  <img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium" height="50"/>
+</a>
 
 ## Development
 
