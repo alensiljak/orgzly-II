@@ -53,12 +53,7 @@ Screens are ordered by impact, isolation, and risk. Finish each phase before sta
 
 ### Phase 1 — Stabilize existing Compose screens *(low risk)*
 
-The four already-migrated screens (Books, Note, Gantt, SavedSearch) have legacy counterparts still active. Validate them, delete the legacy versions, and remove the feature-flag/preference switch that selects between them.
-
-- Delete `BooksFragment` (XML), keep `BooksFragmentCompose`
-- Delete `NoteFragment` (XML), keep `NoteFragmentCompose`
-- Delete unused legacy `SavedSearchesFragment` if superseded
-- Remove any UI-version preference toggles
+See [jetpack-compose-migration-phase-1.md](jetpack-compose-migration-phase-1.md) for the detailed action plan.
 
 ### Phase 2 — Dialogs and small components *(low risk, high volume)*
 
