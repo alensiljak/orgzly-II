@@ -1,4 +1,4 @@
-* Orgzly II
+# Orgzly II
 
 Orgzly II is a continuation of the original Orgzly project. It is an outliner for taking notes and managing to-do lists. It natively supports the OrgMode syntax.
 
@@ -10,33 +10,29 @@ keeping notes, maintaining TODO lists, planning projects, and
 authoring documents with a fast and effective plain-text system.” See
 http://orgmode.org for more information.
 
-* Why Orgzly II?
+## Why Orgzly II?
 
 The project aims to keep the application alive and up-to-date with the current Android requirements and provide reliable and dependable application support for existing users.
 
-* Support
+## Support
 
-- See the detailed [[https://github.com/orgzly/documentation][End-user documentation]]
+- See the detailed [End-user documentation](https://github.com/orgzly/documentation).
 
-* Install
+## Install
 
 The app can be installed and kept up-to-date by using Obtainium and referencing this repository.
 
-#+BEGIN_EXPORT html
-<a href="http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/alensiljak/orgzly-II">
-  <img src="https://github.com/ImranR98/Obtainium/blob/main/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium"/>
-</a>
-#+END_EXPORT
+[![Get it on Obtainium](https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png)](http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/alensiljak/orgzly-II)
 
-* Development
+## Development
 
 If you don't use Android Studio and wish to build and test the app from command line, the standard set of Gradle tasks is available. For example:
 
 - ~./gradlew build~ builds the project and generates APK files
 - ~./gradlew connectedAndroidTest~ runs instrumented unit tests
 
-Make sure you [[https://developer.android.com/training/testing/espresso/setup][turn off animations]] for the device you're testing on.
+Make sure you [turn off animations](https://developer.android.com/training/testing/espresso/setup) for the device you're testing on.
 
-* License
+## License
 
-The project is licensed under the [[LICENSE][GNU General Public License version 3 (or newer)]].
+The project is licensed under the [GNU General Public License version 3 (or newer)](LICENSE).
