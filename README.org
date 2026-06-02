@@ -22,6 +22,14 @@ The project aims to keep the application alive and up-to-date with the current A
 
 The app can be installed and kept up-to-date by using Obtainium and referencing this repository.
 
+#+BEGIN_HTML
+<a href="https://obtainium.imranr.dev/redirect?url=https://github.com/alensiljak/orgzly-II">
+  <img src="https://github.com/ImranR98/Obtainium/blob/main/assets/badge.png?raw=true"
+       alt="Get it on Obtainium"
+       height="80">
+</a>
+#+END_HTML
+
 * Development
 
 If you don't use Android Studio and wish to build and test the app from command line, the standard set of Gradle tasks is available. For example:
