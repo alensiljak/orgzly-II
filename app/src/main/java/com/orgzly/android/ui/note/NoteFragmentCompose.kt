@@ -42,7 +42,7 @@ class NoteFragmentCompose : ComposeFragment(), TimestampDialogFragment.OnDateTim
 
     private lateinit var viewModel: NoteViewModel
 
-    private var listener: NoteFragment.Listener? = null
+    private var listener: Listener? = null
 
     private val userCancelBackPressHandler = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -53,7 +53,7 @@ class NoteFragmentCompose : ComposeFragment(), TimestampDialogFragment.OnDateTim
     override fun onAttach(context: Context) {
         super.onAttach(context)
         App.appComponent.inject(this)
-        listener = activity as? NoteFragment.Listener
+        listener = activity as? Listener
     }
 
     override fun onDetach() {
@@ -310,6 +310,12 @@ class NoteFragmentCompose : ComposeFragment(), TimestampDialogFragment.OnDateTim
 
     fun getNoteId(): Long {
         return viewModel.noteId
+    }
+
+    interface Listener {
+        fun onNoteCreated(note: Note)
+        fun onNoteUpdated(note: Note)
+        fun onNoteCanceled()
     }
 
     companion object {

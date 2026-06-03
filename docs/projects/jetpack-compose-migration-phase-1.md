@@ -48,20 +48,25 @@
 
 ### 2. Note editor screen
 
-- [ ] Audit feature parity between `NoteFragment` (1260 lines) and `NoteFragmentCompose` (351 lines) — identify any features present in the legacy fragment that are missing from the Compose version
-- [ ] Implement any missing features in `NoteFragmentCompose` / its composable
-- [ ] Write or migrate Compose UI tests (`NoteScreenTest.kt`) covering:
-  - [ ] Open existing note
-  - [ ] Edit title and body
-  - [ ] Set/clear state (TODO/DONE/etc.)
-  - [ ] Set scheduled and deadline dates
-  - [ ] Add/remove tags
-  - [ ] Set priority
-  - [ ] Save note
-  - [ ] Discard changes (back press)
-  - [ ] Create new note
-- [ ] Verify existing `NoteFragmentTest.kt` (648 lines) still passes or rewrite as Compose tests
-- [ ] Delete `NoteFragment.kt` and its XML layout(s)
+- [x] Audit feature parity between `NoteFragment` (1260 lines) and `NoteFragmentCompose` (351 lines) — full parity confirmed; no missing features
+- [x] Move `NoteFragment.Listener` → `NoteFragmentCompose.Listener`; update `MainActivity.java` and `ShareActivity.java`
+- [x] Remove `inject(arg: NoteFragment)` from `AppComponent`
+- [x] Delete `NoteFragment.kt`, `NotePropertySuggestionAdapter.kt`, `fragment_note.xml`, `property.xml`
+- [x] Add legacy view IDs to `ids_legacy.xml` so `NoteFragmentTest.kt` still compiles
+- [x] Add `contentDescription` to overflow (MoreVert) icon in `NoteScreen.kt` for testability
+- [x] Write `NoteScreenTest.kt` covering:
+  - [x] Open existing note
+  - [x] Edit title and body
+  - [x] Set/clear state (TODO/DONE/etc.)
+  - [x] Set scheduled and deadline dates
+  - [x] Add/remove tags
+  - [x] Set priority
+  - [x] Save note
+  - [x] Discard changes (back press)
+  - [x] Create new note
+  - [x] Delete note (overflow menu)
+  - [x] Existing properties displayed
+- [ ] Migrate `NoteFragmentTest.kt` (648 lines) to Compose-compatible selectors — currently compiles but tests fail at runtime against the Compose screen (all `withId(R.id.state_button)` etc. stubs)
 
 ### 3. Saved searches list screen
 

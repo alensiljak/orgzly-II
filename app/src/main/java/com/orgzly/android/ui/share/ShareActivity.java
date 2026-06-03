@@ -32,7 +32,6 @@ import com.orgzly.android.ui.CommonActivity;
 import com.orgzly.android.ui.NotePlace;
 import com.orgzly.android.SharingShortcutsManager;
 import com.orgzly.android.ui.sync.SyncFragment;
-import com.orgzly.android.ui.note.NoteFragment;
 import com.orgzly.android.ui.note.NoteFragmentCompose;
 import com.orgzly.android.ui.util.ActivityUtils;
 import com.orgzly.android.usecase.UseCase;
@@ -57,7 +56,7 @@ import javax.inject.Inject;
  */
 public class ShareActivity extends CommonActivity
         implements
-        NoteFragment.Listener,
+        NoteFragmentCompose.Listener,
         SyncFragment.Listener {
 
     public static final String TAG = ShareActivity.class.getName();

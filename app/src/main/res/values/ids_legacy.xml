@@ -1,8 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Legacy view IDs retained for test compilation only. BooksFragment has been replaced by
-     BooksFragmentCompose; these IDs are no longer backed by real views. Tests that reference
+<!-- Legacy view IDs retained for test compilation only. These fragments have been replaced by
+     Compose equivalents; these IDs are no longer backed by real views. Tests that reference
      these IDs at runtime will need to be migrated to use text-based or Compose-semantic matchers. -->
 <resources>
+    <!-- NoteFragment legacy IDs (fragment_note.xml deleted) -->
+    <item name="view_flipper" type="id"/>
+    <item name="state_button" type="id"/>
+    <item name="state_remove" type="id"/>
+    <item name="priority_button" type="id"/>
+    <item name="priority_remove" type="id"/>
+    <item name="scheduled_button" type="id"/>
+    <item name="scheduled_remove" type="id"/>
+    <item name="deadline_button" type="id"/>
+    <item name="deadline_remove" type="id"/>
+    <item name="closed_button" type="id"/>
+    <item name="closed_remove" type="id"/>
+    <item name="tags_button" type="id"/>
+    <item name="tags_remove" type="id"/>
+    <item name="tags_menu" type="id"/>
+    <item name="breadcrumbs_text" type="id"/>
+    <item name="location_button" type="id"/>
+    <item name="location_container" type="id"/>
+    <item name="scroll_view" type="id"/>
+    <item name="metadata" type="id"/>
+    <item name="metadata_header" type="id"/>
+    <item name="content_header" type="id"/>
+    <item name="content_view" type="id"/>
+    <item name="title" type="id"/>
+    <item name="title_view" type="id"/>
+    <item name="properties_container" type="id"/>
+    <item name="insert_inline_timestamp" type="id"/>
+    <item name="value" type="id"/>
     <item name="fragment_books_view_flipper" type="id"/>
     <item name="fragment_books_recycler_view" type="id"/>
     <item name="item_book_card_view" type="id"/>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- View IDs that are no longer defined in layout XML files but are still used at runtime
+     (e.g. as AndroidView IDs in Compose screens or as origin-view identifiers for dialogs). -->
+<resources>
+    <!-- RichText AndroidView IDs used in NoteScreen.kt / NoteFragmentCompose -->
+    <item name="title_edit" type="id"/>
+    <item name="content_edit" type="id"/>
+</resources>

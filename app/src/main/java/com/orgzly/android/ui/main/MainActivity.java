@@ -44,7 +44,7 @@ import com.orgzly.android.ui.NotePlace;
 import com.orgzly.android.ui.Place;
 import com.orgzly.android.ui.books.BooksFragmentCompose;
 import com.orgzly.android.ui.drawer.DrawerNavigationView;
-import com.orgzly.android.ui.note.NoteFragment;
+import com.orgzly.android.ui.note.NoteFragmentCompose;
 import com.orgzly.android.ui.notes.book.BookFragment;
 import com.orgzly.android.ui.notes.book.BookPrefaceFragment;
 import com.orgzly.android.ui.notifications.Notifications;
@@ -93,7 +93,7 @@ public class MainActivity extends CommonActivity
         SavedSearchesFragment.Listener,
         BooksFragmentCompose.Listener,
         BookFragment.Listener,
-        NoteFragment.Listener,
+        NoteFragmentCompose.Listener,
         SyncFragment.Listener,
         BookPrefaceFragment.Listener {
 

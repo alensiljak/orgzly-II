@@ -14,6 +14,7 @@ import com.orgzly.android.espresso.MiscTest
 import com.orgzly.android.espresso.NewNoteTest
 import com.orgzly.android.espresso.NoteEventsTest
 import com.orgzly.android.espresso.NoteFragmentTest
+import com.orgzly.android.espresso.NoteScreenTest
 import com.orgzly.android.espresso.QueryFragmentTest
 import com.orgzly.android.espresso.ReposActivityTest
 import com.orgzly.android.espresso.SavedSearchesFragmentTest
@@ -68,6 +69,7 @@ import org.junit.runners.Suite
         NewNoteTest::class,
         NoteEventsTest::class,
         NoteFragmentTest::class,
+        NoteScreenTest::class,
         QueryFragmentTest::class,
         ReposActivityTest::class,
         SavedSearchesFragmentTest::class,

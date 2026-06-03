@@ -129,7 +129,7 @@ fun NoteScreen(
                         Icon(Icons.Default.Done, contentDescription = stringResource(R.string.done))
                     }
                     IconButton(onClick = { showMenu = true }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = null)
+                        Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.more_options))
                     }
                     DropdownMenu(
                         expanded = showMenu,
