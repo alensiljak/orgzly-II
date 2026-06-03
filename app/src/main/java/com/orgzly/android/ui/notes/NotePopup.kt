@@ -154,6 +154,7 @@ object NotePopup {
         Action(R.id.note_popup_refile, R.drawable.ic_move_to_inbox, R.string.refile, "refile"),
         Action(R.id.note_popup_focus, R.drawable.ic_center_focus_strong, R.string.open, "focus"),
         Action(R.id.note_popup_narrow, R.drawable.ic_arrow_forward, R.string.narrow, "narrow"),
+        Action(R.id.note_popup_gantt, R.drawable.ic_view_timeline, R.string.gantt_chart, "gantt"),
     )
 
     private val TAG = NotePopup::class.java.name

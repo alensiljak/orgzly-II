@@ -51,7 +51,7 @@ These changes are not strictly required but will pay off during and after migrat
 
 Screens are ordered by impact, isolation, and risk. Finish each phase before starting the next.
 
-### Phase 1 — Stabilize existing Compose screens *(low risk)*
+### Phase 1 — Stabilize existing Compose screens *(low risk)*, ✅ DONE
 
 See [jetpack-compose-migration-phase-1.md](jetpack-compose-migration-phase-1.md) for the detailed action plan.
 

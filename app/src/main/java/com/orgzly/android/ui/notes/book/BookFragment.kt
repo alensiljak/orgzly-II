@@ -911,6 +911,9 @@ class BookFragment :
 
             R.id.note_popup_narrow ->
                 viewModel.narrowToSubtree(ids.first())
+
+            R.id.note_popup_gantt ->
+                DisplayManager.displayGanttForNote(parentFragmentManager, mBookId, ids.first())
         }
     }
 

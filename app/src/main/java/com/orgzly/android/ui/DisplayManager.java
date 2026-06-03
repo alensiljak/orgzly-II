@@ -157,6 +157,16 @@ public class DisplayManager {
                 true);
     }
 
+    public static void displayGanttForNote(FragmentManager fragmentManager, long bookId, long noteId) {
+        Fragment fragment = GanttFragment.getInstance(bookId, noteId);
+        replaceFragment(
+                fragmentManager,
+                R.id.single_pane_container,
+                fragment,
+                GanttFragment.FRAGMENT_TAG,
+                true);
+    }
+
     public static void displayExistingNote(FragmentManager fragmentManager, long bookId, long noteId) {
         if (getFragmentDisplayingNote(fragmentManager, noteId) == null) {
             Fragment fragment = NoteFragmentCompose.Companion.forExistingNote(bookId, noteId);

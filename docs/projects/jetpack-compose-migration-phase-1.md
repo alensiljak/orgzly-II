@@ -46,7 +46,7 @@
 - [x] Delete `BooksFragment.kt` and its XML layout(s) (`fragment_books.xml`, `item_book.xml`, `BooksAdapter.kt`)
 - [x] Remove `inject(arg: BooksFragment)` from `AppComponent`
 
-### 2. Note editor screen
+### 2. Note editor screen ✅ DONE
 
 - [x] Audit feature parity between `NoteFragment` (1260 lines) and `NoteFragmentCompose` (351 lines) — full parity confirmed; no missing features
 - [x] Move `NoteFragment.Listener` → `NoteFragmentCompose.Listener`; update `MainActivity.java` and `ShareActivity.java`

@@ -17,6 +17,7 @@ class GanttFragment : ComposeFragment() {
     private lateinit var viewModel: GanttViewModel
 
     private var bookId: Long = 0
+    private var noteId: Long? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -26,7 +27,8 @@ class GanttFragment : ComposeFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bookId = requireArguments().getLong(ARG_BOOK_ID)
-        val factory = GanttViewModelFactory(dataRepository, bookId)
+        noteId = requireArguments().getLong(ARG_NOTE_ID, 0).takeIf { it != 0L }
+        val factory = GanttViewModelFactory(dataRepository, bookId, noteId)
         viewModel = ViewModelProvider(this, factory)[GanttViewModel::class.java]
     }
 
@@ -43,12 +45,23 @@ class GanttFragment : ComposeFragment() {
         val FRAGMENT_TAG: String = GanttFragment::class.java.name
 
         private const val ARG_BOOK_ID = "bookId"
+        private const val ARG_NOTE_ID = "noteId"
 
         @JvmStatic
         fun getInstance(bookId: Long): GanttFragment {
             val fragment = GanttFragment()
             fragment.arguments = Bundle().apply {
                 putLong(ARG_BOOK_ID, bookId)
+            }
+            return fragment
+        }
+
+        @JvmStatic
+        fun getInstance(bookId: Long, noteId: Long): GanttFragment {
+            val fragment = GanttFragment()
+            fragment.arguments = Bundle().apply {
+                putLong(ARG_BOOK_ID, bookId)
+                putLong(ARG_NOTE_ID, noteId)
             }
             return fragment
         }

@@ -19,6 +19,7 @@ data class GanttItem(
 class GanttViewModel(
     private val dataRepository: DataRepository,
     val bookId: Long,
+    val noteId: Long? = null,
 ) : ViewModel() {
 
     private val _showUnscheduled = MutableLiveData(true)
@@ -28,7 +29,7 @@ class GanttViewModel(
         _showUnscheduled.value = !(_showUnscheduled.value ?: true)
     }
 
-    val notes: LiveData<List<NoteView>> = dataRepository.getVisibleNotesLiveData(bookId)
+    val notes: LiveData<List<NoteView>> = dataRepository.getVisibleNotesLiveData(bookId, noteId)
 
     val items: LiveData<List<GanttItem>> = notes.map { list ->
         list.map { nv ->
@@ -46,8 +47,9 @@ class GanttViewModel(
 class GanttViewModelFactory(
     private val dataRepository: DataRepository,
     private val bookId: Long,
+    private val noteId: Long? = null,
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
-        GanttViewModel(dataRepository, bookId) as T
+        GanttViewModel(dataRepository, bookId, noteId) as T
 }
