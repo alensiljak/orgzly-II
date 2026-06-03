@@ -33,6 +33,7 @@ import com.orgzly.android.ui.NotePlace;
 import com.orgzly.android.SharingShortcutsManager;
 import com.orgzly.android.ui.sync.SyncFragment;
 import com.orgzly.android.ui.note.NoteFragment;
+import com.orgzly.android.ui.note.NoteFragmentCompose;
 import com.orgzly.android.ui.util.ActivityUtils;
 import com.orgzly.android.usecase.UseCase;
 import com.orgzly.android.usecase.UseCaseResult;
@@ -224,7 +225,7 @@ public class ShareActivity extends CommonActivity
     }
 
     private void setupFragments(Bundle savedInstanceState, Data data) {
-        NoteFragment noteFragment;
+        NoteFragmentCompose noteFragment;
 
         if (savedInstanceState == null) { /* Create and add fragments. */
 
@@ -243,12 +244,12 @@ public class ShareActivity extends CommonActivity
                     bookId = data.bookId;
                 }
 
-                noteFragment = NoteFragment.forNewNote(
+                noteFragment = NoteFragmentCompose.Companion.forNewNote(
                         new NotePlace(bookId), data.title, data.content);
 
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.activity_share_main, noteFragment, NoteFragment.FRAGMENT_TAG)
+                        .replace(R.id.activity_share_main, noteFragment, NoteFragmentCompose.FRAGMENT_TAG)
                         .commit();
             } catch (IOException ex) {
                 ex.printStackTrace();
