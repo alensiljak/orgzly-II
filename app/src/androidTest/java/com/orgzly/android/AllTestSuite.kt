@@ -18,6 +18,7 @@ import com.orgzly.android.espresso.NoteScreenTest
 import com.orgzly.android.espresso.QueryFragmentTest
 import com.orgzly.android.espresso.ReposActivityTest
 import com.orgzly.android.espresso.SavedSearchesFragmentTest
+import com.orgzly.android.espresso.SavedSearchesScreenTest
 import com.orgzly.android.espresso.SettingsChangeTest
 import com.orgzly.android.espresso.SettingsFragmentTest
 import com.orgzly.android.espresso.ShareActivityTest
@@ -73,6 +74,7 @@ import org.junit.runners.Suite
         QueryFragmentTest::class,
         ReposActivityTest::class,
         SavedSearchesFragmentTest::class,
+        SavedSearchesScreenTest::class,
         SettingsChangeTest::class,
         SettingsFragmentTest::class,
         ShareActivityTest::class,

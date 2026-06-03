@@ -7,6 +7,10 @@ import com.orgzly.android.data.DataRepository
 import com.orgzly.android.db.entity.SavedSearch
 import com.orgzly.android.ui.AppBar
 import com.orgzly.android.ui.CommonViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class SavedSearchesViewModel(dataRepository: DataRepository) : CommonViewModel() {
     enum class ViewState {
@@ -25,8 +29,22 @@ class SavedSearchesViewModel(dataRepository: DataRepository) : CommonViewModel()
                 ViewState.EMPTY
             }
 
+            val existingIds = searches.mapTo(hashSetOf()) { it.id }
+            _selectedIds.update { it.intersect(existingIds) }
+
             searches
         }
+    }
+
+    private val _selectedIds = MutableStateFlow<Set<Long>>(emptySet())
+    val selectedIds: StateFlow<Set<Long>> = _selectedIds.asStateFlow()
+
+    fun toggleSelection(id: Long) {
+        _selectedIds.update { if (id in it) it - id else it + id }
+    }
+
+    fun clearSelection() {
+        _selectedIds.value = emptySet()
     }
 
     companion object {

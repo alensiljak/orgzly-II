@@ -48,4 +48,7 @@
     <item name="item_book_encoding_used_container" type="id"/>
     <item name="item_book_encoding_detected_container" type="id"/>
     <item name="item_book_encoding_selected_container" type="id"/>
+    <!-- SavedSearchesFragment legacy IDs (fragment_saved_searches.xml deleted) -->
+    <item name="fragment_saved_searches_flipper" type="id"/>
+    <item name="fragment_saved_searches_recycler_view" type="id"/>
 </resources>

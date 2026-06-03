@@ -29,7 +29,7 @@ import com.orgzly.android.ui.repo.git.GitRepoActivity
 import com.orgzly.android.ui.repo.webdav.WebdavRepoActivity
 import com.orgzly.android.ui.repos.ReposActivity
 import com.orgzly.android.ui.savedsearch.SavedSearchFragment
-import com.orgzly.android.ui.savedsearches.SavedSearchesFragment
+import com.orgzly.android.ui.savedsearches.SavedSearchesFragmentCompose
 import com.orgzly.android.ui.settings.SettingsActivity
 import com.orgzly.android.ui.settings.SettingsFragment
 import com.orgzly.android.ui.settings.exporting.SettingsExportFragment
@@ -74,7 +74,7 @@ interface AppComponent {
     fun inject(arg: SearchFragment)
     fun inject(arg: AgendaFragment)
     fun inject(arg: com.orgzly.android.ui.note.NoteFragmentCompose)
-    fun inject(arg: SavedSearchesFragment)
+    fun inject(arg: SavedSearchesFragmentCompose)
     fun inject(arg: SavedSearchFragment)
     fun inject(arg: RefileFragment)
     fun inject(arg: SettingsExportFragment)

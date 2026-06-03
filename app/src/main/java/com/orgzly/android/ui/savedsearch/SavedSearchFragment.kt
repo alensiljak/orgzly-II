@@ -51,7 +51,7 @@ import com.orgzly.android.ui.compose.widgets.OrgzlyTopAppBar
 import com.orgzly.android.ui.compose.widgets.painterIcon
 import com.orgzly.android.ui.drawer.DrawerItem
 import com.orgzly.android.ui.main.SharedMainActivityViewModel
-import com.orgzly.android.ui.savedsearches.SavedSearchesFragment
+import com.orgzly.android.ui.savedsearches.SavedSearchesFragmentCompose
 import javax.inject.Inject
 
 class SavedSearchFragment: ComposeFragment(), DrawerItem {
@@ -133,7 +133,7 @@ class SavedSearchFragment: ComposeFragment(), DrawerItem {
         }
     }
 
-    override fun getCurrentDrawerItemId() = SavedSearchesFragment.getDrawerItemId()
+    override fun getCurrentDrawerItemId() = SavedSearchesFragmentCompose.getDrawerItemId()
 
 
     interface Listener {

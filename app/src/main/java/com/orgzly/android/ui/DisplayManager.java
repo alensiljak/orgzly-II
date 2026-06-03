@@ -24,7 +24,7 @@ import com.orgzly.android.ui.notes.book.BookPrefaceFragment;
 import com.orgzly.android.ui.notes.query.agenda.AgendaFragment;
 import com.orgzly.android.ui.notes.query.search.SearchFragment;
 import com.orgzly.android.ui.savedsearch.SavedSearchFragment;
-import com.orgzly.android.ui.savedsearches.SavedSearchesFragment;
+import com.orgzly.android.ui.savedsearches.SavedSearchesFragmentCompose;
 import com.orgzly.android.util.LogUtils;
 
 /**
@@ -88,17 +88,17 @@ public class DisplayManager {
     }
 
     public static void displaySavedSearches(FragmentManager fragmentManager) {
-        if (isFragmentDisplayed(fragmentManager, SavedSearchesFragment.getFRAGMENT_TAG()) != null) {
+        if (isFragmentDisplayed(fragmentManager, SavedSearchesFragmentCompose.FRAGMENT_TAG) != null) {
             return;
         }
 
-        Fragment fragment = SavedSearchesFragment.getInstance();
+        Fragment fragment = SavedSearchesFragmentCompose.getInstance();
 
         replaceFragment(
                 fragmentManager,
                 R.id.single_pane_container,
                 fragment,
-                SavedSearchesFragment.getFRAGMENT_TAG(),
+                SavedSearchesFragmentCompose.FRAGMENT_TAG,
                 true);
     }
 

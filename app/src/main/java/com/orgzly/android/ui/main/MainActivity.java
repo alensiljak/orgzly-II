@@ -49,7 +49,7 @@ import com.orgzly.android.ui.notes.book.BookFragment;
 import com.orgzly.android.ui.notes.book.BookPrefaceFragment;
 import com.orgzly.android.ui.notifications.Notifications;
 import com.orgzly.android.ui.savedsearch.SavedSearchFragment;
-import com.orgzly.android.ui.savedsearches.SavedSearchesFragment;
+import com.orgzly.android.ui.savedsearches.SavedSearchesFragmentCompose;
 import com.orgzly.android.ui.settings.SettingsActivity;
 import com.orgzly.android.ui.sync.SyncFragment;
 import com.orgzly.android.ui.util.KeyboardUtils;
@@ -90,7 +90,7 @@ import java.util.Set;
 public class MainActivity extends CommonActivity
         implements
         SavedSearchFragment.Listener,
-        SavedSearchesFragment.Listener,
+        SavedSearchesFragmentCompose.Listener,
         BooksFragmentCompose.Listener,
         BookFragment.Listener,
         NoteFragmentCompose.Listener,
@@ -847,12 +847,12 @@ public class MainActivity extends CommonActivity
     }
 
     @Override
-    public void onSavedSearchesExportRequest(int title, @NonNull String message) {
+    public void onSavedSearchesExportRequest() {
         activityForResult.startSavedSearchesExportFileChooser();
     }
 
     @Override
-    public void onSavedSearchesImportRequest(int title, @NonNull String message) {
+    public void onSavedSearchesImportRequest() {
         activityForResult.startSavedSearchesImportFileChooser();
     }
 

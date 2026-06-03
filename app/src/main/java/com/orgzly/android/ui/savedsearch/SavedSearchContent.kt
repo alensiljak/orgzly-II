@@ -44,7 +44,7 @@ import com.orgzly.android.ui.compose.widgets.OrgzlyTextButton
 import com.orgzly.android.ui.compose.widgets.OrgzlyTextField
 import com.orgzly.android.ui.compose.widgets.OrgzlyTopAppBar
 import com.orgzly.android.ui.compose.widgets.painterIcon
-import com.orgzly.android.ui.savedsearches.SavedSearchesFragment
+import com.orgzly.android.ui.savedsearches.SavedSearchesFragmentCompose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -89,7 +89,7 @@ fun SavedSearchContent(
                     if (state.mode is SavedSearchModel.Mode.Advanced) {
                         IconButton(
                             onClick = {
-                                localUriHandler.openUri(SavedSearchesFragment.SEARCH_DOCUMENTATION_URL)
+                                localUriHandler.openUri(SavedSearchesFragmentCompose.SEARCH_DOCUMENTATION_URL)
                             },
                             modifier = Modifier.testTag("help_button")
                         ) {
