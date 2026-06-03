@@ -59,6 +59,8 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.orgzly.android.ui.compose.modifiers.scaffoldPadding
@@ -1030,6 +1032,8 @@ fun PropertyItem(
         propertyNameSuggestions.filter { it.startsWith(name, ignoreCase = true) && it != name }
     } else emptyList()
     var showNameDropdown by remember { mutableStateOf(false) }
+    val propNameDesc = stringResource(R.string.property_name)
+    val propValueDesc = stringResource(R.string.property_value)
 
     Row(
         modifier = Modifier
@@ -1044,8 +1048,10 @@ fun PropertyItem(
                     onNameChange(newName)
                     showNameDropdown = newName.isNotEmpty()
                 },
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text(stringResource(R.string.property_name)) }
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .semantics { contentDescription = propNameDesc },
+                label = { Text(propNameDesc) }
             )
             DropdownMenu(
                 expanded = showNameDropdown && nameSuggestions.isNotEmpty(),
@@ -1065,8 +1071,10 @@ fun PropertyItem(
         TextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier.weight(1f),
-            label = { Text(stringResource(R.string.property_value)) }
+            modifier = Modifier
+                .weight(1f)
+                .semantics { contentDescription = propValueDesc },
+            label = { Text(propValueDesc) }
         )
         if (name.isNotEmpty()) {
             IconButton(onClick = onRemove) {

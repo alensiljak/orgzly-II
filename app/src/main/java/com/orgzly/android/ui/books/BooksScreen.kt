@@ -496,7 +496,7 @@ private fun BookItem(
                     bookView.isOutOfSync() ->
                         Icon(
                             painter = painterResource(R.drawable.ic_sync),
-                            contentDescription = stringResource(R.string.sync),
+                            contentDescription = stringResource(R.string.sync_needed),
                             modifier = Modifier.size(20.dp),
                         )
                 }

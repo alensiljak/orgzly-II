@@ -1,10 +1,8 @@
 package com.orgzly.android.espresso;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.longClick;
-import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerActions.open;
@@ -12,21 +10,14 @@ import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
-import static com.orgzly.android.espresso.util.EspressoUtils.contextualToolbarOverflowMenu;
-import static com.orgzly.android.espresso.util.EspressoUtils.onActionItemClick;
-import static com.orgzly.android.espresso.util.EspressoUtils.onSavedSearch;
-import static com.orgzly.android.espresso.util.EspressoUtils.onSnackbar;
-import static com.orgzly.android.espresso.util.EspressoUtils.replaceTextCloseKeyboard;
-import static com.orgzly.android.espresso.util.EspressoUtils.waitId;
 import static org.hamcrest.Matchers.allOf;
 
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
-import android.os.SystemClock;
 
 import androidx.documentfile.provider.DocumentFile;
 import androidx.test.core.app.ActivityScenario;
@@ -44,6 +35,16 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+/**
+ * Migrated from the legacy SavedSearchesFragment to the Compose SavedSearchesScreen.
+ *
+ * Selector guide:
+ *  - Long-press item     → withText("Agenda") or any search name
+ *  - Move up button      → withContentDescription(getString(R.string.up))
+ *  - Move down button    → withContentDescription(getString(R.string.down))
+ *  - Overflow menu       → withContentDescription(getString(R.string.more_options))
+ *  - Export/Import items → withText(R.string.export / R.string.import_)
+ */
 public class SavedSearchesFragmentTest extends OrgzlyTest {
     @Rule
     public RetryTestRule mRetryTestRule = new RetryTestRule();
@@ -62,16 +63,18 @@ public class SavedSearchesFragmentTest extends OrgzlyTest {
 
     @Test
     public void testActionModeWhenSelectingSavedSearchThenOpeningBook() {
-        onSavedSearch(0).perform(longClick());
+        // Long-press "Agenda" (first default saved search) to enter selection mode
+        onView(withText("Agenda")).perform(longClick());
         onView(withId(R.id.drawer_layout)).perform(open());
         onView(allOf(withText("book-one"), isDescendantOfA(withId(R.id.drawer_navigation_view)))).perform(click());
-        onView(withId(R.id.saved_searches_cab_move_up)).check(doesNotExist());
+        // Move-up button should no longer be visible after navigating away
+        onView(withContentDescription(context.getString(R.string.up))).check(doesNotExist());
     }
 
     @Test
     public void testMovingSavedSearchDown() {
-        onSavedSearch(0).perform(longClick());
-        onView(withId(R.id.saved_searches_cab_move_down)).perform(click());
+        onView(withText("Agenda")).perform(longClick());
+        onView(withContentDescription(context.getString(R.string.down))).perform(click());
     }
 
     @Test
@@ -86,10 +89,13 @@ public class SavedSearchesFragmentTest extends OrgzlyTest {
 
         intending(hasAction(Intent.ACTION_CREATE_DOCUMENT)).respondWith(result);
 
-        onActionItemClick(R.id.saved_searches_export, R.string.export);
+        // Open overflow menu and click Export
+        onView(withContentDescription(context.getString(R.string.more_options))).perform(click());
+        onView(withText(R.string.export)).perform(click());
 
-        onSnackbar().check(matches(withText(
-                context.getResources().getQuantityString(R.plurals.exported_searches, 4, 4))));
+        onView(withText(
+                context.getResources().getQuantityString(R.plurals.exported_searches, 4, 4)))
+                .check(matches(isDisplayed()));
 
         Intents.release();
 

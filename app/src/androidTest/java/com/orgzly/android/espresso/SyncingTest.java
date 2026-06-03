@@ -4,10 +4,12 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.longClick;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerActions.open;
 import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -39,10 +41,13 @@ import cc.alensiljak.orgzly.R;
 import com.orgzly.android.OrgzlyTest;
 import com.orgzly.android.RetryTestRule;
 import com.orgzly.android.db.entity.Repo;
+import com.orgzly.android.prefs.AppPreferences;
 import com.orgzly.android.repos.RepoType;
 import com.orgzly.android.sync.BookSyncStatus;
 import com.orgzly.android.sync.SyncRunner;
 import com.orgzly.android.ui.main.MainActivity;
+
+import java.util.Arrays;
 
 import org.json.JSONException;
 import org.junit.After;
@@ -104,8 +109,7 @@ public class SyncingTest extends OrgzlyTest {
         onView(withId(R.id.drawer_layout)).perform(open());
         onView(allOf(withText(R.string.notebooks), isDescendantOfA(withId(R.id.drawer_navigation_view)))).perform(click());
         onView(withText("booky")).check(matches(isDisplayed()));
-        // TODO: migrate sync icon check to Compose semantics
-        // onView(allOf(withId(R.id.item_book_sync_needed_icon))).check(matches(not(isDisplayed())));
+        onView(withContentDescription(R.string.sync_needed)).check(doesNotExist());
     }
 
     @Test
@@ -114,9 +118,7 @@ public class SyncingTest extends OrgzlyTest {
         testUtils.setupRook(repo, "mock://repo-a/booky.org", "", "abc", 1234567890000L);
         scenario = ActivityScenario.launch(MainActivity.class);
         sync();
-
-        // TODO: migrate sync icon check to Compose semantics
-        // onBook(0, R.id.item_book_sync_needed_icon).check(matches(not(isDisplayed())));
+        onView(withContentDescription(R.string.sync_needed)).check(doesNotExist());
 
         // Change preface
         onView(withText("booky")).perform(click());
@@ -126,18 +128,14 @@ public class SyncingTest extends OrgzlyTest {
                 .perform(replaceTextCloseKeyboard("Modified preface"));
         onView(withId(R.id.done)).perform(click()); // Preface done
         pressBack();
-
-        // TODO: migrate sync icon check to Compose semantics
-        // onBook(0, R.id.item_book_sync_needed_icon).check(matches(isDisplayed()));
+        onView(withContentDescription(R.string.sync_needed)).check(matches(isDisplayed()));
     }
 
     @Test
     public void nonLinkedBookCannotBeMadeOutOfSync() {
         testUtils.setupBook("booky", "* Note A");
         scenario = ActivityScenario.launch(MainActivity.class);
-
-        // TODO: migrate sync icon check to Compose semantics
-        // onBook(0, R.id.item_book_sync_needed_icon).check(matches(not(isDisplayed())));
+        onView(withContentDescription(R.string.sync_needed)).check(doesNotExist());
 
         // Modify book
         onView(withText("booky")).perform(click());
@@ -145,9 +143,7 @@ public class SyncingTest extends OrgzlyTest {
         onView(withId(R.id.toggle_state)).perform(click());
         pressBack();
         pressBack();
-
-        // TODO: migrate sync icon check to Compose semantics
-        // onBook(0, R.id.item_book_sync_needed_icon).check(matches(not(isDisplayed())));
+        onView(withContentDescription(R.string.sync_needed)).check(doesNotExist());
     }
 
     /*
@@ -176,9 +172,7 @@ public class SyncingTest extends OrgzlyTest {
         onView(allOf(withText("book-one"), isDisplayed())).perform(longClick());
         onView(withId(R.id.books_context_menu_force_load)).perform(click());
         onView(withText(R.string.overwrite)).perform(click());
-
-        // TODO: migrate sync icon check to Compose semantics
-        // onView(allOf(withId(R.id.item_book_sync_needed_icon))).check(matches(not(isDisplayed())));
+        onView(withContentDescription(R.string.sync_needed)).check(doesNotExist());
     }
 
     @Test
@@ -486,26 +480,29 @@ public class SyncingTest extends OrgzlyTest {
 
     @Test
     public void testEncodingAfterSyncSaving() {
+        AppPreferences.displayedBookDetails(context, Arrays.asList(
+                context.getString(R.string.pref_value_book_details_encoding_used),
+                context.getString(R.string.pref_value_book_details_encoding_detected)));
         Repo repo = testUtils.setupRepo(RepoType.MOCK, "mock://repo-a");
         testUtils.setupRook(repo, "mock://repo-a/book-one.org", "Täht", "1abcde", 1400067156000L);
         scenario = ActivityScenario.launch(MainActivity.class);
 
         sync();
-        // TODO: encoding detail assertions require Compose-aware test setup (preferences + semantic nodes)
-        // onBook(0, R.id.item_book_encoding_used).check(matches(withText(context.getString(R.string.argument_used, "UTF-8"))));
-        // onBook(0, R.id.item_book_encoding_detected).check(matches(withText(context.getString(R.string.argument_detected, "UTF-8"))));
-        // onBook(0, R.id.item_book_encoding_selected).check(matches(not(isDisplayed())));
+        onView(withText(context.getString(R.string.argument_used, "UTF-8"))).check(matches(isDisplayed()));
+        onView(withText(context.getString(R.string.argument_detected, "UTF-8"))).check(matches(isDisplayed()));
 
         sync();
-        // TODO: encoding detail assertions require Compose-aware test setup
-        // onBook(0, R.id.item_book_encoding_used).check(matches(withText(context.getString(R.string.argument_used, "UTF-8"))));
-        // onBook(0, R.id.item_book_encoding_detected).check(matches(withText(context.getString(R.string.argument_detected, "UTF-8"))));
-        // onBook(0, R.id.item_book_encoding_selected).check(matches(not(isDisplayed())));
+        onView(withText(context.getString(R.string.argument_used, "UTF-8"))).check(matches(isDisplayed()));
+        onView(withText(context.getString(R.string.argument_detected, "UTF-8"))).check(matches(isDisplayed()));
     }
 
     @Test
     public void testSettingLinkToRenamedRepo() throws JSONException {
         testUtils.dropboxTestPreflight();
+        AppPreferences.displayedBookDetails(context, Arrays.asList(
+                context.getString(R.string.pref_value_book_details_encoding_used),
+                context.getString(R.string.pref_value_book_details_encoding_detected),
+                context.getString(R.string.pref_value_book_details_sync_url)));
         Repo repo = testUtils.setupRepo(RepoType.MOCK, "mock://repo-a");
         testUtils.setupRook(repo, "mock://repo-a/booky.org", "Täht", "1abcde", 1400067156000L);
         scenario = ActivityScenario.launch(MainActivity.class);
@@ -513,10 +510,8 @@ public class SyncingTest extends OrgzlyTest {
         sync();
         onView(withText("mock://repo-a")).check(matches(isDisplayed()));
         onView(withText("mock://repo-a/booky.org")).check(matches(isDisplayed()));
-        // TODO: encoding detail assertions require Compose-aware test setup
-        // onBook(0, R.id.item_book_encoding_used).check(matches(withText(context.getString(R.string.argument_used, "UTF-8"))));
-        // onBook(0, R.id.item_book_encoding_detected).check(matches(withText(context.getString(R.string.argument_detected, "UTF-8"))));
-        // onBook(0, R.id.item_book_encoding_selected).check(matches(not(isDisplayed())));
+        onView(withText(context.getString(R.string.argument_used, "UTF-8"))).check(matches(isDisplayed()));
+        onView(withText(context.getString(R.string.argument_detected, "UTF-8"))).check(matches(isDisplayed()));
 
         /* Rename repository. */
         onActionItemClick(R.id.activity_action_settings, R.string.settings);
@@ -538,11 +533,9 @@ public class SyncingTest extends OrgzlyTest {
         onView(withText("dropbox:/repo-b")).perform(click());
 
         onView(withText("dropbox:/repo-b")).check(matches(isDisplayed()));
-        // TODO: synced_url not displayed after link change (expected) — verify via DB
-        // TODO: encoding detail assertions require Compose-aware test setup
-        // onBook(0, R.id.item_book_encoding_used).check(matches(withText(context.getString(R.string.argument_used, "UTF-8"))));
-        // onBook(0, R.id.item_book_encoding_detected).check(matches(withText(context.getString(R.string.argument_detected, "UTF-8"))));
-        // onBook(0, R.id.item_book_encoding_selected).check(matches(not(isDisplayed())));
+        // Encoding remains from the previously synced file; sync_url no longer shown after link change
+        onView(withText(context.getString(R.string.argument_used, "UTF-8"))).check(matches(isDisplayed()));
+        onView(withText(context.getString(R.string.argument_detected, "UTF-8"))).check(matches(isDisplayed()));
 
         onView(allOf(withText("booky"), isDisplayed())).perform(longClick());
         contextualToolbarOverflowMenu().perform(click());

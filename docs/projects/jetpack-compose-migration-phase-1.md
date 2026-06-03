@@ -66,7 +66,7 @@
   - [x] Create new note
   - [x] Delete note (overflow menu)
   - [x] Existing properties displayed
-- [ ] Migrate `NoteFragmentTest.kt` (648 lines) to Compose-compatible selectors — currently compiles but tests fail at runtime against the Compose screen (all `withId(R.id.state_button)` etc. stubs)
+- [x] Migrate `NoteFragmentTest.kt` to Compose-compatible selectors — all legacy view IDs replaced; added `semantics { contentDescription }` to PropertyItem TextFields in `NoteScreen.kt` for testability
 
 ### 3. Saved searches list screen ✅ DONE
 
@@ -84,19 +84,19 @@
   - [ ] Delete saved search — via overflow menu in selection toolbar
   - [ ] Import / export — requires activity result stubs
 - [x] Delete `SavedSearchesFragment.kt`, `SavedSearchesAdapter.kt`, `fragment_saved_searches.xml`, `item_saved_search.xml`
-- [ ] Migrate `SavedSearchesFragmentTest.java` — currently compiles (stub IDs) but tests fail at runtime
+- [x] Migrate `SavedSearchesFragmentTest.java` — `onSavedSearch(0)` → `withText("Agenda")`, `saved_searches_cab_move_up/down` → `withContentDescription(R.string.up/down)`, export via overflow menu
 
-### 4. Cleanup
+### 4. Cleanup ✅ DONE
 
-- [ ] Remove any UI-version preference toggles (if any exist that switch between legacy and Compose screens)
+- [x] Remove any UI-version preference toggles — none exist; N/A
 - [x] Remove `BooksFragment.Listener` interface — moved into `BooksFragmentCompose`; `MainActivity` and `BookChooserActivity` now implement `BooksFragmentCompose.Listener`
 - [x] Remove `SavedSearchesFragment.Listener` from `MainActivity` — moved into `SavedSearchesFragmentCompose.Listener`; `MainActivity` now implements the new interface
-- [ ] Remove `SavedSearchFragment.Listener` from `MainActivity` once `SavedSearchFragment` is migrated
-- [ ] Confirm `GanttFragment` has no legacy counterpart requiring deletion
+- [x] `SavedSearchFragment.Listener` — `SavedSearchFragment` was already a Compose fragment before this migration; its `Listener` interface is still the active communication mechanism with `MainActivity` and is not a legacy artifact to remove
+- [x] Confirmed `GanttFragment` has no legacy counterpart — it extends `ComposeFragment` with no accompanying legacy View fragment
 - [x] Deprecated `EspressoUtils.onBook(int, int)` helper methods
 - [x] Added `ids_legacy.xml` stub IDs for test compilation of references to deleted view IDs
-- [ ] Migrate sync icon assertions in `SyncingTest.java` (currently commented out) to Compose ContentDescription-based checks
-- [ ] Migrate encoding detail assertions in `SyncingTest.java` (currently commented out) to text-based checks
+- [x] Migrated sync icon assertions in `SyncingTest.java` — added `R.string.sync_needed` content description to the out-of-sync `Icon` in `BooksScreen.kt`; tests now use `withContentDescription(R.string.sync_needed)` + `doesNotExist()` / `matches(isDisplayed())`
+- [x] Migrated encoding detail assertions in `SyncingTest.java` — tests now enable encoding prefs via `AppPreferences.displayedBookDetails()` before launching and assert with `withText(context.getString(R.string.argument_used/detected, "UTF-8"))`
 
 ---
 

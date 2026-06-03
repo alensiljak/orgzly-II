@@ -256,43 +256,6 @@
 <!--        <item name="android:freezesText">true</item>-->
 <!--    </style>-->
 
-    <style name="NoteFragmentMetadataHeaderContainer" parent="Base.Widget.AppCompat.Button.Borderless">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:minWidth">0dp</item>
-        <item name="android:minHeight">48dp</item>
-        <item name="android:padding">0dp</item>
-        <item name="android:paddingEnd">4dp</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:orientation">horizontal</item>
-    </style>
-
-    <style name="NoteFragmentMetadataItemContainer">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginStart">@dimen/screen_edge</item>
-        <item name="android:layout_marginEnd">4dp</item>
-        <item name="android:minHeight">48dp</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:orientation">horizontal</item>
-    </style>
-
-    <style name="NoteFragmentMetadataItemValueButton">
-        <item name="android:layout_weight">1</item>
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:layout_marginStart">@dimen/fragment_note_icon_margin</item>
-        <item name="android:focusable">true</item>
-        <item name="android:textSize">?attr/fragment_note_content_text_size</item>
-        <item name="android:background">@null</item>
-    </style>
-
-    <style name="NoteFragmentMetadataItemButton" parent="Base.Widget.AppCompat.Button.Borderless">
-        <item name="android:layout_width">48dp</item>
-        <item name="android:layout_height">48dp</item>
-    </style>
-
     <style name="BookItemInfoIcon">
         <item name="android:layout_width">?attr/item_book_info_icon_size</item>
         <item name="android:layout_height">?attr/item_book_info_icon_size</item>
