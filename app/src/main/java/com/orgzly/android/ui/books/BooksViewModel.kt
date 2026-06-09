@@ -52,6 +52,8 @@ class BooksViewModel(private val dataRepository: DataRepository) : CommonViewMod
     val renameDialogBook = MutableStateFlow<BookView?>(null)
     val deleteDialogBooks = MutableStateFlow<Set<BookView>?>(null)
     val linkDialogOptions = MutableStateFlow<BookLinkOptions?>(null)
+    val newBookDialogVisible = MutableStateFlow(false)
+    val importBookDialogUri = MutableStateFlow<Uri?>(null)
 
     enum class ViewState {
         LOADING,
@@ -101,6 +103,10 @@ class BooksViewModel(private val dataRepository: DataRepository) : CommonViewMod
     fun dismissRenameDialog() { renameDialogBook.value = null }
     fun dismissDeleteDialog() { deleteDialogBooks.value = null }
     fun dismissLinkDialog() { linkDialogOptions.value = null }
+    fun showNewBookDialog() { newBookDialogVisible.value = true }
+    fun dismissNewBookDialog() { newBookDialogVisible.value = false }
+    fun showImportBookDialog(uri: Uri) { importBookDialogUri.value = uri }
+    fun dismissImportBookDialog() { importBookDialogUri.value = null }
 
     fun deleteBooksRequest(bookIds: Set<Long>) {
         App.EXECUTORS.diskIO().execute {

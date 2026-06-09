@@ -1,7 +1,10 @@
 package com.orgzly.android.ui.books
 
 import android.content.Context
+import android.net.Uri
 import android.text.format.DateUtils
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -83,8 +86,6 @@ fun BooksScreen(
     onRefresh: () -> Unit,
     onBookClick: (Long) -> Unit,
     onOpenDrawer: () -> Unit,
-    onNewBook: () -> Unit,
-    onImportBook: () -> Unit,
     onSearch: (String) -> Unit,
     onSync: () -> Unit,
     onSettings: () -> Unit,
@@ -96,7 +97,16 @@ fun BooksScreen(
     val renameDialogBook by viewModel.renameDialogBook.collectAsStateWithLifecycle()
     val deleteDialogBooks by viewModel.deleteDialogBooks.collectAsStateWithLifecycle()
     val linkDialogOptions by viewModel.linkDialogOptions.collectAsStateWithLifecycle()
+    val newBookDialogVisible by viewModel.newBookDialogVisible.collectAsStateWithLifecycle()
+    val importBookDialogUri by viewModel.importBookDialogUri.collectAsStateWithLifecycle()
     val displayedDetails by appPreference { AppPreferences.displayedBookDetails(it) }
+
+    val context = LocalContext.current
+    val pickFileForImport = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            viewModel.showImportBookDialog(uri)
+        }
+    }
 
     val inSelectionMode = selectedIds.isNotEmpty()
     var searchActive by rememberSaveable { mutableStateOf(false) }
@@ -133,7 +143,7 @@ fun BooksScreen(
                 else -> DefaultTopBar(
                     withActionBar = withActionBar,
                     onOpenDrawer = onOpenDrawer,
-                    onImportBook = onImportBook,
+                    onImportBook = { pickFileForImport.launch("*/*") },
                     onSearchOpen = { searchActive = true },
                     onSync = onSync,
                     onSettings = onSettings,
@@ -144,7 +154,7 @@ fun BooksScreen(
         },
         floatingActionButton = {
             if (withActionBar && !inSelectionMode) {
-                OrgzlyFloatingActionButton(onClick = onNewBook) {
+                OrgzlyFloatingActionButton(onClick = { viewModel.showNewBookDialog() }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_add),
                         contentDescription = stringResource(R.string.new_notebook),
@@ -239,6 +249,28 @@ fun BooksScreen(
                 viewModel.dismissLinkDialog()
             },
             onDismiss = { viewModel.dismissLinkDialog() },
+        )
+    }
+
+    if (newBookDialogVisible) {
+        NewBookDialog(
+            onConfirm = { name ->
+                viewModel.createBook(name)
+                viewModel.dismissNewBookDialog()
+            },
+            onDismiss = { viewModel.dismissNewBookDialog() },
+        )
+    }
+
+    importBookDialogUri?.let { uri ->
+        val suggestedName = remember(uri) { guessBookName(context, uri) }
+        ImportBookDialog(
+            suggestedName = suggestedName,
+            onConfirm = { name ->
+                viewModel.importBook(uri, name)
+                viewModel.dismissImportBookDialog()
+            },
+            onDismiss = { viewModel.dismissImportBookDialog() },
         )
     }
 }
@@ -768,4 +800,86 @@ private fun SetLinkDialog(
             }
         },
     )
+}
+
+@Composable
+private fun NewBookDialog(
+    onConfirm: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var name by rememberSaveable { mutableStateOf("") }
+    val focusRequester = remember { FocusRequester() }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.new_notebook)) },
+        text = {
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text(stringResource(R.string.name)) },
+                singleLine = true,
+                isError = name.isEmpty(),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = { if (name.isNotEmpty()) onConfirm(name) }),
+                modifier = Modifier.focusRequester(focusRequester),
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirm(name) }, enabled = name.isNotEmpty()) {
+                Text(stringResource(R.string.create))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
+        },
+    )
+
+    LaunchedEffect(Unit) { focusRequester.requestFocus() }
+}
+
+@Composable
+private fun ImportBookDialog(
+    suggestedName: String?,
+    onConfirm: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var name by rememberSaveable { mutableStateOf(suggestedName ?: "") }
+    val focusRequester = remember { FocusRequester() }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.import_as)) },
+        text = {
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text(stringResource(R.string.name)) },
+                singleLine = true,
+                isError = name.isEmpty(),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = { if (name.isNotEmpty()) onConfirm(name) }),
+                modifier = Modifier.focusRequester(focusRequester),
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirm(name) }, enabled = name.isNotEmpty()) {
+                Text(stringResource(R.string.import_))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
+        },
+    )
+
+    LaunchedEffect(Unit) { focusRequester.requestFocus() }
+}
+
+private fun guessBookName(context: Context, uri: Uri): String? {
+    val fileName = com.orgzly.android.BookName.getFileName(context, uri)
+    return if (com.orgzly.android.BookName.isSupportedFormatFileName(fileName)) {
+        com.orgzly.android.BookName.fromRepoRelativePath(fileName).name
+    } else {
+        null
+    }
 }

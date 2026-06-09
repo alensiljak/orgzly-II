@@ -2,7 +2,6 @@ package com.orgzly.android.ui.books
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
@@ -10,7 +9,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.core.os.BundleCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -23,7 +21,6 @@ import com.orgzly.android.data.DataRepository
 import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.ui.DisplayManager
 import com.orgzly.android.ui.compose.base.ComposeFragment
-import com.orgzly.android.ui.dialogs.SimpleOneLinerDialog
 import com.orgzly.android.ui.main.SharedMainActivityViewModel
 import com.orgzly.android.ui.settings.SettingsActivity
 import com.orgzly.android.ui.showSnackbar
@@ -46,18 +43,6 @@ class BooksFragmentCompose : ComposeFragment() {
             viewModel.clearSelection()
         }
     }
-
-    private val pickFileForBookImport =
-        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            if (uri != null) {
-                val guessedName = guessBookNameFromUri(uri)
-                SimpleOneLinerDialog
-                    .getInstance("name-imported-book", R.string.import_as, R.string.import_, guessedName, Bundle().apply { putParcelable("uri", uri) })
-                    .show(childFragmentManager, SimpleOneLinerDialog.FRAGMENT_TAG)
-            } else {
-                Log.w(TAG, "Import file not selected")
-            }
-        }
 
     private val pickFileForBookExport =
         registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
@@ -83,17 +68,6 @@ class BooksFragmentCompose : ComposeFragment() {
         super.onCreate(savedInstanceState)
 
         sharedMainActivityViewModel = ViewModelProvider(requireActivity())[SharedMainActivityViewModel::class.java]
-
-        childFragmentManager.setFragmentResultListener("name-new-book", this) { _, result ->
-            viewModel.createBook(result.getString("value", ""))
-        }
-
-        childFragmentManager.setFragmentResultListener("name-imported-book", this) { _, result ->
-            val bookName = result.getString("value", "")
-            val userData = result.getBundle("user-data")
-            val uri = userData?.let { BundleCompat.getParcelable(it, "uri", Uri::class.java) }!!
-            viewModel.importBook(uri, bookName)
-        }
 
         val factory = BooksViewModelFactory.getInstance(dataRepository)
         viewModel = ViewModelProvider(this, factory)[BooksViewModel::class.java]
@@ -160,12 +134,6 @@ class BooksFragmentCompose : ComposeFragment() {
             onRefresh = { com.orgzly.android.sync.SyncRunner.startSync() },
             onBookClick = { bookId -> listener?.onBookClicked(bookId) },
             onOpenDrawer = { sharedMainActivityViewModel.openDrawer() },
-            onNewBook = {
-                SimpleOneLinerDialog
-                    .getInstance("name-new-book", R.string.new_notebook, R.string.create, null)
-                    .show(childFragmentManager, SimpleOneLinerDialog.FRAGMENT_TAG)
-            },
-            onImportBook = { pickFileForBookImport.launch("*/*") },
             onSearch = { query ->
                 DisplayManager.displayQuery(parentFragmentManager, query)
             },
@@ -178,15 +146,6 @@ class BooksFragmentCompose : ComposeFragment() {
                 )
             },
         )
-    }
-
-    private fun guessBookNameFromUri(uri: Uri): String? {
-        val fileName = BookName.getFileName(requireContext(), uri)
-        return if (BookName.isSupportedFormatFileName(fileName)) {
-            BookName.fromRepoRelativePath(fileName).name
-        } else {
-            null
-        }
     }
 
     interface Listener {
