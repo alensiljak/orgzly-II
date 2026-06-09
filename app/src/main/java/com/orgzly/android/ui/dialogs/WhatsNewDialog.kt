@@ -4,6 +4,13 @@ import android.content.Context
 import android.text.method.LinkMovementMethod
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import cc.alensiljak.orgzly.BuildConfig
 import cc.alensiljak.orgzly.R
@@ -27,4 +34,35 @@ object WhatsNewDialog {
             .setView(layoutView)
             .create()
     }
+}
+
+@Composable
+fun WhatsNewDialog(
+    versionName: String = BuildConfig.VERSION_NAME,
+    onDismiss: () -> Unit,
+) {
+    val context = LocalContext.current
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.whats_new_title)) },
+        text = {
+            AndroidView(
+                factory = { ctx ->
+                    TextView(ctx).apply {
+                        movementMethod = LinkMovementMethod.getInstance()
+                    }
+                },
+                update = { view ->
+                    view.text = MiscUtils.fromHtml(
+                        context.getString(R.string.whats_new_message, versionName)
+                    )
+                }
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.ok))
+            }
+        },
+    )
 }
