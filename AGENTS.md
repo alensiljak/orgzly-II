@@ -6,6 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Orgzly II is an Android app for managing Org-mode notes and to-do lists. It is a fork of the original Orgzly app. The app syncs Org files with external repositories (Dropbox, WebDAV, Git, local directories) and manages notes in a local SQLite Room database.
 
+## Key Conventions
+
+- Distinguish which agent would be best suited for the task (Haiku, Sonnet, Opus). For example, delegate tasks to "cheaper" agents for simpler tasks (i.e. Haiku for research and summary, document updates) and "smarter" agents for complex tasks (i.e. Opus for architectural and coding).
+- Kotlin for all new code in `:app`; `org-java` remains Java
+- Room schema export files are in `app/schemas/` — new migrations must export a schema JSON
+- `BuildConfig.LOG_DEBUG` gates verbose logging (`LogUtils`)
+- `BuildConfig.IS_DROPBOX_ENABLED` and `IS_GIT_REMOVED` gate feature availability (both `false` — Dropbox disabled, Git enabled)
+
 ## Tools
 
 ### Text Search
@@ -111,10 +119,3 @@ The app uses a mix of legacy Views and Jetpack Compose (being migrated):
 ### External Access
 
 `ExternalAccessReceiver` handles broadcasts from external apps (e.g., Tasker integrations) via action handlers in `external/actionhandlers/`.
-
-## Key Conventions
-
-- Kotlin for all new code in `:app`; `org-java` remains Java
-- Room schema export files are in `app/schemas/` — new migrations must export a schema JSON
-- `BuildConfig.LOG_DEBUG` gates verbose logging (`LogUtils`)
-- `BuildConfig.IS_DROPBOX_ENABLED` and `IS_GIT_REMOVED` gate feature availability (both `false` — Dropbox disabled, Git enabled)

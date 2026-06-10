@@ -277,7 +277,7 @@ private fun Preface(text: String, onClick: () -> Unit) {
     }
     Text(
         text = formatted.text,
-        style = MaterialTheme.typography.bodyLarge,
+        style = MaterialTheme.typography.bodyMedium,
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
