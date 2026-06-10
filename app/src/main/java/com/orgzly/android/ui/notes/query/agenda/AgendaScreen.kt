@@ -23,6 +23,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -140,27 +141,29 @@ private fun AgendaItemList(
 
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(items, key = { it.id }) { item ->
-            when (item) {
-                is AgendaItem.Overdue -> AgendaDivider(text = stringResource(R.string.overdue))
-                is AgendaItem.Day -> AgendaDivider(text = formatter.formatDate(item.day))
-                is AgendaItem.Note -> {
-                    val noteDbId = item2databaseIds[item.id] ?: item.note.note.id
-                    val isSelected = noteDbId in selectedIds
-                    SwipeableNoteRow(
-                        onSwipe = { direction, x, y -> onSwipe(item.note, direction, x, y) },
-                    ) {
-                        NoteItemContent(
-                            noteView = item.note,
-                            levelOffset = null,
-                            isSelected = isSelected,
-                            inBook = false,
-                            onClick = { onNoteClick(item.note) },
-                            onLongClick = { onNoteLongClick(item.note) },
-                            onToggleFold = onToggleFold,
-                            onToggleFoldSubtree = onToggleFoldSubtree,
-                            onCheckboxToggle = onCheckboxToggle,
-                            onLinkClick = onLinkClick,
-                        )
+            Box(modifier = Modifier.testTag("agenda_item")) {
+                when (item) {
+                    is AgendaItem.Overdue -> AgendaDivider(text = stringResource(R.string.overdue))
+                    is AgendaItem.Day -> AgendaDivider(text = formatter.formatDate(item.day))
+                    is AgendaItem.Note -> {
+                        val noteDbId = item2databaseIds[item.id] ?: item.note.note.id
+                        val isSelected = noteDbId in selectedIds
+                        SwipeableNoteRow(
+                            onSwipe = { direction, x, y -> onSwipe(item.note, direction, x, y) },
+                        ) {
+                            NoteItemContent(
+                                noteView = item.note,
+                                levelOffset = null,
+                                isSelected = isSelected,
+                                inBook = false,
+                                onClick = { onNoteClick(item.note) },
+                                onLongClick = { onNoteLongClick(item.note) },
+                                onToggleFold = onToggleFold,
+                                onToggleFoldSubtree = onToggleFoldSubtree,
+                                onCheckboxToggle = onCheckboxToggle,
+                                onLinkClick = onLinkClick,
+                            )
+                        }
                     }
                 }
             }

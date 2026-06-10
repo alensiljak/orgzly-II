@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -162,7 +163,7 @@ fun NoteItemContent(
                     onSpanClick = { span -> onLinkClick(span) },
                     onPlainTap = onClick,
                     onLongPress = onLongClick,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().testTag("note_title"),
                 )
 
                 PlanningTimes(noteView = noteView, alpha = contentAlpha)
@@ -275,10 +276,13 @@ private fun PlanningTimes(noteView: NoteView, alpha: Float) {
     val formatter = remember(context) { UserTimeFormatter(context) }
 
     @Composable
-    fun TimeRow(value: String?, iconRes: Int) {
+    fun TimeRow(value: String?, iconRes: Int, tag: String? = null) {
         if (value == null) return
         val text = remember(value) { formatter.formatAll(OrgRange.parse(value)).toString() }
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 1.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(top = 1.dp).let { if (tag != null) it.testTag(tag) else it },
+        ) {
             Icon(
                 painter = painterResource(iconRes),
                 contentDescription = null,
@@ -294,9 +298,9 @@ private fun PlanningTimes(noteView: NoteView, alpha: Float) {
         }
     }
 
-    TimeRow(noteView.scheduledRangeString, R.drawable.ic_today)
-    TimeRow(noteView.deadlineRangeString, R.drawable.ic_alarm)
-    TimeRow(noteView.eventString, R.drawable.ic_access_time)
+    TimeRow(noteView.scheduledRangeString, R.drawable.ic_today, "note_scheduled")
+    TimeRow(noteView.deadlineRangeString, R.drawable.ic_alarm, "note_deadline")
+    TimeRow(noteView.eventString, R.drawable.ic_access_time, "note_event")
     TimeRow(noteView.closedRangeString, R.drawable.ic_check_circle_outline)
 }
 
