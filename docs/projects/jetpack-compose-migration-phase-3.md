@@ -93,13 +93,63 @@ dispatched. This gives pixel-faithful formatting with no fork of the `RichText` 
 - **keep-screen-on** toggle — the old path needs a checkable `MenuItem`; left as a TODO in
   `handleBookActionItemClick`.
 
+## SearchFragment / AgendaFragment migration (COMPLETE)
+
+### New files (Search/Agenda)
+
+- `ui/notes/query/search/SearchScreen.kt` — Compose screen: DefaultTopBar (hamburger,
+  title/subtitle, overflow with sync/settings/keep-screen-on), SelectionTopBar (back, count,
+  clock submenu, share), SelectionBottomBar (schedule, deadline, state, toggle, focus when
+  single), PullToRefreshBox, LazyColumn of `NoteItemContent(inBook=false)` rows wrapped in
+  `SwipeableNoteRow`.
+- `ui/notes/query/agenda/AgendaScreen.kt` — Same toolbar/bar structure as SearchScreen; list
+  renders `AgendaItem.Day` / `AgendaItem.Overdue` as sticky `Card` dividers and
+  `AgendaItem.Note` as note rows. `AgendaItems.getList()` transformation kept intact in the
+  Fragment (runs inside a `remember` keyed on the notes list).
+- `ui/compose/notelist/SwipeableNoteRow.kt` — Extracted from `BookScreen.kt` (was private) into
+  a shared file so Search/Agenda can reuse it.
+
+### Changed files (Search/Agenda)
+
+- `ui/compose/notelist/NoteItemContent.kt` — Added `inBook: Boolean = true` parameter. When
+  `inBook=false`: no indentation, no bullet, book name shown above/below title per the
+  `bookNameInSearchResults` preference (0=hide, 1=above, 2=below), fold button gated on
+  `isSearchFoldable` preference.
+- `ui/notes/query/QueryViewModel.kt` — Added `StateFlow<Set<Long>> selectedIds` with
+  `toggleSelection` / `clearSelection` / `retainSelection` / `getSelectedIds()`, replacing
+  adapter-based selection.
+- `ui/notes/query/search/SearchFragment.kt` — Now hosts `SearchScreen` via `ComposeView`.
+  All action handling, DI, and dialog helpers preserved; click logic (with reverse-click pref)
+  moved from adapter callbacks to Fragment methods.
+- `ui/notes/query/agenda/AgendaFragment.kt` — Now hosts `AgendaScreen` via `ComposeView`.
+  `item2databaseIds` mapping kept in Fragment; ViewModel initialized in `onCreate` (was
+  `onActivityCreated`).
+- `ui/notes/NoteItemViewBinder.kt` — Removed `setupSpacingForDensitySetting(ItemAgendaDividerBinding)`
+  overload (dead code after agenda adapter deletion) and its import.
+- `res/values/ids.xml` — Added `bottom_toolbar` id (used by `AppSnackbar` anchor lookup).
+
+### Deleted
+
+- `ui/notes/query/search/SearchAdapter.kt`
+- `ui/notes/query/agenda/AgendaAdapter.kt`
+- `ui/notes/ItemGestureDetector.kt`
+- `ui/notes/OnSwipeListener.kt`
+- `res/layout/fragment_query_search.xml`
+- `res/layout/fragment_query_agenda.xml`
+- `res/layout/item_agenda_divider.xml`
+
+### Still kept (NoteItemViewBinder depends on them)
+
+`item_head.xml`, `NoteItemViewHolder` — `NoteItemViewBinder` still binds to `NoteItemViewHolder`
+in its `bind()` method (dead code path, but still compiles). A future cleanup can split the
+title-generation helpers out and delete the ViewHolder/layout entirely.
+
 ## Remaining Phase 3 work
 
-1. **`SearchFragment` / `AgendaFragment`** → Compose, reusing `NoteItemContent` (with the
-   search/agenda variations: book name display, inherited tags, agenda time-type filtering, date
-   dividers). Once both are migrated, the legacy `item_head.xml` + `NoteItemViewBinder` /
-   `NoteItemViewHolder` / `ItemGestureDetector` stack can be deleted.
-2. **Espresso tests** — `androidTest` still references deleted layout ids
-   (`fragment_book_recycler_view`, `fragment_book_view_flipper`, `item_preface_text_view`, the
-   preface containers). These need to be rewritten against the Compose UI (or removed). Does not
-   affect the main app build.
+1. **Espresso tests** — `androidTest` still references deleted layout ids
+   (`fragment_book_recycler_view`, `fragment_book_view_flipper`, `item_preface_text_view`,
+   `fragment_query_search_recycler_view`, etc.). These need to be rewritten against the Compose
+   UI (or removed). Does not affect the main app build.
+2. **NoteItemViewBinder cleanup** — Split title-generation helpers (`generateTitle`,
+   `shouldDisplayContent`) out of the binder so `NoteItemViewHolder` and `item_head.xml` can be
+   deleted.

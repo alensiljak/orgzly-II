@@ -8,6 +8,9 @@ import com.orgzly.android.data.DataRepository
 import com.orgzly.android.ui.AppBar
 import com.orgzly.android.ui.CommonViewModel
 import com.orgzly.android.util.LogUtils
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 
 class QueryViewModel(private val dataRepository: DataRepository) : CommonViewModel() {
@@ -43,6 +46,32 @@ class QueryViewModel(private val dataRepository: DataRepository) : CommonViewMod
     val appBar: AppBar = AppBar(mapOf(
         APP_BAR_DEFAULT_MODE to null,
         APP_BAR_SELECTION_MODE to APP_BAR_DEFAULT_MODE))
+
+    private val _selectedIds = MutableStateFlow<Set<Long>>(emptySet())
+    val selectedIds: StateFlow<Set<Long>> = _selectedIds.asStateFlow()
+    val selectionCount: Int get() = _selectedIds.value.size
+
+    fun toggleSelection(noteId: Long) {
+        val current = _selectedIds.value.toMutableSet()
+        if (noteId in current) current.remove(noteId) else current.add(noteId)
+        _selectedIds.value = current
+        appBar.toModeFromSelectionCount(current.size)
+    }
+
+    fun clearSelection() {
+        _selectedIds.value = emptySet()
+        appBar.toModeFromSelectionCount(0)
+    }
+
+    fun retainSelection(validIds: Set<Long>) {
+        val retained = _selectedIds.value.intersect(validIds)
+        if (retained != _selectedIds.value) {
+            _selectedIds.value = retained
+            appBar.toModeFromSelectionCount(retained.size)
+        }
+    }
+
+    fun getSelectedIds(): Set<Long> = _selectedIds.value
 
     /* Triggers querying only if parameters changed. */
     fun refresh(query: String?, defaultPriority: String) {

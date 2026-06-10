@@ -5,4 +5,6 @@
     <!-- RichText AndroidView IDs used in NoteScreen.kt / NoteFragmentCompose -->
     <item name="title_edit" type="id"/>
     <item name="content_edit" type="id"/>
+    <!-- Legacy bottom toolbar ID retained for AppSnackbar anchor lookup -->
+    <item name="bottom_toolbar" type="id"/>
 </resources>

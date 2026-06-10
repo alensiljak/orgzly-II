@@ -3,24 +3,25 @@ package com.orgzly.android.ui.notes.query.search
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.lifecycle.Observer
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import cc.alensiljak.orgzly.BuildConfig
 import cc.alensiljak.orgzly.R
+import com.orgzly.android.db.entity.Note
 import com.orgzly.android.db.entity.NoteView
 import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.sync.SyncRunner
-import com.orgzly.android.ui.OnViewHolderClickListener
+import com.orgzly.android.ui.DisplayManager
 import com.orgzly.android.ui.SelectableItemAdapter
-import com.orgzly.android.ui.main.setupSearchView
-import com.orgzly.android.ui.notes.ItemGestureDetector
-import com.orgzly.android.ui.notes.NoteItemViewHolder
+import com.orgzly.android.ui.compose.base.OrgzlyBootstrap
 import com.orgzly.android.ui.notes.NotePopup
 import com.orgzly.android.ui.notes.query.QueryFragment
 import com.orgzly.android.ui.notes.query.QueryViewModel
@@ -28,19 +29,16 @@ import com.orgzly.android.ui.notes.query.QueryViewModel.Companion.APP_BAR_DEFAUL
 import com.orgzly.android.ui.notes.query.QueryViewModel.Companion.APP_BAR_SELECTION_MODE
 import com.orgzly.android.ui.notes.query.QueryViewModelFactory
 import com.orgzly.android.ui.settings.SettingsActivity
-import com.orgzly.android.ui.util.ActivityUtils
-import com.orgzly.android.ui.util.setDecorFitsSystemWindowsForBottomToolbar
-import com.orgzly.android.ui.util.setup
+import com.orgzly.android.ui.views.style.CheckboxSpan
+import com.orgzly.android.usecase.NoteUpdateContent
+import com.orgzly.android.usecase.UseCaseRunner
+import com.orgzly.android.App
 import com.orgzly.android.util.LogUtils
-import cc.alensiljak.orgzly.databinding.FragmentQuerySearchBinding
 
 /**
- * Displays search results.
+ * Displays search results using Jetpack Compose.
  */
-class SearchFragment : QueryFragment(), OnViewHolderClickListener<NoteView> {
-    private lateinit var binding: FragmentQuerySearchBinding
-
-    private lateinit var viewAdapter: SearchAdapter
+class SearchFragment : QueryFragment() {
 
     private val appBarBackPressHandler = object : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
@@ -48,10 +46,7 @@ class SearchFragment : QueryFragment(), OnViewHolderClickListener<NoteView> {
         }
     }
 
-
-    override fun getAdapter(): SelectableItemAdapter? {
-        return if (::viewAdapter.isInitialized) viewAdapter else null
-    }
+    override fun getAdapter(): SelectableItemAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,260 +58,149 @@ class SearchFragment : QueryFragment(), OnViewHolderClickListener<NoteView> {
         requireActivity().onBackPressedDispatcher.addCallback(this, notePopupDismissOnBackPress)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                OrgzlyBootstrap {
+                    SearchContent()
+                }
+            }
+        }
+    }
 
-        binding = FragmentQuerySearchBinding.inflate(inflater, container, false)
+    @Composable
+    private fun SearchContent() {
+        val syncState by syncProgressViewModel.syncState.collectAsState(initial = null)
 
-        return binding.root
+        SearchScreen(
+            viewModel = viewModel,
+            queryTitle = currentQueryName ?: getString(R.string.search),
+            querySubtitle = currentQuery,
+            isRefreshing = syncState?.isRunning() == true,
+            onRefresh = { SyncRunner.startSync() },
+            onOpenDrawer = { sharedMainActivityViewModel.openDrawer() },
+            onSearch = { query -> DisplayManager.displayQuery(parentFragmentManager, query) },
+            onNoteClick = ::handleNoteClick,
+            onNoteLongClick = ::handleNoteLongClick,
+            onToggleFold = { /* search results are flat — no folding */ },
+            onToggleFoldSubtree = { /* search results are flat — no folding */ },
+            onCheckboxToggle = ::toggleCheckbox,
+            onLinkClick = {},
+            onSwipe = ::onNoteSwipe,
+            onSelectionAction = { itemId ->
+                handleActionItemClick(viewModel.getSelectedIds(), itemId)
+            },
+            onDefaultAction = ::handleDefaultAction,
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, savedInstanceState)
-
-        viewAdapter = SearchAdapter(binding.root.context, this)
-        viewAdapter.setHasStableIds(true)
-
-        // Restores selection, requires adapter
         super.onViewCreated(view, savedInstanceState)
 
-        val layoutManager = LinearLayoutManager(context)
-
-        val dividerItemDecoration = DividerItemDecoration(context, layoutManager.orientation)
-
-        binding.fragmentQuerySearchRecyclerView.let { rv ->
-            rv.layoutManager = layoutManager
-            rv.adapter = viewAdapter
-            rv.addItemDecoration(dividerItemDecoration)
-
-            rv.addOnItemTouchListener(ItemGestureDetector(rv.context, object: ItemGestureDetector.Listener {
-                override fun onSwipe(direction: Int, e1: MotionEvent, e2: MotionEvent) {
-                    rv.findChildViewUnder(e1.x, e2.y)?.let { itemView ->
-                        rv.findContainingViewHolder(itemView)?.let { vh ->
-                            (vh as? NoteItemViewHolder)?.let {
-                                showPopupWindow(vh.itemId, NotePopup.Location.QUERY, direction, itemView, e1, e2) { noteId, buttonId ->
-                                        handleActionItemClick(setOf(noteId), buttonId)
-                                }
-                            }
-                        }
-                    }
-                }
-            }))
-        }
-
-        binding.swipeContainer.setup()
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        sharedMainActivityViewModel.setCurrentFragment(FRAGMENT_TAG)
-    }
-
-    private fun topToolbarToDefault() {
-        viewAdapter.clearSelection()
-
-        binding.topToolbar.run {
-            menu.clear()
-            inflateMenu(R.menu.query_actions)
-
-            ActivityUtils.keepScreenOnUpdateMenuItem(activity, menu)
-
-            setNavigationIcon(R.drawable.ic_menu)
-
-            setNavigationOnClickListener {
-                sharedMainActivityViewModel.openDrawer()
-            }
-
-            setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
-                    R.id.sync -> {
-                        SyncRunner.startSync()
-                    }
-
-                    R.id.activity_action_settings -> {
-                        startActivity(Intent(context, SettingsActivity::class.java))
-                    }
-
-                    R.id.keep_screen_on -> {
-                        dialog = ActivityUtils.keepScreenOnToggle(activity, menuItem)
-                    }
-                }
-                true
-            }
-
-            requireActivity().setupSearchView(menu)
-
-            setOnClickListener {
-                binding.topToolbar.menu.findItem(R.id.search_view)?.expandActionView()
-            }
-
-            title = currentQueryName ?: getString(R.string.search)
-            subtitle = currentQuery
-        }
-    }
-
-    private fun bottomToolbarToDefault() {
-        binding.bottomToolbar.visibility = View.GONE
-
-        activity?.setDecorFitsSystemWindowsForBottomToolbar(binding.bottomToolbar.visibility)
-    }
-
-    private fun topToolbarToMainSelection() {
-        binding.topToolbar.run {
-            menu.clear()
-            inflateMenu(R.menu.query_cab_top)
-
-            // Hide buttons that can't be used when multiple notes are selected
-            listOf(R.id.focus).forEach { id ->
-                menu.findItem(id)?.isVisible = viewAdapter.getSelection().count == 1
-            }
-
-            setNavigationIcon(R.drawable.ic_arrow_back)
-
-            setNavigationOnClickListener {
-                viewModel.appBar.toMode(APP_BAR_DEFAULT_MODE)
-            }
-
-            setOnMenuItemClickListener { menuItem ->
-                handleActionItemClick(viewAdapter.getSelection().getIds(), menuItem.itemId)
-                true
-            }
-
-            // Number of selected notes as a title
-            title = viewAdapter.getSelection().count.toString()
-            subtitle = null
-        }
-    }
-
-    private fun bottomToolbarToMainSelection() {
-        binding.bottomToolbar.run {
-            menu.clear()
-            inflateMenu(R.menu.query_cab_bottom)
-
-            setOnMenuItemClickListener { menuItem ->
-                handleActionItemClick(viewAdapter.getSelection().getIds(), menuItem.itemId)
-                true
-            }
-
-            visibility = View.VISIBLE
-
-            activity?.setDecorFitsSystemWindowsForBottomToolbar(visibility)
-        }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, savedInstanceState)
-
-        viewModel.viewState.observe(viewLifecycleOwner, Observer { state ->
-            if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, "Observed load state: $state")
-
-            binding.fragmentQuerySearchViewFlipper.apply {
-                displayedChild = when (state) {
-                    QueryViewModel.ViewState.LOADING -> 0
-                    QueryViewModel.ViewState.LOADED -> 1
-                    QueryViewModel.ViewState.EMPTY -> 2
-                    else -> 1
-                }
-            }
-        })
-
-        viewModel.data.observe(viewLifecycleOwner, Observer { notes ->
-            if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, "Observed notes: ${notes.size}")
-
-            viewAdapter.submitList(notes)
-
+        viewModel.data.observe(viewLifecycleOwner) { notes ->
             val ids = notes.mapTo(hashSetOf()) { it.note.id }
-
-            viewAdapter.getSelection().removeNonExistent(ids)
-
-            viewModel.appBar.toModeFromSelectionCount(viewAdapter.getSelection().count)
-        })
-
-        viewModel.refresh(currentQuery, AppPreferences.defaultPriority(context))
+            viewModel.retainSelection(ids)
+        }
 
         viewModel.appBar.mode.observeSingle(viewLifecycleOwner) { mode ->
             when (mode) {
                 APP_BAR_DEFAULT_MODE, null -> {
-                    topToolbarToDefault()
-                    bottomToolbarToDefault()
-
                     sharedMainActivityViewModel.unlockDrawer()
-
                     appBarBackPressHandler.isEnabled = false
                 }
-
                 APP_BAR_SELECTION_MODE -> {
-                    topToolbarToMainSelection()
-                    bottomToolbarToMainSelection()
-
                     sharedMainActivityViewModel.lockDrawer()
-
                     appBarBackPressHandler.isEnabled = true
                 }
             }
         }
     }
 
-    override fun onClick(view: View, position: Int, item: NoteView) {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, savedInstanceState)
+        viewModel.refresh(currentQuery, AppPreferences.defaultPriority(context))
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sharedMainActivityViewModel.setCurrentFragment(FRAGMENT_TAG)
+    }
+
+    private fun handleNoteClick(noteView: NoteView) {
+        val id = noteView.note.id
         if (!AppPreferences.isReverseNoteClickAction(context)) {
-            if (viewAdapter.getSelection().count > 0) {
-                toggleNoteSelection(position, item)
+            if (viewModel.selectionCount > 0) {
+                viewModel.toggleSelection(id)
             } else {
-                openNote(item.note.id)
+                listener?.onNoteOpen(id)
             }
         } else {
-            toggleNoteSelection(position, item)
+            viewModel.toggleSelection(id)
         }
     }
 
-    override fun onLongClick(view: View, position: Int, item: NoteView) {
+    private fun handleNoteLongClick(noteView: NoteView) {
+        val id = noteView.note.id
         if (!AppPreferences.isReverseNoteClickAction(context)) {
-            toggleNoteSelection(position, item)
+            viewModel.toggleSelection(id)
         } else {
-            openNote(item.note.id)
+            listener?.onNoteOpen(id)
         }
     }
 
-    private fun openNote(id: Long) {
-        listener?.onNoteOpen(id)
+    private fun onNoteSwipe(noteView: NoteView, direction: Int, screenX: Int, screenY: Int) {
+        val anchor = view ?: return
+        showPopupWindowAt(
+            noteView.note.id,
+            NotePopup.Location.QUERY,
+            direction,
+            anchor,
+            screenX,
+            screenY,
+        ) { noteId, buttonId ->
+            handleActionItemClick(setOf(noteId), buttonId)
+        }
     }
 
-    private fun toggleNoteSelection(position: Int, item: NoteView) {
-        val noteId = item.note.id
+    private fun toggleCheckbox(note: Note, span: CheckboxSpan) {
+        val content = note.content ?: return
+        if (span.rawStart < 0 || span.rawEnd > content.length) return
+        val replacement = if (span.getState() == CheckboxSpan.State.CHECKED) "[ ]" else "[X]"
+        val newContent = content.replaceRange(span.rawStart, span.rawEnd, replacement)
+        App.EXECUTORS.diskIO().execute { UseCaseRunner.run(NoteUpdateContent(note.id, newContent)) }
+    }
 
-        viewAdapter.getSelection().toggle(noteId)
-        viewAdapter.notifyItemChanged(position)
-
-        viewModel.appBar.toModeFromSelectionCount(viewAdapter.getSelection().count)
-
+    private fun handleDefaultAction(itemId: Int) {
+        when (itemId) {
+            R.id.sync -> SyncRunner.startSync()
+            // TODO: keep_screen_on requires a checkable MenuItem; revisit in Compose.
+            R.id.activity_action_settings ->
+                startActivity(Intent(context, SettingsActivity::class.java))
+        }
     }
 
     companion object {
         private val TAG = SearchFragment::class.java.name
 
-        /** Name used for [android.app.FragmentManager].  */
         @JvmField
         val FRAGMENT_TAG: String = SearchFragment::class.java.name
 
         @JvmStatic
-        fun getInstance(query: String): SearchFragment {
-            return getInstance(query, null)
-        }
+        fun getInstance(query: String): SearchFragment = getInstance(query, null)
 
         @JvmStatic
         fun getInstance(query: String, queryName: String? = null): SearchFragment {
             val fragment = SearchFragment()
-
             val args = Bundle()
             args.putString(ARG_QUERY, query)
-            if (queryName != null) {
-                args.putString(ARG_QUERY_NAME, queryName)
-            }
+            if (queryName != null) args.putString(ARG_QUERY_NAME, queryName)
             fragment.arguments = args
-
             return fragment
         }
     }

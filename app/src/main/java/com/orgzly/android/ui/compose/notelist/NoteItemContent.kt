@@ -73,13 +73,14 @@ fun NoteItemContent(
     onToggleFoldSubtree: (Long) -> Unit,
     onCheckboxToggle: (Note, CheckboxSpan) -> Unit,
     onLinkClick: (Any) -> Unit,
+    inBook: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
     val note = noteView.note
 
-    val binder = remember(context) { NoteItemViewBinder(context, inBook = true) }
+    val binder = remember(context, inBook) { NoteItemViewBinder(context, inBook = inBook) }
     binder.levelOffset = levelOffset
 
     val linkColor = MaterialTheme.colorScheme.primary
@@ -90,89 +91,122 @@ fun NoteItemContent(
             noteView.getInheritedTagsList().contains(ARCHIVE_TAG)
     val contentAlpha = if (isDone || isArchived) 0.45f else 1f
 
-    val level = maxOf(0, note.position.level - 1 - (levelOffset ?: 0))
+    // In search/agenda (inBook=false), no indentation; in book, derive from position.
+    val level = if (inBook) maxOf(0, note.position.level - 1 - (levelOffset ?: 0)) else 0
 
     val descendants = note.position.descendantsCount
     val contentFoldable = note.hasContent() &&
             AppPreferences.isNotesContentFoldable(context) &&
             AppPreferences.isNotesContentDisplayedInList(context)
-    val isFoldable = descendants > 0 || contentFoldable
+    val isSearchFoldable = !inBook && AppPreferences.isSearchFoldable(context)
+    val isFoldable = (inBook || isSearchFoldable) && (descendants > 0 || contentFoldable)
 
     val rowBackground = if (isSelected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent
 
-    Row(
+    // Book name preference (0=hide, 1=before title, 2=below title)
+    val bookNamePref = if (!inBook) AppPreferences.bookNameInSearchResults(context).toIntOrNull() ?: 0 else 0
+
+    Column(
         modifier = modifier
             .fillMaxWidth()
             .background(rowBackground)
             .combinedClickable(onClick = onClick, onLongClick = onLongClick)
-            .padding(end = 4.dp),
-        verticalAlignment = Alignment.Top,
+            .let { if (!inBook && !isSearchFoldable) it.padding(horizontal = 16.dp) else it },
     ) {
-        // Indentation columns with vertical guide lines.
-        IndentColumns(level)
-
-        // Bullet
-        Bullet(
-            descendantsCount = descendants,
-            isFolded = note.position.isFolded,
-            isFoldable = isFoldable,
-            onClick = { onToggleFold(note.id) },
-            onLongClick = { onToggleFoldSubtree(note.id) },
-            modifier = Modifier.padding(top = 6.dp, start = 2.dp, end = 4.dp),
-        )
-
-        // Title + planning + content
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(vertical = 4.dp),
-        ) {
-            val titleFormatted = remember(noteView, levelOffset) {
-                orgSpannedToAnnotatedString(binder.generateTitle(noteView), density, linkColor)
-            }
-
-            ClickableOrgText(
-                formatted = titleFormatted,
-                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 17.sp),
-                color = LocalContentColor.current.copy(alpha = contentAlpha),
-                maxLines = Int.MAX_VALUE,
-                onSpanClick = { span -> onLinkClick(span) },
-                onPlainTap = onClick,
-                onLongPress = onLongClick,
-                modifier = Modifier.fillMaxWidth(),
+        // Book name above note (option 1)
+        if (!inBook && bookNamePref == 1 && noteView.bookName != null) {
+            Text(
+                text = noteView.bookName,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 4.dp, start = 2.dp),
             )
-
-            PlanningTimes(noteView = noteView, alpha = contentAlpha)
-
-            if (note.hasContent() && binder.shouldDisplayContent(note)) {
-                NoteContent(
-                    note = note,
-                    alpha = contentAlpha,
-                    onCheckboxToggle = onCheckboxToggle,
-                    onLinkClick = onLinkClick,
-                    onPlainTap = onClick,
-                    onLongPress = onLongClick,
-                )
-            }
         }
 
-        // Folding button (matches the right-side fold affordance in item_head.xml)
-        if (isFoldable) {
-            Text(
-                text = if (note.position.isFolded) {
-                    stringResource(R.string.unfold_button_character)
-                } else {
-                    stringResource(R.string.fold_button_character)
-                },
-                style = MaterialTheme.typography.bodyMedium,
-                color = LocalContentColor.current.copy(alpha = 0.6f),
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = if (inBook) 4.dp else 0.dp),
+            verticalAlignment = Alignment.Top,
+        ) {
+            // Indentation columns with vertical guidelines (book view only).
+            if (inBook) IndentColumns(level)
+
+            // Bullet (book view only).
+            if (inBook) {
+                Bullet(
+                    descendantsCount = descendants,
+                    isFolded = note.position.isFolded,
+                    isFoldable = isFoldable,
+                    onClick = { onToggleFold(note.id) },
+                    onLongClick = { onToggleFoldSubtree(note.id) },
+                    modifier = Modifier.padding(top = 6.dp, start = 2.dp, end = 4.dp),
+                )
+            }
+
+            // Title + planning + content
+            Column(
                 modifier = Modifier
-                    .padding(top = 4.dp, start = 8.dp, end = 8.dp)
-                    .combinedClickable(
-                        onClick = { onToggleFold(note.id) },
-                        onLongClick = { onToggleFoldSubtree(note.id) },
-                    ),
-            )
+                    .weight(1f)
+                    .padding(vertical = 4.dp),
+            ) {
+                val titleFormatted = remember(noteView, levelOffset, inBook) {
+                    orgSpannedToAnnotatedString(binder.generateTitle(noteView), density, linkColor)
+                }
+
+                ClickableOrgText(
+                    formatted = titleFormatted,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 17.sp),
+                    color = LocalContentColor.current.copy(alpha = contentAlpha),
+                    maxLines = Int.MAX_VALUE,
+                    onSpanClick = { span -> onLinkClick(span) },
+                    onPlainTap = onClick,
+                    onLongPress = onLongClick,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                PlanningTimes(noteView = noteView, alpha = contentAlpha)
+
+                if (note.hasContent() && binder.shouldDisplayContent(note)) {
+                    NoteContent(
+                        note = note,
+                        alpha = contentAlpha,
+                        onCheckboxToggle = onCheckboxToggle,
+                        onLinkClick = onLinkClick,
+                        onPlainTap = onClick,
+                        onLongPress = onLongClick,
+                    )
+                }
+
+                // Book name below note (option 2)
+                if (!inBook && bookNamePref == 2 && noteView.bookName != null) {
+                    Text(
+                        text = noteView.bookName,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(bottom = 2.dp),
+                    )
+                }
+            }
+
+            // Folding button (matches the right-side fold affordance in item_head.xml)
+            if (isFoldable) {
+                Text(
+                    text = if (note.position.isFolded) {
+                        stringResource(R.string.unfold_button_character)
+                    } else {
+                        stringResource(R.string.fold_button_character)
+                    },
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = LocalContentColor.current.copy(alpha = 0.6f),
+                    modifier = Modifier
+                        .padding(top = 4.dp, start = 8.dp, end = 8.dp)
+                        .combinedClickable(
+                            onClick = { onToggleFold(note.id) },
+                            onLongClick = { onToggleFoldSubtree(note.id) },
+                        ),
+                )
+            }
         }
     }
 }

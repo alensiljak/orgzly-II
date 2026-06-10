@@ -21,7 +21,6 @@ import com.orgzly.android.usecase.NoteToggleFoldingSubtree
 import com.orgzly.android.usecase.NoteUpdateContent
 import com.orgzly.android.usecase.UseCaseRunner
 import com.orgzly.android.util.UserTimeFormatter
-import cc.alensiljak.orgzly.databinding.ItemAgendaDividerBinding
 import cc.alensiljak.orgzly.databinding.ItemHeadBinding
 
 class NoteItemViewBinder(private val context: Context, private val inBook: Boolean) {
@@ -413,16 +412,6 @@ class NoteItemViewBinder(private val context: Context, private val inBook: Boole
         /**
          * Setup margins or padding for different list density settings.
          */
-        fun setupSpacingForDensitySetting(context: Context, binding: ItemAgendaDividerBinding) {
-            val margins = getMarginsForListDensity(context)
-
-            binding.root.setPadding(
-                    binding.root.paddingLeft,
-                    margins.first,
-                    binding.root.paddingRight,
-                    margins.first)
-
-        }
         fun setupSpacingForDensitySetting(context: Context, binding: ItemHeadBinding) {
             val margins = getMarginsForListDensity(context)
 

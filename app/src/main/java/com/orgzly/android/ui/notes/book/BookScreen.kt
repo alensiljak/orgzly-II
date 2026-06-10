@@ -1,7 +1,6 @@
 package com.orgzly.android.ui.notes.book
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,21 +37,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import kotlin.math.abs
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cc.alensiljak.orgzly.R
 import com.orgzly.android.db.entity.Note
 import com.orgzly.android.db.entity.NoteView
 import com.orgzly.android.ui.compose.notelist.NoteItemContent
+import com.orgzly.android.ui.compose.notelist.SwipeableNoteRow
 import com.orgzly.android.ui.compose.notelist.orgSpannedToAnnotatedString
 import com.orgzly.android.ui.compose.widgets.OrgzlyFloatingActionButton
 import com.orgzly.android.ui.compose.widgets.OrgzlyTopAppBar
@@ -271,46 +266,6 @@ private fun NoteList(
     }
 }
 
-/**
- * Wraps a note row with horizontal-drag detection. On a sufficient swipe it reports the swipe
- * direction (-1 left, +1 right) and the swipe end x / start y in window coordinates, which
- * [BookFragment] uses to anchor the [com.orgzly.android.ui.notes.NotePopup] action buttons.
- * Taps and vertical scrolling are unaffected (the drag detector only fires on horizontal drags).
- */
-@Composable
-private fun SwipeableNoteRow(
-    onSwipe: (Int, Int, Int) -> Unit,
-    content: @Composable () -> Unit,
-) {
-    val thresholdPx = with(LocalDensity.current) { 48.dp.toPx() }
-    var windowOffset by remember { mutableStateOf(Offset.Zero) }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .onGloballyPositioned { windowOffset = it.positionInWindow() }
-            .pointerInput(Unit) {
-                var totalDx = 0f
-                var lastPos = Offset.Zero
-                detectHorizontalDragGestures(
-                    onDragStart = { off -> totalDx = 0f; lastPos = off },
-                    onHorizontalDrag = { change, delta -> totalDx += delta; lastPos = change.position },
-                    onDragEnd = {
-                        if (abs(totalDx) > thresholdPx) {
-                            val direction = if (totalDx < 0) -1 else 1
-                            onSwipe(
-                                direction,
-                                (windowOffset.x + lastPos.x).toInt(),
-                                (windowOffset.y + lastPos.y).toInt(),
-                            )
-                        }
-                    },
-                )
-            },
-    ) {
-        content()
-    }
-}
 
 @Composable
 private fun Preface(text: String, onClick: () -> Unit) {
