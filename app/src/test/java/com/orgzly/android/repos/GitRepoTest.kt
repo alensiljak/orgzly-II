@@ -36,6 +36,7 @@ class GitRepoTest : SyncRepoTest {
         val repoPreferences = RepoPreferences(context, repo.id, repo.url.toUri())
         val gitPreferences = GitPreferencesFromRepoPrefs(repoPreferences)
         gitWorkingTree = File(gitPreferences.repositoryFilepath())
+        gitWorkingTree.deleteRecursively()
         gitWorkingTree.mkdirs()
         val git = GitRepo.ensureRepositoryExists(gitPreferences, true, null)
         gitFileSynchronizer = GitFileSynchronizer(git, gitPreferences)

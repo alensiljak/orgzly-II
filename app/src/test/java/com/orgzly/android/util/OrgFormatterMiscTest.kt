@@ -25,12 +25,12 @@ class OrgFormatterMiscTest : OrgFormatterTest() {
         assertThat(spannable.foundSpans.size, `is`(2))
 
         assertThat(spannable.foundSpans[0].start, `is`(0))
-        assertThat(spannable.foundSpans[0].end, `is`(29))
+        assertThat(spannable.foundSpans[0].end, `is`(28))
         assertThat(spannable.foundSpans[0].span, instanceOf(UrlLinkSpan::class.java))
         assertThat(spannable.foundSpans[0].url, `is`("https://orgzly.alensiljak.cc"))
 
-        assertThat(spannable.foundSpans[1].start, `is`(30))
-        assertThat(spannable.foundSpans[1].end, `is`(59))
+        assertThat(spannable.foundSpans[1].start, `is`(29))
+        assertThat(spannable.foundSpans[1].end, `is`(57))
         assertThat(spannable.foundSpans[0].span, instanceOf(UrlLinkSpan::class.java))
         assertThat(spannable.foundSpans[1].url, `is`("https://orgzly.alensiljak.cc"))
     }

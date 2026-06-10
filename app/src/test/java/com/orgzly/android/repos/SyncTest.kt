@@ -557,7 +557,7 @@ class SyncTest {
 
         val repoDir = "${context.cacheDir}/$uuid"
 
-        val repo = testUtils.repoInstance(RepoType.DIRECTORY, "file:$repoDir")
+        val repo = testUtils.repoInstance(RepoType.DIRECTORY, File(repoDir).toURI().toString())
 
         assertNotNull(repo)
         assertEquals(0, repo.books.size)

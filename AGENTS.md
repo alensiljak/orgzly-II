@@ -63,6 +63,7 @@ Dropbox credentials are loaded from `app.properties` in the project root (not co
 ### Dependency Injection
 
 Dagger 2 is used for DI. The single `AppComponent` (`di/AppComponent.kt`) wires together three modules:
+
 - `ApplicationModule` — provides `Context`, `Resources`
 - `DatabaseModule` — provides `OrgzlyDatabase`
 - `DataModule` — provides `DataRepository`, `RepoFactory`, `LocalStorage`
@@ -84,6 +85,7 @@ Notes use a **nested set model** for tree hierarchy (`NotePosition.lft`/`rgt`), 
 ### Org-mode Parsing (org-java module)
 
 The `org-java` module (`com.orgzly.org.*`) is a standalone Java library. Key classes:
+
 - `OrgParser` / `OrgNestedSetParser` — parse `.org` files into `OrgHead`/`OrgFile` objects
 - `OrgParserWriter` — serialize back to Org format
 - `OrgDateTime`, `OrgRange`, `OrgRepeater` — date/time handling
@@ -99,6 +101,7 @@ Auto-sync is triggered via `AutoSync` after data-modifying use cases.
 ### Query System
 
 The search query system has two layers:
+
 - `query/user/` — user-facing query parsers (`DottedQueryParser`, `BasicQueryParser`) and builders
 - `query/sql/` — `SqliteQueryBuilder` converts the parsed `Query` object to SQL for Room
 
