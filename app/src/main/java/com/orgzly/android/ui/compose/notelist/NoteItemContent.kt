@@ -40,8 +40,8 @@ import com.orgzly.android.db.entity.Note
 import com.orgzly.android.db.entity.NoteView
 import com.orgzly.android.db.entity.toList
 import com.orgzly.android.prefs.AppPreferences
-import com.orgzly.android.ui.notes.NoteItemViewBinder
-import com.orgzly.android.ui.notes.NoteItemViewBinder.Companion.ARCHIVE_TAG
+import com.orgzly.android.ui.notes.NoteItemTitleGenerator
+import com.orgzly.android.ui.notes.NoteItemTitleGenerator.Companion.ARCHIVE_TAG
 import com.orgzly.android.ui.views.style.CheckboxSpan
 import com.orgzly.android.ui.views.style.DrawerMarkerSpan
 import com.orgzly.android.ui.views.style.DrawerSpan
@@ -56,7 +56,7 @@ private val INDENT_WIDTH = 16.dp
  * A single note row in the book (notebook tree) view, rendered entirely in Compose.
  *
  * The styled title and content are produced by the existing Org rendering pipeline
- * ([NoteItemViewBinder.generateTitle] / [OrgFormatter.parse]) and converted to Compose
+ * ([NoteItemTitleGenerator.generateTitle] / [OrgFormatter.parse]) and converted to Compose
  * [androidx.compose.ui.text.AnnotatedString]s — so all org formatting, state colours, tags and
  * links match the legacy view exactly. The three in-row interactions (checkbox toggle, drawer
  * fold, link follow) are preserved.
@@ -80,7 +80,7 @@ fun NoteItemContent(
     val density = LocalDensity.current
     val note = noteView.note
 
-    val binder = remember(context, inBook) { NoteItemViewBinder(context, inBook = inBook) }
+    val binder = remember(context, inBook) { NoteItemTitleGenerator(context, inBook = inBook) }
     binder.levelOffset = levelOffset
 
     val linkColor = MaterialTheme.colorScheme.primary

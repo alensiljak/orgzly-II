@@ -144,12 +144,22 @@ dispatched. This gives pixel-faithful formatting with no fork of the `RichText` 
 in its `bind()` method (dead code path, but still compiles). A future cleanup can split the
 title-generation helpers out and delete the ViewHolder/layout entirely.
 
+## NoteItemViewBinder cleanup
+
+`generateTitle` / `shouldDisplayContent` / `ARCHIVE_TAG` extracted into `NoteItemTitleGenerator`
+(new file in `ui/notes/`). All four callers (`NoteItemContent`, `RefileFragment`,
+`SettingsImportAdapter`, `SettingsExportAdapter`) updated to the new class. Deleted:
+
+- `ui/notes/NoteItemViewBinder.kt`
+- `ui/notes/NoteItemViewHolder.kt`
+- `res/layout/item_head.xml`
+
+Also removed the dead `showPopupWindow(noteId, location, direction, itemView, e1, e2, listener)`
+overload from `NotesFragment` (it referenced the now-gone `R.id.item_head_title`).
+
 ## Remaining Phase 3 work
 
 1. **Espresso tests** — `androidTest` still references deleted layout ids
    (`fragment_book_recycler_view`, `fragment_book_view_flipper`, `item_preface_text_view`,
    `fragment_query_search_recycler_view`, etc.). These need to be rewritten against the Compose
    UI (or removed). Does not affect the main app build.
-2. **NoteItemViewBinder cleanup** — Split title-generation helpers (`generateTitle`,
-   `shouldDisplayContent`) out of the binder so `NoteItemViewHolder` and `item_head.xml` can be
-   deleted.

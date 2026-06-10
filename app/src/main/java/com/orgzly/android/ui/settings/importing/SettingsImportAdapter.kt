@@ -12,7 +12,7 @@ import cc.alensiljak.orgzly.R
 import com.orgzly.android.db.entity.Book
 import com.orgzly.android.db.entity.Note
 import com.orgzly.android.db.entity.NoteView
-import com.orgzly.android.ui.notes.NoteItemViewBinder
+import com.orgzly.android.ui.notes.NoteItemTitleGenerator
 import cc.alensiljak.orgzly.databinding.ItemSettingsImportBinding
 
 class SettingsImportAdapter(val context: Context, val listener: OnClickListener) :
@@ -24,7 +24,7 @@ class SettingsImportAdapter(val context: Context, val listener: OnClickListener)
 
     private var icons: Icons? = null
 
-    private val noteItemViewBinder = NoteItemViewBinder(context, true)
+    private val noteItemViewBinder = NoteItemTitleGenerator(context, true)
 
     interface OnClickListener {
         fun onItem(item: SettingsImportViewModel.Item)

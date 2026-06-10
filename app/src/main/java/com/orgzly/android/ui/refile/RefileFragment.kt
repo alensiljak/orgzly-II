@@ -57,7 +57,7 @@ import com.orgzly.android.db.entity.Book
 import com.orgzly.android.db.entity.Note
 import com.orgzly.android.db.entity.NoteView
 import com.orgzly.android.ui.compose.base.OrgzlyBootstrap
-import com.orgzly.android.ui.notes.NoteItemViewBinder
+import com.orgzly.android.ui.notes.NoteItemTitleGenerator
 import com.orgzly.android.ui.showSnackbar
 import com.orgzly.android.usecase.NoteRefile
 import com.orgzly.android.util.LogUtils
@@ -356,7 +356,7 @@ private fun RefileItem(
     onRefile: () -> Unit,
 ) {
     val context = LocalContext.current
-    val noteItemViewBinder = remember { NoteItemViewBinder(context, true) }
+    val noteItemViewBinder = remember { NoteItemTitleGenerator(context, true) }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
