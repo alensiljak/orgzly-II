@@ -55,7 +55,7 @@ Screens are ordered by impact, isolation, and risk. Finish each phase before sta
 
 See [jetpack-compose-migration-phase-1.md](jetpack-compose-migration-phase-1.md) for the detailed action plan.
 
-### Phase 2 — Dialogs and small components *(low risk, high volume)*
+### Phase 2 — Dialogs and small components *(low risk, high volume)*, ✅ DONE
 
 Migrate all `DialogFragment` subclasses to Compose dialogs. These are self-contained and have no navigation dependencies.
 
@@ -64,6 +64,8 @@ Migrate all `DialogFragment` subclasses to Compose dialogs. These are self-conta
 - `ShowSshKeyDialogFragment`
 - `RefileFragment`
 - Any remaining modal sheets
+
+See the [Phase 2 doc](jetpack-compose-migration-phase-2) for the detailed action plan.
 
 ### Phase 3 — Notes list screen *(medium risk)*
 

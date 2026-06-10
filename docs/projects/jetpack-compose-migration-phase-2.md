@@ -93,17 +93,19 @@ The most complex dialog in the app.
 
 ---
 
-### 🔲 Remaining
-
 #### `RefileFragment`
 
-Bottom-sheet style `DialogFragment` with a full `RecyclerView` list of refile targets backed by a `ViewModel`. More like a screen than a dialog.
+Full-screen `DialogFragment` with a `LazyColumn` list of refile targets backed by a `ViewModel`.
 
-**Notes:**
+- `onCreateDialog` replaced with `onCreateView` + `ComposeView`
+- `RefileScreen` composable with `TopAppBar`, breadcrumb bar, and `LazyColumn` item list
+- `BreadcrumbsBar` with horizontal scroll and refile-here `IconButton`
+- `RefileItem` composable uses `AndroidView(TextView)` for styled note titles (via `NoteItemViewBinder`)
+- `RefileAdapter.kt` deleted (replaced by `LazyColumn`)
+- `dialog_refile.xml` and `item_refile.xml` deleted
+- Public API unchanged: `getInstance()`, `FRAGMENT_TAG` — callers need no changes
 
-- Migrate to a Compose `ModalBottomSheet` or `AlertDialog` with a `LazyColumn`
-- `dialog_refile.xml` can be deleted after migration
-- Requires `RefileViewModel` LiveData → StateFlow migration (recommended but optional)
+### 🔲 Remaining
 
 #### Settings dialogs *(deferred to Phase 6)*
 
@@ -115,11 +117,11 @@ Bottom-sheet style `DialogFragment` with a full `RecyclerView` list of refile ta
 
 | File                                     | Blocked by                                  |
 |------------------------------------------|---------------------------------------------|
-| `res/layout/dialog_simple_one_liner.xml` | ✅ Deleted                                   |
-| `res/layout/dialog_period_with_type.xml` | ✅ Deleted                                   |
-| `res/layout/dialog_timestamp.xml`        | ✅ Deleted                                   |
-| `res/layout/dialog_timestamp_title.xml`  | ✅ Deleted                                   |
-| `res/layout/dialog_refile.xml`           | `RefileFragment`                            |
+| `res/layout/dialog_simple_one_liner.xml` | ✅ Deleted                                  |
+| `res/layout/dialog_period_with_type.xml` | ✅ Deleted                                  |
+| `res/layout/dialog_timestamp.xml`        | ✅ Deleted                                  |
+| `res/layout/dialog_timestamp_title.xml`  | ✅ Deleted                                  |
+| `res/layout/dialog_refile.xml`           | ✅ Deleted                                  |
 | `res/layout/dialog_whats_new.xml`        | `WhatsNewDialog` legacy factory (Phase 4/6) |
 
 ---
@@ -128,5 +130,5 @@ Bottom-sheet style `DialogFragment` with a full `RecyclerView` list of refile ta
 
 1. ✅ `PeriodWithTypePickerDialog` family (`WarningPeriodPickerDialog`, `DelayPickerDialog`, `RepeaterPickerDialog`)
 2. ✅ `TimestampDialogFragment`
-3. `RefileFragment`
+3. ✅ `RefileFragment`
 4. Settings dialogs (deferred, part of Phase 6)
