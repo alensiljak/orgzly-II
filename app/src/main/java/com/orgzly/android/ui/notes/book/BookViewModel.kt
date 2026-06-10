@@ -14,6 +14,9 @@ import com.orgzly.android.ui.SingleLiveEvent
 import com.orgzly.android.usecase.BookCycleVisibility
 import com.orgzly.android.usecase.NoteToggleFoldingSubtree
 import com.orgzly.android.usecase.UseCaseRunner
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class BookViewModel(private val dataRepository: DataRepository, val bookId: Long) : CommonViewModel() {
 
@@ -78,6 +81,56 @@ class BookViewModel(private val dataRepository: DataRepository, val bookId: Long
         APP_BAR_DEFAULT_MODE to null,
         APP_BAR_SELECTION_MODE to APP_BAR_DEFAULT_MODE,
         APP_BAR_SELECTION_MOVE_MODE to APP_BAR_SELECTION_MODE))
+
+
+    /* Selection — moved out of the RecyclerView adapter into the ViewModel for Compose. */
+
+    private val _selectedIds = MutableStateFlow<Set<Long>>(emptySet())
+    val selectedIds: StateFlow<Set<Long>> = _selectedIds.asStateFlow()
+
+    val selectionCount: Int
+        get() = _selectedIds.value.size
+
+    fun getSelectedIds(): Set<Long> = _selectedIds.value
+
+    fun toggleSelection(id: Long) {
+        _selectedIds.value = _selectedIds.value.toMutableSet().also { set ->
+            if (!set.add(id)) set.remove(id)
+        }
+        appBar.toModeFromSelectionCount(_selectedIds.value.size)
+    }
+
+    fun clearSelection() {
+        // Guard so we don't re-trigger the AppBar mode change when already empty (avoids a loop
+        // with the mode observer, which calls clearSelection on entering the default mode).
+        if (_selectedIds.value.isNotEmpty()) {
+            _selectedIds.value = emptySet()
+            appBar.toModeFromSelectionCount(0)
+        }
+    }
+
+    /** Drop any selected ids that no longer exist (after a data reload). */
+    fun retainSelection(existingIds: Set<Long>) {
+        val retained = _selectedIds.value.intersect(existingIds)
+        if (retained.size != _selectedIds.value.size) {
+            _selectedIds.value = retained
+            appBar.toModeFromSelectionCount(_selectedIds.value.size)
+        }
+    }
+
+
+    /* File tags dialog (book preface #+FILETAGS:) */
+
+    private val _filetagsDialogVisible = MutableStateFlow(false)
+    val filetagsDialogVisible: StateFlow<Boolean> = _filetagsDialogVisible.asStateFlow()
+
+    fun showFiletagsDialog() {
+        _filetagsDialogVisible.value = true
+    }
+
+    fun dismissFiletagsDialog() {
+        _filetagsDialogVisible.value = false
+    }
 
 
     fun cycleVisibility() {

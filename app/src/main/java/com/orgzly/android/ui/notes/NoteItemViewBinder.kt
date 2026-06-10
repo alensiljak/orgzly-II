@@ -104,6 +104,11 @@ class NoteItemViewBinder(private val context: Context, private val inBook: Boole
         return titleGenerator.generateTitle(noteView)
     }
 
+    /** Exposed for the Compose note row, which reuses the same display logic. */
+    fun shouldDisplayContent(note: Note): Boolean {
+        return titleGenerator.shouldDisplayContent(note)
+    }
+
     private fun setupContent(holder: NoteItemViewHolder, note: Note) {
         if (note.hasContent() && titleGenerator.shouldDisplayContent(note)) {
             if (AppPreferences.isFontMonospaced(context)) {

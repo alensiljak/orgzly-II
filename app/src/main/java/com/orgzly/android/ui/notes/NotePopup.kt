@@ -33,6 +33,15 @@ object NotePopup {
     }
 
     fun showWindow(itemId: Long, anchor: View, location: Location, direction: Int, e1: MotionEvent, e2: MotionEvent, listener: NotePopupListener): PopupWindow? {
+        // End position of the swipe (x) and starting position of the swipe (y), in window coords.
+        return showWindow(itemId, anchor, location, direction, e2.rawX.toInt(), e1.rawY.toInt(), listener)
+    }
+
+    /**
+     * Variant taking absolute window coordinates directly, for use from Compose gesture handlers
+     * (which have no [MotionEvent]). [x] is the swipe end x, [y] the swipe start y.
+     */
+    fun showWindow(itemId: Long, anchor: View, location: Location, direction: Int, x: Int, y: Int, listener: NotePopupListener): PopupWindow? {
         val context = anchor.context
 
         val actions = getActionsForLocation(context, location, direction)
@@ -83,12 +92,6 @@ object NotePopup {
 
         val gravity = Gravity.START or Gravity.TOP
 
-        // End position of the swipe
-        val x = e2.rawX.toInt()
-
-        // Starting position of the swipe
-        val y = e1.rawY.toInt()
-
         // Top left of the anchor
         val (anchorX, anchorY) = IntArray(2).also { arr ->
             anchor.getLocationInWindow(arr)
@@ -109,7 +112,7 @@ object NotePopup {
         // Open above the finger
         val betterY = y - fingerSize
 
-        // Not higher then the anchor
+        // Not higher than the anchor
         val usedY = betterY.coerceAtLeast(anchorY)
 
         popupWindow.showAtLocation(anchor, gravity, x, usedY)

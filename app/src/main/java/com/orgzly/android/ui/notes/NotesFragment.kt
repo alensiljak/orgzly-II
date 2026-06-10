@@ -69,6 +69,36 @@ abstract class NotesFragment : CommonFragment(), TimestampDialogFragment.OnDateT
         return notePopup
     }
 
+    /**
+     * Shows the swipe action popup at absolute window coordinates, for Compose-hosted lists which
+     * have no per-item [View] to anchor to. [anchor] only needs to be any attached view (e.g. the
+     * fragment root) to provide a window token.
+     */
+    protected fun showPopupWindowAt(
+        noteId: Long,
+        location: NotePopup.Location,
+        direction: Int,
+        anchor: View,
+        screenX: Int,
+        screenY: Int,
+        listener: NotePopupListener
+    ): PopupWindow? {
+        notePopup = NotePopup.showWindow(noteId, anchor, location, direction, screenX, screenY) { _, buttonId ->
+            listener.onPopupButtonClick(noteId, buttonId)
+        }
+
+        if (notePopup != null) {
+            notePopupDismissOnBackPress.isEnabled = true
+        }
+
+        notePopup?.setOnDismissListener {
+            notePopup = null
+            notePopupDismissOnBackPress.isEnabled = false
+        }
+
+        return notePopup
+    }
+
     protected val notePopupDismissOnBackPress = object : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
             // Dismiss window on back press

@@ -14,13 +14,14 @@ class AppBar(var modes: Map<Int, Int?>) {
             // No selection, default mode
             toMode(0)
         } else {
-            if (mode.value == 0) {
+            // Use currentMode (StateFlow, always initialised to 0) rather than the SingleLiveEvent
+            // mode, whose value is null until first set — otherwise the first selection never
+            // switches to selection mode.
+            if (currentMode.value == 0) {
                 // Selection, from default mode
                 toMode(1)
-            } else {
-                // Keep mode
-                mode.value = mode.value
             }
+            // else: keep current mode
         }
     }
 
