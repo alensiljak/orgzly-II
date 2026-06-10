@@ -67,13 +67,9 @@ The legacy `show()` / `create()` factories stay untouched until their callers ar
 - `@Composable fun NoteStateDialog(currentState, onSelection, onClear, onDismiss)` added with `RadioButton` rows
 - Will replace legacy factory when `NotesFragment` migrates (Phase 3)
 
----
-
-### 🔲 Remaining
-
 #### `PeriodWithTypePickerDialog` family
 
-Three concrete `DialogFragment` subclasses sharing an abstract base. Each wraps a `NumberPicker` compound layout (`dialog_period_with_type.xml`). Best migrated together.
+Three concrete `DialogFragment` subclasses sharing an abstract base, migrated alongside `TimestampDialogFragment`.
 
 | Class                       | Type spinner                  | Used by                   |
 |-----------------------------|-------------------------------|---------------------------|
@@ -81,28 +77,23 @@ Three concrete `DialogFragment` subclasses sharing an abstract base. Each wraps 
 | `DelayPickerDialog`         | ALL / FIRST_ONLY              | `TimestampDialogFragment` |
 | `RepeaterPickerDialog`      | CUMULATE / CATCH_UP / RESTART | `TimestampDialogFragment` |
 
-**Notes:**
-
-- Compose has no `NumberPicker` equivalent — use `LazyColumn` with snap scroll or a custom vertically-scrolling picker
-- `dialog_period_with_type.xml` can be deleted after all three are migrated
-- All three are only called from `TimestampDialogFragment`, so migrating them alongside the timestamp dialog makes sense
+- `onCreateDialog` replaced with `onCreateView` + `ComposeView` in each subclass
+- `WheelNumberPicker.kt` added as a custom Compose snap-scroll number picker (replaces `NumberPicker` view)
+- `dialog_period_with_type.xml` deleted
 
 #### `TimestampDialogFragment`
 
-The most complex dialog in the app. Contains:
+The most complex dialog in the app.
 
-- Inline active/inactive checkbox
-- Date picker (`DatePicker` view)
-- Time picker (`TimePicker` view)
-- End-time picker
+- Inline active/inactive toggle, date picker, time picker, end-time picker
 - Buttons: Today, Tomorrow, Next Week, Set, Clear, Cancel
-- Sub-dialogs: `RepeaterPickerDialog`, `DelayPickerDialog`, `WarningPeriodPickerDialog`
+- Sub-dialogs: `RepeaterPickerDialog`, `DelayPickerDialog`, `WarningPeriodPickerDialog` (all migrated)
+- `onCreateDialog` replaced with `onCreateView` + `ComposeView`
+- `dialog_timestamp.xml` and `dialog_timestamp_title.xml` deleted
 
-**Notes:**
+---
 
-- Compose `DatePicker` / `TimePicker` (Material3 `DatePickerDialog`, `TimeInput`) are available but have different UX from the legacy views — verify with design
-- `dialog_timestamp.xml` and `dialog_timestamp_title.xml` can be deleted after migration
-- Recommend migrating this after the `PeriodWithTypePicker` family is done
+### 🔲 Remaining
 
 #### `RefileFragment`
 
@@ -125,9 +116,9 @@ Bottom-sheet style `DialogFragment` with a full `RecyclerView` list of refile ta
 | File                                     | Blocked by                                  |
 |------------------------------------------|---------------------------------------------|
 | `res/layout/dialog_simple_one_liner.xml` | ✅ Deleted                                   |
-| `res/layout/dialog_period_with_type.xml` | `PeriodWithTypePickerDialog` family         |
-| `res/layout/dialog_timestamp.xml`        | `TimestampDialogFragment`                   |
-| `res/layout/dialog_timestamp_title.xml`  | `TimestampDialogFragment`                   |
+| `res/layout/dialog_period_with_type.xml` | ✅ Deleted                                   |
+| `res/layout/dialog_timestamp.xml`        | ✅ Deleted                                   |
+| `res/layout/dialog_timestamp_title.xml`  | ✅ Deleted                                   |
 | `res/layout/dialog_refile.xml`           | `RefileFragment`                            |
 | `res/layout/dialog_whats_new.xml`        | `WhatsNewDialog` legacy factory (Phase 4/6) |
 
@@ -135,7 +126,7 @@ Bottom-sheet style `DialogFragment` with a full `RecyclerView` list of refile ta
 
 ## Suggested Order for Remaining Work
 
-1. `PeriodWithTypePickerDialog` → `WarningPeriodPickerDialog` → `DelayPickerDialog` → `RepeaterPickerDialog`
-2. `TimestampDialogFragment` (depends on the period pickers being Compose)
+1. ✅ `PeriodWithTypePickerDialog` family (`WarningPeriodPickerDialog`, `DelayPickerDialog`, `RepeaterPickerDialog`)
+2. ✅ `TimestampDialogFragment`
 3. `RefileFragment`
 4. Settings dialogs (deferred, part of Phase 6)
