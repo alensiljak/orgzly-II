@@ -157,9 +157,71 @@ title-generation helpers out and delete the ViewHolder/layout entirely.
 Also removed the dead `showPopupWindow(noteId, location, direction, itemView, e1, e2, listener)`
 overload from `NotesFragment` (it referenced the now-gone `R.id.item_head_title`).
 
-## Remaining Phase 3 work
+## Espresso test migration
 
-1. **Espresso tests** — `androidTest` still references deleted layout ids
-   (`fragment_book_recycler_view`, `fragment_book_view_flipper`, `item_preface_text_view`,
-   `fragment_query_search_recycler_view`, etc.). These need to be rewritten against the Compose
-   UI (or removed). Does not affect the main app build.
+The `androidTest` suite referenced deleted layout IDs (`fragment_book_recycler_view`,
+`fragment_book_view_flipper`, `item_preface_text_view`, `fragment_query_search_recycler_view`,
+etc.) and `RecyclerView`-based helpers in `EspressoUtils`. These do not affect the main app
+build but the instrumented test suite is broken until migrated.
+
+### Migration approach
+
+`createEmptyComposeRule()` is added alongside the existing `ActivityScenario` pattern — this
+preserves the test's data-setup-before-launch ordering while giving access to Compose semantics.
+Position-based RecyclerView access is replaced with `onAllNodesWithTag` selectors.
+
+Test tags added to production Compose code:
+
+| Tag | Set on | Used for |
+| --- | ------ | -------- |
+| `"note_title"` | `ClickableOrgText` in `NoteItemContent` | position-ordered note title assertions |
+| `"note_scheduled"` | scheduled `TimeRow` in `PlanningTimes` | visibility checks |
+| `"note_deadline"` | deadline `TimeRow` in `PlanningTimes` | visibility checks |
+| `"note_event"` | event `TimeRow` in `PlanningTimes` | visibility checks |
+| `"agenda_item"` | `Box` wrapper per item in `AgendaItemList` | total item count (headers + notes) |
+
+Key mapping from old to new:
+
+```kotlin
+// Old (RecyclerView position + child view ID):
+onItemInAgenda(1, R.id.item_head_title_view).check(matches(withText(containsString("Note A"))))
+onNotesInAgenda().check(matches(recyclerViewItemCount(4)))
+
+// New (Compose semantic tags; headers have no note_title tag so index 0 = first note row):
+composeTestRule.onAllNodesWithTag("note_title")[0].assertTextContains("Note A", substring = true)
+composeTestRule.onAllNodesWithTag("agenda_item").assertCountEquals(4)
+```
+
+One behaviour difference: the legacy agenda adapter showed only the triggering time type per
+entry; the Compose `PlanningTimes` shows all non-null time fields on every row. Tests that
+asserted position-specific time-type display are replaced with existence checks.
+
+### Completed
+
+- **`AgendaSortingTest.kt`** — all 8 tests migrated; 3 production files touched
+  (`NoteItemContent.kt`, `AgendaScreen.kt`, plus the test itself).
+
+### Remaining files (19)
+
+20 files were affected in total. Estimated effort by tier:
+
+| Tier | Files | Tests | Est. effort |
+| ---- | ----- | ----- | ----------- |
+| Easy | `BooksScreenTest`, `BooksTest`, `NewNoteTest`, `CreatedAtPropertyTest`, `SettingsFragmentTest`, `SettingsChangeTest`, `BookTest` | ~76 | 1–2 days |
+| Medium | `QueryFragmentTest`, `AgendaFragmentTest`, `ActionModeTest`, `MiscTest` | ~71 | 3–4 days |
+| Hard | `NoteFragmentTest`, `NoteEventsTest`, `BookPrefaceTest`, `InternalLinksTest` | ~67 | 3–4 days |
+| Utility | `EspressoUtils.java` (broken helpers need Compose-aware replacements) | — | half a day |
+
+**Total: ~1.5–2.5 weeks.**
+
+Recommended order: `EspressoUtils` first (new Compose helpers used by all others), then easy
+tier to validate, then medium (volume work), then hard last. Known hard-tier risks:
+
+- **`InternalLinksTest`** — uses `clickClickableSpan()` on note content; clickable spans in
+  Compose are dispatched through `ClickableOrgText` so the Espresso span-click helper likely
+  won't find them — may need a new approach.
+- **`BookPrefaceTest`** — the preface row in `BookScreen` needs a `testTag` before it can be
+  targeted.
+- **`NoteFragmentTest`** — most `onNoteInBook()` calls are navigation only; the note editor's
+  `AndroidView`-backed fields (`R.id.title_edit`, `R.id.content_edit`) should still work via
+  Espresso since they are not Compose.
