@@ -1,35 +1,33 @@
 package com.orgzly.android.ui.dialogs
 
-import android.content.Context
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import cc.alensiljak.orgzly.R
 import com.orgzly.org.datetime.OrgDelay
-import com.orgzly.org.datetime.OrgInterval
 
-class WarningPeriodPickerDialog(context: Context, initialValue: String, val onSet: (OrgDelay) -> Unit) :
-        PeriodWithTypePickerDialog(
-                context,
-                R.string.warning_period_dialog_title,
-                R.string.warning_period_description,
-                null,
-                0,
-                initialValue) {
+@Composable
+fun WarningPeriodPickerDialog(
+    initialValue: String,
+    onSet: (OrgDelay) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val context = LocalContext.current
+    val delay = remember { OrgDelay.parse(initialValue) }
 
-    init {
-        setup()
-    }
-
-    override fun set(typeIndex: Int, interval: OrgInterval) {
-        val type = when (typeIndex) {
-            0 -> OrgDelay.Type.ALL
-            else -> throw IllegalArgumentException("Unexpected type spinner position ($typeIndex)")
-        }
-
-        onSet(OrgDelay(type, interval.value, interval.unit))
-    }
-
-    override fun parseValue(value: String): Pair<Int, OrgInterval> {
-        val delay = OrgDelay.parse(value)
-
-        return Pair(delay.type.ordinal, OrgInterval(delay.value, delay.unit))
-    }
+    PeriodWithTypePickerDialog(
+        title = context.getString(R.string.warning_period_dialog_title),
+        description = context.getString(R.string.warning_period_description),
+        typeLabels = null,
+        typeDescriptions = null,
+        initialTypeIndex = 0,
+        initialValue = delay.value,
+        maxValue = maxOf(100, delay.value),
+        initialUnitIndex = delay.unit.ordinal,
+        onConfirm = { _, value, unitIndex ->
+            onSet(OrgDelay(OrgDelay.Type.ALL, value, ordinalToUnit(unitIndex)))
+            onDismiss()
+        },
+        onDismiss = onDismiss,
+    )
 }

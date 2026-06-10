@@ -1,166 +1,132 @@
 package com.orgzly.android.ui.dialogs
 
-import android.content.Context
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import androidx.annotation.ArrayRes
-import androidx.annotation.StringRes
-import androidx.appcompat.app.AlertDialog
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import cc.alensiljak.orgzly.R
-import cc.alensiljak.orgzly.databinding.DialogPeriodWithTypeBinding
+import com.orgzly.android.ui.compose.WheelNumberPicker
 import com.orgzly.org.datetime.OrgInterval
 
-
 /**
- * A dialog that prompts the user for the repeater, delay or warning period.
+ * Base composable for the repeater, delay and warning-period picker dialogs.
+ * Shows up to three drum-roll wheels: optional [typeLabels] wheel, value wheel, unit wheel.
  */
-abstract class PeriodWithTypePickerDialog(
-    context: Context,
-    @param:StringRes private val titleId: Int,
-    @param:StringRes private val descriptionId: Int,
-    @param:ArrayRes private val typesId: Int?,
-    @param:ArrayRes private val typesDescriptionsId: Int,
-    private val initialValue: String
-) : AlertDialog(context) {
+@Composable
+fun PeriodWithTypePickerDialog(
+    title: String,
+    description: String,
+    typeLabels: List<String>?,
+    typeDescriptions: List<String>?,
+    initialTypeIndex: Int,
+    initialValue: Int,
+    maxValue: Int = 100,
+    initialUnitIndex: Int,
+    onConfirm: (typeIndex: Int, value: Int, unitIndex: Int) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var typeIndex by remember { mutableIntStateOf(initialTypeIndex) }
+    var value by remember { mutableIntStateOf(initialValue) }
+    var unitIndex by remember { mutableIntStateOf(initialUnitIndex) }
 
-    abstract fun set(typeIndex: Int, interval: OrgInterval)
+    val context = LocalContext.current
+    val timeUnits = remember { context.resources.getStringArray(R.array.time_units).toList() }
+    val valueItems = remember(maxValue) { (1..maxValue).map { it.toString() } }
 
-    // Returns type index and OrgInterval
-    abstract fun parseValue(value: String): Pair<Int, OrgInterval>
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(title) },
+        text = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = description,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 2,
+                )
 
-    private var binding: DialogPeriodWithTypeBinding =
-            DialogPeriodWithTypeBinding.inflate(LayoutInflater.from(context))
+                Spacer(Modifier.height(8.dp))
 
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (typeLabels != null) {
+                        WheelNumberPicker(
+                            items = typeLabels,
+                            selectedIndex = typeIndex,
+                            onSelectionChanged = { typeIndex = it },
+                            modifier = Modifier.weight(1f),
+                        )
+                        Spacer(Modifier.width(16.dp))
+                    }
 
-    fun setup() {
-        setButton(BUTTON_POSITIVE, context.getString(R.string.ok)) { _, _ ->
-            val typeIndex = binding.typePicker.value
+                    WheelNumberPicker(
+                        items = valueItems,
+                        selectedIndex = value - 1,
+                        onSelectionChanged = { value = it + 1 },
+                        modifier = Modifier.weight(1f),
+                    )
 
-            val interval = getInterval(
-                    binding.valuePicker.value,
-                    binding.unitPicker.value)
+                    Spacer(Modifier.width(16.dp))
 
-            set(typeIndex, interval)
-        }
+                    WheelNumberPicker(
+                        items = timeUnits,
+                        selectedIndex = unitIndex,
+                        onSelectionChanged = { unitIndex = it },
+                        modifier = Modifier.weight(1f),
+                    )
+                }
 
-        setButton(BUTTON_NEGATIVE, context.getString(R.string.cancel)) { _, _ ->
-            cancel()
-        }
-
-        if (typesId != null) {
-            val types = context.resources.getStringArray(typesId)
-
-            binding.typePicker.apply {
-                minValue = 0
-                maxValue = types.size - 1
-                displayedValues = types
-                setOnValueChangedListener { _, _, newVal ->
-                    setTypeDescription(newVal)
+                if (!typeDescriptions.isNullOrEmpty()) {
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = typeDescriptions[typeIndex],
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth(),
+                        maxLines = 2,
+                    )
                 }
             }
-        } else {
-            binding.typePicker.visibility = View.GONE
-        }
-
-        binding.valuePicker.apply {
-            minValue = 1
-            maxValue = 100
-            wrapSelectorWheel = false
-        }
-
-        val units = context.resources.getStringArray(R.array.time_units)
-        binding.unitPicker.apply {
-            minValue = 0
-            maxValue = units.size - 1
-            displayedValues = units
-            wrapSelectorWheel = false
-        }
-
-        setView(binding.root)
-
-        setTitle(titleId)
-
-        setDescription()
-
-        setPickerValues(initialValue)
-
-        setTypeDescription(binding.typePicker.value)
-    }
-
-    private fun setDescription() {
-        binding.dialogDescription.text = context.getString(descriptionId)
-    }
-
-    private fun setPickerValues(value: String) {
-        val pair = parseValue(value)
-
-        val typeIndex = pair.first
-        val interval = pair.second
-
-        binding.typePicker.value = typeIndex
-
-        binding.valuePicker.let { valuePicker ->
-            // Increase the maximum if needed
-            if (valuePicker.maxValue < interval.value) {
-                valuePicker.maxValue = interval.value
-                /*
-                 * Has to be called after setting minimum and maximum values,
-                 * per http://stackoverflow.com/a/21065844.
-                 */
-                valuePicker.wrapSelectorWheel = false
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirm(typeIndex, value, unitIndex) }) {
+                Text(stringResource(R.string.ok))
             }
-
-            valuePicker.value = interval.value
-        }
-
-        binding.unitPicker.value = interval.unit.ordinal
-    }
-
-    private fun setTypeDescription(index: Int) {
-        if (typesDescriptionsId == 0) {
-            binding.typeDescription.visibility = View.GONE
-        } else {
-            binding.typeDescription.text =
-                    context.resources.getStringArray(typesDescriptionsId)[index]
-            binding.typeDescription.visibility = View.VISIBLE
-        }
-    }
-
-    private fun getInterval(value: Int, unitIndex: Int): OrgInterval {
-        val unit = unitIndex.let {
-            when (it) {
-                0 -> OrgInterval.Unit.HOUR
-                1 -> OrgInterval.Unit.DAY
-                2 -> OrgInterval.Unit.WEEK
-                3 -> OrgInterval.Unit.MONTH
-                4 -> OrgInterval.Unit.YEAR
-                else -> throw IllegalArgumentException("Unexpected unit spinner position ($it)")
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
             }
-        }
+        },
+    )
+}
 
-        return OrgInterval(value, unit)
-    }
-
-    override fun onSaveInstanceState(): Bundle {
-        return super.onSaveInstanceState().apply {
-            putInt(TYPE, binding.typePicker.value)
-            putInt(VALUE, binding.valuePicker.value)
-            putInt(UNIT, binding.unitPicker.value)
-        }
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-
-        binding.typePicker.value = savedInstanceState.getInt(TYPE)
-        binding.valuePicker.value = savedInstanceState.getInt(VALUE)
-        binding.unitPicker.value = savedInstanceState.getInt(UNIT)
-    }
-
-    companion object {
-        private const val TYPE = "type"
-        private const val UNIT = "unit"
-        private const val VALUE = "value"
-    }
+internal fun ordinalToUnit(unitIndex: Int): OrgInterval.Unit = when (unitIndex) {
+    0 -> OrgInterval.Unit.HOUR
+    1 -> OrgInterval.Unit.DAY
+    2 -> OrgInterval.Unit.WEEK
+    3 -> OrgInterval.Unit.MONTH
+    4 -> OrgInterval.Unit.YEAR
+    else -> throw IllegalArgumentException("Unexpected unit index ($unitIndex)")
 }
