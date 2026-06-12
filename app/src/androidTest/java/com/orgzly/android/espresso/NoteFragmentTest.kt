@@ -25,15 +25,23 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import cc.alensiljak.orgzly.R
 import com.orgzly.android.OrgzlyTest
+import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import com.orgzly.android.RetryTestRule
 import com.orgzly.android.espresso.util.EspressoUtils
 import com.orgzly.android.espresso.util.EspressoUtils.clickSetting
 import com.orgzly.android.espresso.util.EspressoUtils.onActionItemClick
-import com.orgzly.android.espresso.util.EspressoUtils.onNoteInBook
 import com.orgzly.android.espresso.util.EspressoUtils.onSnackbar
 import com.orgzly.android.espresso.util.EspressoUtils.replaceTextCloseKeyboard
 import com.orgzly.android.espresso.util.EspressoUtils.scroll
 import com.orgzly.android.espresso.util.EspressoUtils.setNumber
+import com.orgzly.android.espresso.util.onNoteFoldButton
+import com.orgzly.android.espresso.util.onNoteRow
+import com.orgzly.android.espresso.util.onNoteTitle
+import com.orgzly.android.espresso.util.performClick
+import com.orgzly.android.espresso.util.performLongClick
+import com.orgzly.android.espresso.util.scrollBookToIndex
+import com.orgzly.android.espresso.util.waitUntilNoteCount
 import com.orgzly.android.espresso.util.EspressoUtils.settingsSetTodoKeywords
 import com.orgzly.android.ui.main.MainActivity
 import junit.framework.TestCase.assertTrue
@@ -77,6 +85,9 @@ import org.junit.Test
  */
 class NoteFragmentTest : OrgzlyTest() {
     private lateinit var scenario: ActivityScenario<MainActivity>
+
+    @get:Rule
+    val composeTestRule = createEmptyComposeRule()
 
     @Rule
     @JvmField
@@ -123,6 +134,7 @@ class NoteFragmentTest : OrgzlyTest() {
         scenario = ActivityScenario.launch(MainActivity::class.java)
 
         onView(withText("book-name")).perform(click())
+        composeTestRule.waitUntilNoteCount(1)
     }
 
     @After
@@ -133,7 +145,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testDeleteNote() {
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
 
         // Confirm note screen is open (TopAppBar title)
         onView(withText(R.string.note)).check(matches(isDisplayed()))
@@ -150,21 +162,21 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testUpdateNoteTitle() {
-        onNoteInBook(1, R.id.item_head_title_view).check(matches(withText("Note #1.")))
+        composeTestRule.onNoteTitle(0).assertTextContains("Note #1.", substring = false)
 
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
 
         onView(withId(R.id.title_edit)).perform(click())
         onView(withId(R.id.title_edit)).perform(*replaceTextCloseKeyboard("Note title changed"))
 
         onView(withContentDescription(context.getString(R.string.done))).perform(click())
 
-        onNoteInBook(1, R.id.item_head_title_view).check(matches(withText("Note title changed")))
+        composeTestRule.onNoteTitle(0).assertTextContains("Note title changed", substring = false)
     }
 
     @Test
     fun testSettingScheduleTime() {
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
         onView(withText(R.string.scheduled)).check(matches(isDisplayed()))
         onView(withText(R.string.scheduled)).perform(click())
         onView(withId(R.id.is_active_label)).check(matches(not(isDisplayed())))
@@ -175,7 +187,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testAbortingOfSettingScheduledTime() {
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
         onView(withText(R.string.scheduled)).check(matches(isDisplayed()))
         onView(withText(R.string.scheduled)).perform(click())
         pressBack()
@@ -185,7 +197,7 @@ class NoteFragmentTest : OrgzlyTest() {
     @Test
     fun testRemovingScheduledTime() {
         // Note #4 has scheduled <2015-01-11 Sun .+1d/2d> and no deadline — unambiguous date
-        onNoteInBook(4).perform(click())
+        composeTestRule.onNoteRow(3).performClick()
         onView(withText(R.string.scheduled)).check(doesNotExist())
         onView(withText(userDateTime("<2015-01-11 Sun .+1d/2d>"))).perform(click())
         onView(withText(R.string.clear)).perform(click())
@@ -194,7 +206,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testRemovingScheduledTimeAndOpeningTimestampDialogAgain() {
-        onNoteInBook(4).perform(click())
+        composeTestRule.onNoteRow(3).performClick()
         onView(withText(userDateTime("<2015-01-11 Sun .+1d/2d>"))).perform(click())
         onView(withText(R.string.clear)).perform(click())
         onView(withText(R.string.scheduled)).check(matches(isDisplayed()))
@@ -203,7 +215,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testSettingDeadlineTime() {
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
         onView(withText(R.string.deadline)).check(matches(isDisplayed()))
         onView(withText(R.string.deadline)).perform(click())
         onView(withId(R.id.is_active_label)).check(matches(not(isDisplayed())))
@@ -214,7 +226,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testAbortingOfSettingDeadlineTime() {
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
         onView(withText(R.string.deadline)).check(matches(isDisplayed()))
         onView(withText(R.string.deadline)).perform(click())
         pressBack()
@@ -224,7 +236,7 @@ class NoteFragmentTest : OrgzlyTest() {
     @Test
     fun testRemovingDeadlineTime() {
         // Use Note #1 (no timestamps) to avoid date ambiguity: set then clear a deadline
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
         onView(withText(R.string.deadline)).check(matches(isDisplayed()))
         onView(withText(R.string.deadline)).perform(click())
         onView(withText(R.string.set)).perform(click())
@@ -237,7 +249,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testStateToDoneShouldAddClosedTime() {
-        onNoteInBook(2).perform(click())
+        composeTestRule.onNoteRow(1).performClick()
 
         onView(withText(R.string.closed)).check(doesNotExist())
         onView(withText(R.string.state)).perform(click())
@@ -247,7 +259,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testStateToDoneShouldOverwriteLastRepeat() {
-        onNoteInBook(4).perform(click())
+        composeTestRule.onNoteRow(3).performClick()
 
         onView(withText(R.string.state)).perform(click())
         onView(withText("DONE")).inRoot(isDialog()).perform(click())
@@ -261,7 +273,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testStateToDoneForNoteShouldShiftTime() {
-        onNoteInBook(4).perform(click())
+        composeTestRule.onNoteRow(3).performClick()
 
         onView(withText(R.string.state)).check(matches(isDisplayed()))
         onView(withText(userDateTime("<2015-01-11 Sun .+1d/2d>"))).check(matches(isDisplayed()))
@@ -277,7 +289,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testChangingStateSettingsFromNoteFragment() {
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
         settingsSetTodoKeywords("")
         onView(withText(R.string.state)).perform(click())
         // Only DONE should be in the dialog
@@ -299,7 +311,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testTitleCanNotBeEmptyForExistingNote() {
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
         onView(withId(R.id.title_edit)).perform(click())
         onView(withId(R.id.title_edit)).perform(*replaceTextCloseKeyboard(""))
         onView(withContentDescription(context.getString(R.string.done))).perform(click())
@@ -308,13 +320,13 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testSavingNoteWithRepeater() {
-        onNoteInBook(4).perform(click())
+        composeTestRule.onNoteRow(3).performClick()
         onView(withContentDescription(context.getString(R.string.done))).perform(click())
     }
 
     @Test
     fun testClosedTimeInNoteFragmentIsSameAsInList() {
-        onNoteInBook(5).perform(click())
+        composeTestRule.onNoteRow(4).performClick()
         onView(withText(userDateTime("[2014-01-01 Wed 20:07]"))).check(matches(isDisplayed()))
     }
 
@@ -324,7 +336,7 @@ class NoteFragmentTest : OrgzlyTest() {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
         onView(withText(R.string.state)).perform(click())
         onView(withText("TODO")).inRoot(isDialog()).perform(click())
         onView(withText("TODO")).check(matches(isDisplayed()))
@@ -342,7 +354,7 @@ class NoteFragmentTest : OrgzlyTest() {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
         onView(withText(R.string.priority)).perform(click())
         onView(withText("B")).inRoot(isDialog()).perform(click())
         onView(withText("B")).check(matches(isDisplayed()))
@@ -360,7 +372,7 @@ class NoteFragmentTest : OrgzlyTest() {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
         onView(withText(R.string.scheduled)).check(matches(isDisplayed()))
         onView(withText(R.string.scheduled)).perform(click())
         onView(withText(R.string.set)).perform(click())
@@ -375,7 +387,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testSetScheduledTimeAfterRotation() {
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
 
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -394,7 +406,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testRemovingDoneStateRemovesClosedTime() {
-        onNoteInBook(5).perform(click())
+        composeTestRule.onNoteRow(4).performClick()
         onView(withText(userDateTime("[2014-01-01 Wed 20:07]"))).check(matches(isDisplayed()))
         onView(withText("DONE")).perform(click())  // DONE is the state MetadataItem value
         onView(withText(R.string.clear)).inRoot(isDialog()).perform(click())
@@ -404,7 +416,7 @@ class NoteFragmentTest : OrgzlyTest() {
     @Test
     fun testSettingPmTimeDisplays24HourTime() {
         EspressoUtils.grantAlarmsAndRemindersSpecialPermission()
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
 
         onView(withText(R.string.deadline)).check(matches(isDisplayed()))
         onView(withText(R.string.deadline)).perform(click())
@@ -426,7 +438,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testDateTimePickerKeepsValuesAfterRotation() {
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
 
         onView(withText(R.string.deadline)).check(matches(isDisplayed()))
 
@@ -467,7 +479,7 @@ class NoteFragmentTest : OrgzlyTest() {
     @Test
     fun testChangingPrioritySettingsFromNoteFragment() {
         /* Open note which has no priority set. */
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
 
         /* Change lowest priority to A. */
         onView(withContentDescription(context.getString(R.string.more_options))).perform(click())
@@ -501,7 +513,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testPropertiesAfterRotatingDevice() {
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
 
         onView(withContentDescription(context.getString(R.string.new_property))).perform(click())
         onView(withContentDescription(context.getString(R.string.property_name)))
@@ -530,7 +542,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testSavingProperties() {
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
 
         onView(withContentDescription(context.getString(R.string.new_property))).perform(click())
         onView(withContentDescription(context.getString(R.string.property_name)))
@@ -543,7 +555,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
         onView(withContentDescription(context.getString(R.string.done))).perform(click())
 
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
 
         onView(withText("prop-name-1")).check(matches(isDisplayed()))
         onView(withText("prop-value-1")).check(matches(isDisplayed()))
@@ -551,28 +563,29 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testContentLineCountUpdatedOnNoteUpdate() {
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
         onView(withId(R.id.content_edit)).perform(scroll()) // For smaller screens
         onView(withId(R.id.content_edit)).perform(click())
         onView(withId(R.id.content_edit)).perform(typeTextIntoFocusedView("a\nb\nc"))
         onView(withContentDescription(context.getString(R.string.done))).perform(click())
-        onNoteInBook(1, R.id.item_head_fold_button).perform(click())
-        onNoteInBook(1, R.id.item_head_title_view).check(matches(withText(endsWith("3"))))
+        composeTestRule.onNoteFoldButton(0).perform(click())
+        composeTestRule.onNoteTitle(0).assertTextContains("3", substring = true)
     }
 
     @Test
     fun testBreadcrumbsFollowToBook() {
-        onNoteInBook(3).perform(click())
+        composeTestRule.onNoteRow(2).performClick()
 
         // Click the book name in the breadcrumbs row
         onView(withText("book-name")).perform(click())
+        composeTestRule.waitUntilNoteCount(1)
 
         onView(withId(R.id.fragment_book_view_flipper)).check(matches(isDisplayed()))
     }
 
     @Test
     fun testBreadcrumbsFollowToNote() {
-        onNoteInBook(3).perform(click())
+        composeTestRule.onNoteRow(2).performClick()
         // "Note #2." is the ancestor breadcrumb — a separate clickable Text composable
         onView(withText("Note #2.")).perform(click())
         onView(withId(R.id.title_edit)).check(matches(withText("Note #2.")))
@@ -580,7 +593,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testBreadcrumbsPromptWhenCreatingNewNote() {
-        onNoteInBook(1).perform(longClick())
+        composeTestRule.onNoteRow(0).performLongClick()
         onActionItemClick(R.id.new_note, R.string.new_note)
         onView(withText(R.string.new_under)).perform(click())
         onView(withId(R.id.title_edit)).perform(*replaceTextCloseKeyboard("1.1"))
@@ -602,14 +615,16 @@ class NoteFragmentTest : OrgzlyTest() {
     // https://github.com/orgzly/orgzly-android/issues/605
     @Test
     fun testMetadataShowSelectedOnNoteLoad() {
-        onNoteInBook(10).perform(click())
+        composeTestRule.scrollBookToIndex(10)
+        composeTestRule.onNoteRow(9).performClick()
         onView(withText("CREATED")).check(matches(isDisplayed()))
         onView(withContentDescription(context.getString(R.string.more_options))).perform(click())
         onView(withText(R.string.show_selected)).perform(click())
         // CREATED property is still visible because alwaysShowSet == true (default)
         onView(withText("CREATED")).check(matches(isDisplayed()))
         pressBack()
-        onNoteInBook(10).perform(click())
+        composeTestRule.scrollBookToIndex(10)
+        composeTestRule.onNoteRow(9).performClick()
         onView(withText("CREATED")).check(matches(isDisplayed()))
     }
 
@@ -624,7 +639,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testTimestampButtonVisibleWhenEditing() {
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
         // In the Compose note screen, the ContentToolbar (with the insert-timestamp button) is
         // always visible when the content section is expanded (default state).
         onView(withContentDescription(context.getString(R.string.insert_timestamp)))
@@ -636,7 +651,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testInsertInactiveTimestamp() {
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
         onView(withId(R.id.content_edit)).perform(click())
         onView(withContentDescription(context.getString(R.string.insert_timestamp))).perform(click())
         onView(withId(R.id.is_active_label)).perform(scroll())
@@ -651,7 +666,7 @@ class NoteFragmentTest : OrgzlyTest() {
 
     @Test
     fun testInsertActiveTimestamp() {
-        onNoteInBook(1).perform(click())
+        composeTestRule.onNoteRow(0).performClick()
         onView(withId(R.id.content_edit)).perform(click())
         onView(withContentDescription(context.getString(R.string.insert_timestamp))).perform(click())
         onView(withId(R.id.is_active_checkbox)).perform(scroll(), click())

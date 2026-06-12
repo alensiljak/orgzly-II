@@ -18,6 +18,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
@@ -152,6 +155,13 @@ fun ClickableOrgText(
 ) {
     var layoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
 
+    // Expose each clickable span as a custom accessibility action so instrumented tests
+    // can trigger link/checkbox/drawer actions by label (span text) without coordinate maths.
+    val spanActions = formatted.clickables.map { c ->
+        val label = formatted.text.text.substring(c.start, minOf(c.end, formatted.text.text.length))
+        CustomAccessibilityAction(label = label, action = { onSpanClick(c.span); true })
+    }
+
     androidx.compose.material3.Text(
         text = formatted.text,
         style = style,
@@ -159,7 +169,9 @@ fun ClickableOrgText(
         maxLines = maxLines,
         overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
         onTextLayout = { layoutResult = it },
-        modifier = modifier.pointerInput(formatted) {
+        modifier = modifier
+            .semantics { if (spanActions.isNotEmpty()) customActions = spanActions }
+            .pointerInput(formatted) {
             detectTapGestures(
                 onLongPress = { onLongPress() },
                 onTap = { pos ->

@@ -27,6 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -111,6 +113,7 @@ fun NoteItemContent(
         modifier = modifier
             .fillMaxWidth()
             .testTag("note_row")
+            .semantics { selected = isSelected }
             .background(rowBackground)
             .combinedClickable(onClick = onClick, onLongClick = onLongClick)
             .let { if (!inBook && !isSearchFoldable) it.padding(horizontal = 16.dp) else it },
@@ -303,7 +306,7 @@ private fun PlanningTimes(noteView: NoteView, alpha: Float) {
     TimeRow(noteView.scheduledRangeString, R.drawable.ic_today, "note_scheduled")
     TimeRow(noteView.deadlineRangeString, R.drawable.ic_alarm, "note_deadline")
     TimeRow(noteView.eventString, R.drawable.ic_access_time, "note_event")
-    TimeRow(noteView.closedRangeString, R.drawable.ic_check_circle_outline)
+    TimeRow(noteView.closedRangeString, R.drawable.ic_check_circle_outline, "note_closed")
 }
 
 @Composable

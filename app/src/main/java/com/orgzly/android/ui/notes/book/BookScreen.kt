@@ -56,6 +56,7 @@ import com.orgzly.android.ui.notes.book.BookViewModel.Companion.APP_BAR_DEFAULT_
 import com.orgzly.android.ui.notes.book.BookViewModel.Companion.APP_BAR_SELECTION_MODE
 import com.orgzly.android.ui.notes.book.BookViewModel.Companion.APP_BAR_SELECTION_MOVE_MODE
 import com.orgzly.android.ui.views.style.CheckboxSpan
+import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.util.OrgFormatter
 
 /**
@@ -104,7 +105,10 @@ fun BookScreen(
         notes?.filter { it.note.position.foldedUnderId == 0L } ?: emptyList()
     }
 
-    val prefaceVisible = book?.preface?.isNotBlank() == true && !viewModel.isNarrowed()
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val prefaceHidden = AppPreferences.prefaceDisplay(context) ==
+        context.getString(R.string.pref_value_preface_in_book_hide)
+    val prefaceVisible = book?.preface?.isNotBlank() == true && !viewModel.isNarrowed() && !prefaceHidden
 
     var searchActive by rememberSaveable { mutableStateOf(false) }
     var searchQuery by rememberSaveable { mutableStateOf("") }

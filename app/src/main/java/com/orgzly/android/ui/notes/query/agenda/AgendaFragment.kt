@@ -66,6 +66,7 @@ class AgendaFragment : QueryFragment() {
         savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
+            id = R.id.fragment_query_agenda_view_flipper
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 OrgzlyBootstrap {

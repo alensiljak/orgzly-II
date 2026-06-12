@@ -7,4 +7,8 @@
     <item name="content_edit" type="id"/>
     <!-- Legacy bottom toolbar ID retained for AppSnackbar anchor lookup -->
     <item name="bottom_toolbar" type="id"/>
+    <!-- ComposeView root IDs — assigned in Fragment.onCreateView so tests can detect navigation -->
+    <item name="fragment_book_view_flipper" type="id"/>
+    <item name="fragment_query_search_view_flipper" type="id"/>
+    <item name="fragment_query_agenda_view_flipper" type="id"/>
 </resources>

@@ -1,8 +1,12 @@
 package com.orgzly.android.espresso.util
 
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionCollection
 import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
@@ -62,6 +66,25 @@ fun ComposeTestRule.onAgendaItem(index: Int): SemanticsNodeInteraction =
 fun ComposeTestRule.assertAgendaItemCount(count: Int) =
     onAllNodesWithTag("agenda_item").assertCountEquals(count)
 
+// ── Planning-time tag counts ──────────────────────────────────────────────────
+
+fun ComposeTestRule.assertScheduledCount(count: Int) =
+    onAllNodesWithTag("note_scheduled").assertCountEquals(count)
+
+fun ComposeTestRule.assertDeadlineCount(count: Int) =
+    onAllNodesWithTag("note_deadline").assertCountEquals(count)
+
+fun ComposeTestRule.assertClosedCount(count: Int) =
+    onAllNodesWithTag("note_closed").assertCountEquals(count)
+
+fun ComposeTestRule.assertEventCount(count: Int) =
+    onAllNodesWithTag("note_event").assertCountEquals(count)
+
+// ── Selection assertions ──────────────────────────────────────────────────────
+
+fun SemanticsNodeInteraction.assertIsNoteSelected(): SemanticsNodeInteraction =
+    assertIsSelected()
+
 // ── Waiting helpers ───────────────────────────────────────────────────────────
 
 /**
@@ -116,3 +139,28 @@ fun ComposeTestRule.scrollBookToIndex(lazyIndex: Int) {
  */
 fun SemanticsNodeInteraction.performLongClick(): SemanticsNodeInteraction =
     performTouchInput { longClick() }
+
+/**
+ * Click a Compose node. Mirrors [androidx.test.espresso.action.ViewActions.click] but via
+ * touch input so it triggers pointerInput handlers (e.g. ClickableOrgText span dispatch).
+ */
+fun SemanticsNodeInteraction.performClick(): SemanticsNodeInteraction =
+    performTouchInput { click() }
+
+// ── Link / span click helper ──────────────────────────────────────────────────
+
+/**
+ * Triggers the custom accessibility action on a [ClickableOrgText] node whose label contains
+ * [linkText] (substring match). Use this to click internal links, checkboxes or drawer toggles
+ * in Compose note content, replacing the legacy Espresso [EspressoUtils.clickClickableSpan].
+ */
+fun SemanticsNodeInteraction.performLinkClick(linkText: String): SemanticsNodeInteraction {
+    val actions = fetchSemanticsNode()
+        .config
+        .getOrNull(SemanticsActions.CustomActions)
+        ?: error("No custom actions on node — is this a ClickableOrgText with spans?")
+    val action = actions.firstOrNull { it.label.contains(linkText) }
+        ?: error("No span action with label containing \"$linkText\". Available: ${actions.map { it.label }}")
+    action.action?.invoke()
+    return this
+}
