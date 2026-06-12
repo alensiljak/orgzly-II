@@ -7,75 +7,40 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
-import android.view.ContextMenu
-import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import androidx.compose.runtime.Composable
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import cc.alensiljak.orgzly.BuildConfig
-import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
-import com.orgzly.android.db.entity.Repo
 import com.orgzly.android.prefs.AppPreferences
-import com.orgzly.android.repos.RepoFactory
-import com.orgzly.android.repos.RepoType
-import com.orgzly.android.ui.CommonActivity
+import com.orgzly.android.ui.compose.base.ComposeActivity
 import com.orgzly.android.ui.repo.directory.DirectoryRepoActivity
 import com.orgzly.android.ui.repo.dropbox.DropboxRepoActivity
 import com.orgzly.android.ui.repo.git.GitRepoActivity
 import com.orgzly.android.ui.repo.webdav.WebdavRepoActivity
 import com.orgzly.android.ui.showSnackbar
-import cc.alensiljak.orgzly.databinding.ActivityReposBinding
+import com.orgzly.android.repos.RepoType
 import javax.inject.Inject
-
+import com.orgzly.android.repos.RepoFactory
 
 /**
  * List of user-configured repositories.
  */
-class ReposActivity : CommonActivity(), AdapterView.OnItemClickListener, ActivityCompat.OnRequestPermissionsResultCallback  {
-    private lateinit var binding: ActivityReposBinding
+class ReposActivity : ComposeActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
 
     @Inject
     lateinit var repoFactory: RepoFactory
 
-    private lateinit var listAdapter: ArrayAdapter<Repo>
-
-    lateinit var viewModel: ReposViewModel
+    private lateinit var viewModel: ReposViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         App.appComponent.inject(this)
-
         super.onCreate(savedInstanceState)
-
-        binding = ActivityReposBinding.inflate(layoutInflater)
-
-        setContentView(binding.root)
-
-        setupNoReposButtons()
-
-        listAdapter = object : ArrayAdapter<Repo>(this, R.layout.item_repo, R.id.item_repo_url) {
-            override fun getItemId(position: Int): Long {
-                return getItem(position)?.id ?: 0
-            }
-        }
 
         val factory = ReposViewModelFactory.getInstance(dataRepository)
         viewModel = ViewModelProvider(this, factory)[ReposViewModel::class.java]
-
-        viewModel.repos.observe(this) { repos ->
-            listAdapter.clear()
-            listAdapter.addAll(repos)
-            listAdapter.notifyDataSetChanged() // FIXME
-
-            binding.activityReposFlipper.displayedChild =
-                    if (repos != null && (repos.isNotEmpty())) 0 else 1
-
-            topToolbarToDefault()
-        }
 
         viewModel.openRepoRequestEvent.observeSingle(this) { repo ->
             if (repo != null) {
@@ -88,207 +53,89 @@ class ReposActivity : CommonActivity(), AdapterView.OnItemClickListener, Activit
                 showSnackbar((error.cause ?: error).localizedMessage)
             }
         }
-
-        binding.list.let {
-            it.onItemClickListener = this
-            it.adapter = listAdapter
-            registerForContextMenu(it)
-        }
-
-        topToolbarToDefault()
     }
 
-    private fun topToolbarToDefault() {
-        binding.topToolbar.run {
-            if (listAdapter.count > 0) {
-                menu.clear()
-                inflateMenu(R.menu.repos_actions)
-
-                menu.findItem(R.id.repos_options_menu_item_new).subMenu?.let { newRepos ->
-                    if (!BuildConfig.IS_DROPBOX_ENABLED) {
-                        newRepos.removeItem(R.id.repos_options_menu_item_new_dropbox)
-                    }
-
-                    if (!AppPreferences.gitIsEnabled(App.getAppContext())) {
-                        newRepos.removeItem(R.id.repos_options_menu_item_new_git)
-                    }
-                }
-            } else {
-                menu.clear()
-            }
-
-            setNavigationOnClickListener {
-                finish()
-            }
-
-            setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
-                    R.id.repos_options_menu_item_new_dropbox -> {
-                        startRepoActivity(menuItem.itemId)
-                    }
-
-                    R.id.repos_options_menu_item_new_git -> {
-                        startRepoActivity(menuItem.itemId)
-                    }
-
-                    R.id.repos_options_menu_item_new_webdav -> {
-                        startRepoActivity(menuItem.itemId)
-                    }
-
-                    R.id.repos_options_menu_item_new_directory -> {
-                        startRepoActivity(menuItem.itemId)
-                    }
-                }
-
-                true
-            }
-
-        }
+    @Composable
+    override fun Content() {
+        ReposScreen(
+            viewModel = viewModel,
+            isDropboxEnabled = BuildConfig.IS_DROPBOX_ENABLED,
+            isGitEnabled = AppPreferences.gitIsEnabled(this),
+            onNavigateUp = { finish() },
+            onNewDropbox = { startRepoActivity(RepoKind.DROPBOX) },
+            onNewGit = { startRepoActivity(RepoKind.GIT) },
+            onNewWebdav = { startRepoActivity(RepoKind.WEBDAV) },
+            onNewDirectory = { startRepoActivity(RepoKind.DIRECTORY) },
+        )
     }
 
-    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        viewModel.openRepo(id)
-    }
-
-    private fun setupNoReposButtons() {
-        binding.activityReposDropbox.let { button ->
-            if (BuildConfig.IS_DROPBOX_ENABLED) {
-                button.setOnClickListener {
-                    startRepoActivity(R.id.repos_options_menu_item_new_dropbox)
-                }
-            } else {
-                button.visibility = View.GONE
-            }
-        }
-
-        binding.activityReposGit.let { button ->
-            if (AppPreferences.gitIsEnabled(this)) {
-                button.setOnClickListener {
-                    startRepoActivity(R.id.repos_options_menu_item_new_git)
-                }
-            } else {
-                button.visibility = View.GONE
-            }
-        }
-
-        binding.activityReposWebdav.setOnClickListener {
-            startRepoActivity(R.id.repos_options_menu_item_new_webdav)
-        }
-
-        binding.activityReposDirectory.setOnClickListener {
-            startRepoActivity(R.id.repos_options_menu_item_new_directory)
-        }
-    }
-
-    override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
-        menuInflater.inflate(R.menu.repos_cab, menu)
-    }
-
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        val info = item.menuInfo as AdapterView.AdapterContextMenuInfo
-
-        return when (item.itemId) {
-            R.id.repos_context_menu_delete -> {
-                deleteRepo(info.id)
-                true
-            }
-
-            else -> super.onContextItemSelected(item)
-        }
-    }
-
-    private fun deleteRepo(id: Long) {
-        viewModel.deleteRepo(id)
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray,
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        when (requestCode) {
-            ACTIVITY_REQUEST_CODE_FOR_READ_WRITE_EXTERNAL_STORAGE -> {
-                val granted = grantResults.zip(permissions)
-                        .find { (_, perm) -> perm == Manifest.permission.WRITE_EXTERNAL_STORAGE }
-                        ?.let { (grantResult, _) -> grantResult == PackageManager.PERMISSION_GRANTED }
-                if (granted == true) {
-                    GitRepoActivity.start(this)
-                }
+        if (requestCode == REQUEST_CODE_STORAGE_PERMISSION) {
+            val granted = grantResults.zip(permissions)
+                .find { (_, perm) -> perm == Manifest.permission.WRITE_EXTERNAL_STORAGE }
+                ?.let { (result, _) -> result == PackageManager.PERMISSION_GRANTED }
+            if (granted == true) {
+                GitRepoActivity.start(this)
             }
         }
     }
 
-    private fun startRepoActivity(id: Int) {
-        when (id) {
-            R.id.repos_options_menu_item_new_dropbox -> {
-                DropboxRepoActivity.start(this)
-                return
-            }
+    private fun startRepoActivity(kind: RepoKind) {
+        when (kind) {
+            RepoKind.DROPBOX -> DropboxRepoActivity.start(this)
 
-            R.id.repos_options_menu_item_new_git -> {
+            RepoKind.GIT -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
                     val uri = "package:${BuildConfig.APPLICATION_ID}".toUri()
-                    startActivity(
-                        Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri)
-                    )
-                } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Show explanation why possibly, if ActivityCompat.shouldShowRequestPermissionRationale() says so?
+                    startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri))
+                } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R &&
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                ) {
                     ActivityCompat.requestPermissions(
                         this,
                         arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                        ACTIVITY_REQUEST_CODE_FOR_READ_WRITE_EXTERNAL_STORAGE)
+                        REQUEST_CODE_STORAGE_PERMISSION,
+                    )
                 } else {
                     GitRepoActivity.start(this)
                 }
-                return
             }
 
-            R.id.repos_options_menu_item_new_webdav -> {
-                WebdavRepoActivity.start(this)
-                return
-            }
+            RepoKind.WEBDAV -> WebdavRepoActivity.start(this)
 
-            R.id.repos_options_menu_item_new_directory -> {
-                DirectoryRepoActivity.start(this)
-                return
-            }
-
-            else -> throw IllegalArgumentException("Unknown repo menu item clicked: $id")
+            RepoKind.DIRECTORY -> DirectoryRepoActivity.start(this)
         }
     }
 
-    private fun openRepo(repoEntity: Repo) {
-        // Validate before opening
+    private fun openRepo(repoEntity: com.orgzly.android.db.entity.Repo) {
         try {
             dataRepository.getRepoInstance(repoEntity.id, repoEntity.type, repoEntity.url)
         } catch (e: Exception) {
             e.printStackTrace()
-            showSnackbar(getString(R.string.repository_not_valid_with_reason, e.message))
+            showSnackbar(getString(cc.alensiljak.orgzly.R.string.repository_not_valid_with_reason, e.message))
             return
         }
 
         when (repoEntity.type) {
-            RepoType.MOCK -> // TODO: Remove
-                DropboxRepoActivity.start(this, repoEntity.id)
-
-            RepoType.DROPBOX ->
-                DropboxRepoActivity.start(this, repoEntity.id)
-
-            RepoType.DIRECTORY ->
-                DirectoryRepoActivity.start(this, repoEntity.id)
-
-            RepoType.DOCUMENT ->
-                DirectoryRepoActivity.start(this, repoEntity.id)
-
-            RepoType.WEBDAV ->
-                WebdavRepoActivity.start(this, repoEntity.id)
-
-            RepoType.GIT ->
-                GitRepoActivity.start(this, repoEntity.id)
+            RepoType.MOCK -> DropboxRepoActivity.start(this, repoEntity.id)
+            RepoType.DROPBOX -> DropboxRepoActivity.start(this, repoEntity.id)
+            RepoType.DIRECTORY -> DirectoryRepoActivity.start(this, repoEntity.id)
+            RepoType.DOCUMENT -> DirectoryRepoActivity.start(this, repoEntity.id)
+            RepoType.WEBDAV -> WebdavRepoActivity.start(this, repoEntity.id)
+            RepoType.GIT -> GitRepoActivity.start(this, repoEntity.id)
         }
     }
 
+    private enum class RepoKind { DROPBOX, GIT, WEBDAV, DIRECTORY }
+
     companion object {
         val TAG: String = ReposActivity::class.java.name
-
-        const val ACTIVITY_REQUEST_CODE_FOR_READ_WRITE_EXTERNAL_STORAGE = 0
+        private const val REQUEST_CODE_STORAGE_PERMISSION = 0
     }
 }

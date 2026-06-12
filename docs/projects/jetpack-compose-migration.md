@@ -71,12 +71,9 @@ See the [Phase 2 doc](jetpack-compose-migration-phase-2) for the detailed action
 
 See [jetpack-compose-migration-phase-3.md](jetpack-compose-migration-phase-3.md) for the detailed action plan and status.
 
-### Phase 4 — Repo and sync management screens *(medium risk)*
+### Phase 4 — Repo and sync management screens *(medium risk)*, 🚧 In progress
 
-The repo Activities (`DirectoryRepoActivity`, `GitRepoActivity`, `WebdavRepoActivity`, `DropboxRepoActivity`, `ReposActivity`) are self-contained flows.
-
-- Convert each to a `ComposeActivity` with a full Compose screen
-- `SyncFragment` → Compose screen embedded in `MainActivity`
+See [jetpack-compose-migration-phase-4.md](jetpack-compose-migration-phase-4.md) for the detailed action plan and status.
 
 ### Phase 5 — Book preface and secondary screens *(low risk)*
 
