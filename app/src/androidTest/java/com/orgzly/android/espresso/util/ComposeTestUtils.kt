@@ -6,6 +6,7 @@ import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performTouchInput
 
 // ── Note rows (whole clickable row) ──────────────────────────────────────────
@@ -90,6 +91,22 @@ fun ComposeTestRule.waitUntilAgendaItemCount(count: Int, timeoutMs: Long = 5_000
     waitUntil(timeoutMs) {
         onAllNodesWithTag("agenda_item").fetchSemanticsNodes().size == count
     }
+}
+
+// ── Book scroll helper ────────────────────────────────────────────────────────
+
+/**
+ * Scrolls the book's LazyColumn to the item at [lazyIndex].
+ *
+ * The LazyColumn item indices mirror the old RecyclerView positions when a preface is present:
+ *   - lazyIndex 0  = preface row
+ *   - lazyIndex 1  = first note  (was onNoteInBook(1))
+ *   - lazyIndex n  = nth note    (was onNoteInBook(n))
+ *
+ * After scrolling, access the note via [onNoteRow]`(lazyIndex - 1)` or [onNoteTitle]`(lazyIndex - 1)`.
+ */
+fun ComposeTestRule.scrollBookToIndex(lazyIndex: Int) {
+    onNodeWithTag("book_note_list").performScrollToIndex(lazyIndex)
 }
 
 // ── Touch input helpers ───────────────────────────────────────────────────────

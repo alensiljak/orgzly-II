@@ -240,7 +240,7 @@ private fun NoteList(
     onLinkClick: (Any) -> Unit,
     onSwipe: (NoteView, Int, Int, Int) -> Unit,
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(modifier = Modifier.fillMaxSize().testTag("book_note_list")) {
         if (prefaceText != null) {
             item(key = "preface") {
                 Preface(text = prefaceText, onClick = onPrefaceClick)

@@ -200,28 +200,73 @@ asserted position-specific time-type display are replaced with existence checks.
 
 - **`AgendaSortingTest.kt`** — all 8 tests migrated; 3 production files touched
   (`NoteItemContent.kt`, `AgendaScreen.kt`, plus the test itself).
+- **`EspressoUtils` / `ComposeTestUtils`** — utility pass complete:
+  - New test tags added to production Compose code:
 
-### Remaining files (19)
+    | Tag | Composable | Replaces |
+    |-----|-----------|---------|
+    | `"note_row"` | Outermost `Column` in `NoteItemContent` | RecyclerView item root |
+    | `"note_content"` | `ClickableOrgText` in `NoteContent` | `R.id.item_head_content_view` |
+    | `"note_book_name"` | Book name `Text` (above/below variants) | `R.id.item_head_book_name_text` |
+    | `"note_fold_button"` | Fold affordance `Text` | `R.id.item_head_fold_button` |
+    | `"preface_row"` | `Preface` composable in `BookScreen` | `onPreface()` position-0 access |
+    | `"book_note_list"` | `LazyColumn` in `BookScreen` | `R.id.fragment_book_recycler_view` |
+
+  - New file `espresso/util/ComposeTestUtils.kt` — `ComposeTestRule` extension helpers:
+    `onNoteRow(i)`, `onNoteTitle(i)`, `onNoteContent(i)`, `onNoteBookName(i)`,
+    `onNoteFoldButton(i)`, `onPreface()`, `onAgendaItem(i)`, `assertNoteRowCount(n)`,
+    `assertNoteTitleCount(n)`, `assertAgendaItemCount(n)`, `waitUntilNoteCount(n)`,
+    `waitUntilExactNoteCount(n)`, `waitUntilAgendaItemCount(n)`, `scrollBookToIndex(i)`,
+    `SemanticsNodeInteraction.performLongClick()`.
+
+- **`BooksTest.kt`** — converted from Java; `testDifferentBookLoading` now uses
+  `composeTestRule.onNoteTitle(0).assertTextContains(...)`.
+- **`BookTest.kt`** — converted from Java; all 25 tests migrated. Key patterns:
+  - `onNoteInBook(n)` → `onNoteRow(n-1)` / `onNoteTitle(n-1)` (preface was position 0 in
+    old adapter, so old position `n` = new 0-based index `n-1`).
+  - Fold button: `onAllNodesWithTag("note_fold_button")[k]` where `k` is the fold-button's
+    ordinal among visible foldable notes (Note #2 = first = index 0).
+  - Scheduled time: `onAllNodesWithTag("note_scheduled")[0]` when only one note has a
+    scheduled time; count-based assertions when checking absence.
+  - Scroll tests (`testScrollPositionKeptOnRotation`, `testScrollPositionKeptInBackStack`):
+    `scrollBookToIndex(40)` + `onNodeWithText("Note #40.", substring = true)`.
+  - `testLongContentDisplayedInNote`: `scrollBookToIndex(15)` then
+    `onNoteContent(0).assertTextContains(START/END, substring = true)`.
+
+### Remaining files (17)
 
 20 files were affected in total. Estimated effort by tier:
 
 | Tier | Files | Tests | Est. effort |
 | ---- | ----- | ----- | ----------- |
-| Easy | `BooksScreenTest`, `BooksTest`, `NewNoteTest`, `CreatedAtPropertyTest`, `SettingsFragmentTest`, `SettingsChangeTest`, `BookTest` | ~76 | 1–2 days |
+| Easy | `BooksScreenTest`, `NewNoteTest`, `CreatedAtPropertyTest`, `SettingsFragmentTest`, `SettingsChangeTest` | ~50 | 1 day |
 | Medium | `QueryFragmentTest`, `AgendaFragmentTest`, `ActionModeTest`, `MiscTest` | ~71 | 3–4 days |
 | Hard | `NoteFragmentTest`, `NoteEventsTest`, `BookPrefaceTest`, `InternalLinksTest` | ~67 | 3–4 days |
-| Utility | `EspressoUtils.java` (broken helpers need Compose-aware replacements) | — | half a day |
 
-**Total: ~1.5–2.5 weeks.**
+**Total remaining: ~1–1.5 weeks.**
 
-Recommended order: `EspressoUtils` first (new Compose helpers used by all others), then easy
-tier to validate, then medium (volume work), then hard last. Known hard-tier risks:
+Recommended order: remaining Easy files first to validate helpers, then medium (volume work),
+then hard last. Known hard-tier risks:
 
 - **`InternalLinksTest`** — uses `clickClickableSpan()` on note content; clickable spans in
   Compose are dispatched through `ClickableOrgText` so the Espresso span-click helper likely
   won't find them — may need a new approach.
-- **`BookPrefaceTest`** — the preface row in `BookScreen` needs a `testTag` before it can be
-  targeted.
+- **`BookPrefaceTest`** — `preface_row` testTag now added; `onPreface()` helper available.
 - **`NoteFragmentTest`** — most `onNoteInBook()` calls are navigation only; the note editor's
   `AndroidView`-backed fields (`R.id.title_edit`, `R.id.content_edit`) should still work via
   Espresso since they are not Compose.
+
+### Position-index mapping reference
+
+In the old `RecyclerView`-based book adapter the preface was always item 0, so
+`onNoteInBook(n)` accessed the note at (1-based) position `n`. In Compose:
+
+- **`onNoteRow(n-1)`** / **`onNoteTitle(n-1)`** — direct 0-based note-row access (only
+  valid when the item is in the lazy-column composition, i.e. near the viewport).
+- **`scrollBookToIndex(n)`** — scrolls the `LazyColumn` to item index `n`; with a preface
+  present, LazyColumn index `n` == old position `n` (preface at 0, Note #1 at 1, …).
+- For off-screen items prefer **`onNodeWithText("Note #n.", substring = true)`** after
+  scrolling, rather than positional `onNoteRow` access.
+- **Fold-button index**: `onAllNodesWithTag("note_fold_button")[k]` where `k` is the ordinal
+  of the target note among all currently-visible foldable notes (notes with children or
+  foldable content). Document per-test which note maps to which fold-button index.
