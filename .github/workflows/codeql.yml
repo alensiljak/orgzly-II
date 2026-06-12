@@ -13,10 +13,15 @@ name: "CodeQL Advanced"
 
 permissions:
   contents: read
-  
+
 on:
-  schedule:
-    - cron: '24 21 * * 0'
+  push:
+    branches: [master]
+    paths-ignore:
+      - 'README.org'
+      - 'metadata/**'
+      - 'app/src/main/res/raw-*/*'
+      - 'app/src/main/res/values-*/*'
   pull_request:
     branches:
       - 'master'
@@ -41,6 +46,8 @@ jobs:
       security-events: write
       # required to fetch internal or private CodeQL packs
       packages: read
+      # required to post inline comments on PRs
+      pull-requests: read
     strategy:
       fail-fast: false
       matrix:
@@ -59,7 +66,7 @@ jobs:
         # your codebase is analyzed, see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/codeql-code-scanning-for-compiled-languages
     steps:
     - name: Checkout repository
-      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
 
     # Add any setup steps before running the `github/codeql-action/init` action.
     # This includes steps like installing compilers or runtimes (`actions/setup-node`
@@ -90,8 +97,9 @@ jobs:
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
     - if: matrix.build-mode == 'manual'
+      name: Build for CodeQL
       shell: bash
-      run: ./gradlew clean :app:compileFdroidDebugSources :app:compilePremiumDebugSources
+      run: ./gradlew clean :app:compileDebugKotlin :app:compileDebugJavaWithJavac
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@95e58e9a2cdfd71adc6e0353d5c52f41a045d225 # v4.35.2

@@ -10,7 +10,7 @@ on:
   # To guarantee Maintained check is occasionally updated. See
   # https://github.com/ossf/scorecard/blob/main/docs/checks.md#maintained
   schedule:
-    - cron: '50 12 * * 2'
+    - cron: '50 12 7 1,4,7,10 *'  # quarterly: Jan/Apr/Jul/Oct 1st at 12:50 UTC
   workflow_dispatch:
 
 # Declare default permissions as read only.
