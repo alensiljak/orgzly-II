@@ -2,14 +2,14 @@
 
 ## Status
 
-| Work item                                         | Status         |
-|---------------------------------------------------|----------------|
-| `ReposActivity` → `ReposScreen`                   | 🔄 In progress |
-| `DirectoryRepoActivity` → Compose                 | ⬜ Pending      |
-| `GitRepoActivity` → Compose                       | ⬜ Pending      |
-| `WebdavRepoActivity` → Compose                    | ⬜ Pending      |
-| `DropboxRepoActivity` → Compose                   | ⬜ Pending      |
-| `SyncFragment` → Compose screen in `MainActivity` | ⬜ Pending      |
+| Work item                                         | Status  |
+|---------------------------------------------------|---------|
+| `ReposActivity` → `ReposScreen`                   | Done    |
+| `DirectoryRepoActivity` → Compose                 | Pending |
+| `GitRepoActivity` → Compose                       | Pending |
+| `WebdavRepoActivity` → Compose                    | Pending |
+| `DropboxRepoActivity` → Compose                   | Pending |
+| `SyncFragment` → Compose screen in `MainActivity` | Done    |
 
 ---
 
@@ -67,3 +67,48 @@ preserved (with LiveData → StateFlow migration where it adds value).
 - `res/layout/item_repo.xml`
 - `res/menu/repos_actions.xml`
 - `res/menu/repos_cab.xml`
+
+---
+
+## SyncFragment → SyncScreen / SyncComposeFragment
+
+### What the screen does
+
+- Shows a sync button card at the bottom of the navigation drawer
+- Tap: starts or cancels sync depending on current state
+- Long-press: opens a dialog with the current status text and a Copy button
+- Icon rotates counter-clockwise while sync is running
+- Shows a snackbar when sync fails (once per sync cycle)
+
+### Approach
+
+- `SyncFragment` (View-based retained fragment) replaced by `SyncComposeFragment`
+  extending `ComposeFragment`
+- New `SyncScreen.kt` — pure Compose card with `combinedClickable`, infinite rotation
+  animation via `rememberInfiniteTransition`, and an `AlertDialog` for long-press
+- `SyncViewModel` unchanged; `LiveData<SyncState?>` observed in Compose via `observeAsState()`
+- Snackbar-on-failure logic (which needs a `FragmentActivity` reference) kept in
+  `SyncComposeFragment.onViewCreated` as a `LiveData` observer — not in Compose
+- `SyncFragment.run()` use-case executor role moved to a private `runAction()` method
+  in `MainActivity` (calls `App.EXECUTORS.diskIO()` + `UseCaseRunner.run()` directly)
+- `SyncFragment.Listener` interface removed from both `MainActivity` and `ShareActivity`;
+  `onSuccess`/`onError` become plain methods in `MainActivity`
+- `ShareActivity` had a vestigial headless `SyncFragment` (never called `run()`) — removed
+
+### Added
+
+- `ui/sync/SyncScreen.kt` — Compose card with icon, text, click/long-click, dialog
+- `ui/sync/SyncComposeFragment.kt` — `ComposeFragment` hosting `SyncScreen`; also owns
+  the failure-snackbar observer
+
+### Modified
+
+- `ui/main/MainActivity.java` — drops `SyncFragment.Listener`, adds `runAction()`,
+  replaces fragment transaction to use `SyncComposeFragment`
+- `ui/share/ShareActivity.java` — drops `SyncFragment` entirely (unused there)
+- `di/AppComponent.kt` — removes `inject(SyncFragment)`
+
+### Removed
+
+- `ui/sync/SyncFragment.kt`
+- `res/layout/fragment_sync.xml`

@@ -53,7 +53,7 @@ import com.orgzly.android.ui.notifications.Notifications;
 import com.orgzly.android.ui.savedsearch.SavedSearchFragment;
 import com.orgzly.android.ui.savedsearches.SavedSearchesFragmentCompose;
 import com.orgzly.android.ui.settings.SettingsActivity;
-import com.orgzly.android.ui.sync.SyncFragment;
+import com.orgzly.android.ui.sync.SyncComposeFragment;
 import com.orgzly.android.ui.util.KeyboardUtils;
 import com.orgzly.android.usecase.BookExport;
 import com.orgzly.android.usecase.BookImportGettingStarted;
@@ -77,6 +77,7 @@ import com.orgzly.android.usecase.SavedSearchMoveUp;
 import com.orgzly.android.usecase.SavedSearchUpdate;
 import com.orgzly.android.usecase.UseCase;
 import com.orgzly.android.usecase.UseCaseResult;
+import com.orgzly.android.usecase.UseCaseRunner;
 import com.orgzly.android.usecase.UseCaseWorker;
 import com.orgzly.android.util.AppPermissions;
 import com.orgzly.android.util.LogUtils;
@@ -96,13 +97,9 @@ public class MainActivity extends CommonActivity
         BooksFragmentCompose.Listener,
         BookFragment.Listener,
         NoteFragmentCompose.Listener,
-        SyncFragment.Listener,
         BookPrefaceFragment.Listener {
 
     public static final String TAG = MainActivity.class.getName();
-
-    // TODO: Stop using SyncFragment, use ViewModel
-    public SyncFragment mSyncFragment;
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -358,7 +355,7 @@ public class MainActivity extends CommonActivity
             mDrawerLayout.addDrawerListener(mDrawerToggle);
         }
 
-        mSyncFragment = addSyncFragment();
+        addSyncFragment();
     }
 
     private void setupViewModel() {
@@ -459,25 +456,15 @@ public class MainActivity extends CommonActivity
         if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG);
     }
 
-    private SyncFragment addSyncFragment() {
+    private void addSyncFragment() {
         if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG);
 
-        SyncFragment fragment = (SyncFragment) getSupportFragmentManager()
-                .findFragmentByTag(SyncFragment.FRAGMENT_TAG);
-
-        /* If the Fragment is non-null, then it is currently being
-         * retained across a configuration change.
-         */
-        if (fragment == null) {
-            fragment = SyncFragment.getInstance();
-
+        if (getSupportFragmentManager().findFragmentByTag(SyncComposeFragment.FRAGMENT_TAG) == null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.drawer_sync_container, fragment, SyncFragment.FRAGMENT_TAG)
+                    .replace(R.id.drawer_sync_container, SyncComposeFragment.newInstance(), SyncComposeFragment.FRAGMENT_TAG)
                     .commit();
         }
-
-        return fragment;
     }
 
     @Override
@@ -656,7 +643,7 @@ public class MainActivity extends CommonActivity
 
     @Override
     public void onNoteFocusInBookRequest(long noteId) {
-        mSyncFragment.run(new BookSparseTreeForNote(noteId));
+        runAction(new BookSparseTreeForNote(noteId));
     }
 
     /* Open note fragment to create a new note. */
@@ -697,22 +684,22 @@ public class MainActivity extends CommonActivity
 
     @Override
     public void onStateChangeRequest(Set<Long> noteIds, @Nullable String state) {
-        mSyncFragment.run(new NoteUpdateState(noteIds, state));
+        runAction(new NoteUpdateState(noteIds, state));
     }
 
     @Override
     public void onStateToggleRequest(@NotNull Set<Long> noteIds) {
-        mSyncFragment.run(new NoteUpdateStateToggle(noteIds));
+        runAction(new NoteUpdateStateToggle(noteIds));
     }
 
     @Override
     public void onScheduledTimeUpdateRequest(Set<Long> noteIds, OrgDateTime time) {
-        mSyncFragment.run(new NoteUpdateScheduledTime(noteIds, time));
+        runAction(new NoteUpdateScheduledTime(noteIds, time));
     }
 
     @Override
     public void onDeadlineTimeUpdateRequest(Set<Long> noteIds, OrgDateTime time) {
-        mSyncFragment.run(new NoteUpdateDeadlineTime(noteIds, time));
+        runAction(new NoteUpdateDeadlineTime(noteIds, time));
     }
 
     @Override /* BookFragment */
@@ -724,45 +711,45 @@ public class MainActivity extends CommonActivity
 
     @Override
     public void onBookPrefaceUpdate(long bookId, String preface) {
-        mSyncFragment.run(new BookUpdatePreface(bookId, preface));
+        runAction(new BookUpdatePreface(bookId, preface));
     }
 
     @Override
     public void onNotesDeleteRequest(final long bookId, final Set<Long> noteIds) {
-        mSyncFragment.run(new NoteDelete(bookId, noteIds));
+        runAction(new NoteDelete(bookId, noteIds));
     }
 
     @Override
     public void onNotesCutRequest(long bookId, Set<Long> noteIds) {
-        mSyncFragment.run(new NoteCut(bookId, noteIds));
+        runAction(new NoteCut(bookId, noteIds));
     }
 
     @Override
     public void onNotesCopyRequest(long bookId, Set<Long> noteIds) {
-        mSyncFragment.run(new NoteCopy(bookId, noteIds));
+        runAction(new NoteCopy(bookId, noteIds));
     }
 
     @Override
     public void onNotesPasteRequest(long bookId, long noteId, Place place) {
-        mSyncFragment.run(new NotePaste(bookId, noteId, place));
+        runAction(new NotePaste(bookId, noteId, place));
     }
 
     @Override
     public void onNotesPromoteRequest(Set<Long> noteIds) {
         mPromoteDemoteOrMoveRequested = true;
-        mSyncFragment.run(new NotePromote(noteIds));
+        runAction(new NotePromote(noteIds));
     }
 
     @Override
     public void onNotesDemoteRequest(Set<Long> noteIds) {
         mPromoteDemoteOrMoveRequested = true;
-        mSyncFragment.run(new NoteDemote(noteIds));
+        runAction(new NoteDemote(noteIds));
     }
 
     @Override
     public void onNotesMoveRequest(long bookId, Set<Long> noteIds, int offset) {
         mPromoteDemoteOrMoveRequested = true;
-        mSyncFragment.run(new NoteMove(bookId, noteIds, offset));
+        runAction(new NoteMove(bookId, noteIds, offset));
     }
 
     @Override
@@ -797,7 +784,7 @@ public class MainActivity extends CommonActivity
     @Override /* EditorFragment */
     public void onBookPrefaceEditSaveRequest(@NotNull Book book, @NotNull String preface) {
         popBackStackAndCloseKeyboard();
-        mSyncFragment.run(new BookUpdatePreface(book.getId(), preface));
+        runAction(new BookUpdatePreface(book.getId(), preface));
     }
 
     @Override
@@ -823,29 +810,29 @@ public class MainActivity extends CommonActivity
 
     @Override
     public void onSavedSearchDeleteRequest(@NotNull Set<Long> ids) {
-        mSyncFragment.run(new SavedSearchDelete(ids));
+        runAction(new SavedSearchDelete(ids));
     }
 
     @Override
     public void onSavedSearchMoveUpRequest(long id) {
-        mSyncFragment.run(new SavedSearchMoveUp(id));
+        runAction(new SavedSearchMoveUp(id));
     }
 
     @Override
     public void onSavedSearchMoveDownRequest(long id) {
-        mSyncFragment.run(new SavedSearchMoveDown(id));
+        runAction(new SavedSearchMoveDown(id));
     }
 
     @Override
     public void onSavedSearchCreateRequest(SavedSearch savedSearch) {
         popBackStackAndCloseKeyboard();
-        mSyncFragment.run(new SavedSearchCreate(savedSearch));
+        runAction(new SavedSearchCreate(savedSearch));
     }
 
     @Override
     public void onSavedSearchUpdateRequest(SavedSearch savedSearch) {
         popBackStackAndCloseKeyboard();
-        mSyncFragment.run(new SavedSearchUpdate(savedSearch));
+        runAction(new SavedSearchUpdate(savedSearch));
     }
 
     @Override
@@ -872,10 +859,21 @@ public class MainActivity extends CommonActivity
         KeyboardUtils.closeSoftKeyboard(this);
     }
 
+    private void runAction(UseCase action) {
+        App.EXECUTORS.diskIO().execute(() -> {
+            try {
+                UseCaseResult result = UseCaseRunner.run(action);
+                App.EXECUTORS.mainThread().execute(() -> onSuccess(action, result));
+            } catch (Throwable e) {
+                e.printStackTrace();
+                App.EXECUTORS.mainThread().execute(() -> onError(action, e));
+            }
+        });
+    }
+
     /**
      * User action succeeded.
      */
-    @Override
     public void onSuccess(UseCase action, UseCaseResult result) {
         if (action instanceof NoteCut) {
             NotesClipboard clipboard = (NotesClipboard) result.getUserData();
@@ -923,7 +921,6 @@ public class MainActivity extends CommonActivity
     /**
      * User action failed.
      */
-    @Override
     public void onError(UseCase action, Throwable throwable) {
         if (action instanceof BookExport) {
             AppSnackbarUtils.showSnackbar(this, getString(

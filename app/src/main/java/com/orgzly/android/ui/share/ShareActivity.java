@@ -31,11 +31,8 @@ import com.orgzly.android.ui.AppSnackbarUtils;
 import com.orgzly.android.ui.CommonActivity;
 import com.orgzly.android.ui.NotePlace;
 import com.orgzly.android.SharingShortcutsManager;
-import com.orgzly.android.ui.sync.SyncFragment;
 import com.orgzly.android.ui.note.NoteFragmentCompose;
 import com.orgzly.android.ui.util.ActivityUtils;
-import com.orgzly.android.usecase.UseCase;
-import com.orgzly.android.usecase.UseCaseResult;
 import com.orgzly.android.util.LogUtils;
 import com.orgzly.android.util.MiscUtils;
 
@@ -56,15 +53,12 @@ import javax.inject.Inject;
  */
 public class ShareActivity extends CommonActivity
         implements
-        NoteFragmentCompose.Listener,
-        SyncFragment.Listener {
+        NoteFragmentCompose.Listener {
 
     public static final String TAG = ShareActivity.class.getName();
 
     /** Shared text files are read and their content is stored as note content. */
     private static final long MAX_TEXT_FILE_LENGTH_FOR_CONTENT = 1024 * 1024 * 2; // 2 MB
-
-    private SyncFragment mSyncFragment;
 
     private String mError;
 
@@ -227,14 +221,6 @@ public class ShareActivity extends CommonActivity
         NoteFragmentCompose noteFragment;
 
         if (savedInstanceState == null) { /* Create and add fragments. */
-
-            mSyncFragment = SyncFragment.getInstance();
-
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(mSyncFragment, SyncFragment.FRAGMENT_TAG)
-                    .commit();
-
             try {
                 long bookId;
                 if (data.bookId == null) {
@@ -255,8 +241,6 @@ public class ShareActivity extends CommonActivity
                 // bail out here
                 finish();
             }
-        } else { /* Get existing fragments. */
-            mSyncFragment = (SyncFragment) getSupportFragmentManager().findFragmentByTag(SyncFragment.FRAGMENT_TAG);
         }
     }
 
@@ -325,21 +309,6 @@ public class ShareActivity extends CommonActivity
     @Override
     public void onNoteCanceled() {
         finish();
-    }
-
-    /**
-     * User action succeeded.
-     */
-    @Override
-    public void onSuccess(UseCase action, UseCaseResult result) {
-    }
-
-    /**
-     * User action failed.
-     */
-    @Override
-    public void onError(UseCase action, Throwable throwable) {
-        AppSnackbarUtils.showSnackbar(this, throwable.getLocalizedMessage());
     }
 
     private class Data {

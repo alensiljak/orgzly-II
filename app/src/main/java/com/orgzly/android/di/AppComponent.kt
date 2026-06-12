@@ -35,7 +35,6 @@ import com.orgzly.android.ui.settings.SettingsFragment
 import com.orgzly.android.ui.settings.exporting.SettingsExportFragment
 import com.orgzly.android.ui.settings.importing.SettingsImportFragment
 import com.orgzly.android.ui.share.ShareActivity
-import com.orgzly.android.ui.sync.SyncFragment
 import com.orgzly.android.usecase.UseCaseRunner
 import com.orgzly.android.usecase.UseCaseWorker
 import com.orgzly.android.widgets.ListWidgetProvider
@@ -79,7 +78,6 @@ interface AppComponent {
     fun inject(arg: RefileFragment)
     fun inject(arg: SettingsExportFragment)
     fun inject(arg: SettingsImportFragment)
-    fun inject(arg: SyncFragment)
     fun inject(arg: com.orgzly.android.ui.notes.gantt.GanttFragment)
 
 
