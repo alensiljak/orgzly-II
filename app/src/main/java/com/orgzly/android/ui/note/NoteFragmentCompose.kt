@@ -80,24 +80,14 @@ class NoteFragmentCompose : ComposeFragment(), TimestampDialogFragment.OnDateTim
         requireActivity().onBackPressedDispatcher.addCallback(this, userCancelBackPressHandler)
     }
 
-    override fun onResume() {
-        super.onResume()
-        // ADJUST_NOTHING: prevent the window from panning (which pushes the TopAppBar off screen)
-        // or resizing (which double-counts keyboard height alongside imePadding in Compose).
-        // imePadding() in the Compose layout handles reserving space for the keyboard.
-        @Suppress("DEPRECATION")
-        requireActivity().window.setSoftInputMode(
-            android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
-        )
-    }
+    // Keyboard handling: the activity window is edge-to-edge (see MainActivity) with
+    // adjustResize, which on an edge-to-edge window never resizes or pans — it only makes
+    // the system dispatch IME insets. imePadding() in scaffoldPadding() reserves the
+    // keyboard space, and it is the single mechanism on all API levels.
 
     override fun onPause() {
         super.onPause()
         ActivityUtils.keepScreenOnClear(activity)
-        @Suppress("DEPRECATION")
-        requireActivity().window.setSoftInputMode(
-            android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
-        )
     }
 
     private fun setupObservers() {
