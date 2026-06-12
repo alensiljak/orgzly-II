@@ -99,7 +99,7 @@ object NotePopup {
 
         // Finger size
         val fingerSize = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_MM, 16f /* From Espresso's Press.FINGER */,
+            TypedValue.COMPLEX_UNIT_MM, 11f,
             context.resources.displayMetrics
         ).toInt()
 
