@@ -35,6 +35,20 @@ If you don't use Android Studio and wish to build and test the app from command 
 
 Make sure you [turn off animations](https://developer.android.com/training/testing/espresso/setup) for the device you're testing on.
 
+### Tests
+
+To run all the local unit tests:
+
+```sh
+./gradlew test
+```
+
+Specific build variant:
+
+```sh
+gradlew testDebugUnitTest
+```
+
 ## License
 
 The project is licensed under the [GNU General Public License version 3 (or newer)](LICENSE).

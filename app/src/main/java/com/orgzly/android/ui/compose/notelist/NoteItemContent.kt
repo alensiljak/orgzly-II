@@ -110,6 +110,7 @@ fun NoteItemContent(
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .testTag("note_row")
             .background(rowBackground)
             .combinedClickable(onClick = onClick, onLongClick = onLongClick)
             .let { if (!inBook && !isSearchFoldable) it.padding(horizontal = 16.dp) else it },
@@ -120,7 +121,7 @@ fun NoteItemContent(
                 text = noteView.bookName,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 4.dp, start = 2.dp),
+                modifier = Modifier.padding(top = 4.dp, start = 2.dp).testTag("note_book_name"),
             )
         }
 
@@ -185,7 +186,7 @@ fun NoteItemContent(
                         text = noteView.bookName,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 2.dp),
+                        modifier = Modifier.padding(bottom = 2.dp).testTag("note_book_name"),
                     )
                 }
             }
@@ -202,6 +203,7 @@ fun NoteItemContent(
                     color = LocalContentColor.current.copy(alpha = 0.6f),
                     modifier = Modifier
                         .padding(top = 4.dp, start = 8.dp, end = 8.dp)
+                        .testTag("note_fold_button")
                         .combinedClickable(
                             onClick = { onToggleFold(note.id) },
                             onLongClick = { onToggleFoldSubtree(note.id) },
@@ -343,7 +345,8 @@ private fun NoteContent(
         onLongPress = onLongPress,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 2.dp),
+            .padding(top = 2.dp)
+            .testTag("note_content"),
     )
 }
 

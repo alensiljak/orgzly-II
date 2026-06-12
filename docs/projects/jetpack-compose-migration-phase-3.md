@@ -172,13 +172,13 @@ Position-based RecyclerView access is replaced with `onAllNodesWithTag` selector
 
 Test tags added to production Compose code:
 
-| Tag | Set on | Used for |
-| --- | ------ | -------- |
-| `"note_title"` | `ClickableOrgText` in `NoteItemContent` | position-ordered note title assertions |
-| `"note_scheduled"` | scheduled `TimeRow` in `PlanningTimes` | visibility checks |
-| `"note_deadline"` | deadline `TimeRow` in `PlanningTimes` | visibility checks |
-| `"note_event"` | event `TimeRow` in `PlanningTimes` | visibility checks |
-| `"agenda_item"` | `Box` wrapper per item in `AgendaItemList` | total item count (headers + notes) |
+| Tag                | Set on                                     | Used for                               |
+|--------------------|--------------------------------------------|----------------------------------------|
+| `"note_title"`     | `ClickableOrgText` in `NoteItemContent`    | position-ordered note title assertions |
+| `"note_scheduled"` | scheduled `TimeRow` in `PlanningTimes`     | visibility checks                      |
+| `"note_deadline"`  | deadline `TimeRow` in `PlanningTimes`      | visibility checks                      |
+| `"note_event"`     | event `TimeRow` in `PlanningTimes`         | visibility checks                      |
+| `"agenda_item"`    | `Box` wrapper per item in `AgendaItemList` | total item count (headers + notes)     |
 
 Key mapping from old to new:
 
