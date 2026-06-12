@@ -9,6 +9,7 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -561,6 +562,21 @@ fun NoteContent(
     var isMetadataFolded by remember { mutableStateOf(AppPreferences.noteMetadataFolded(context)) }
     var isContentFolded by remember { mutableStateOf(AppPreferences.isNoteContentFolded(context)) }
 
+    // Tapping empty space below the form focuses the content field.
+    // The Box fills the whole available area; scroll gestures are handled by the Column inside
+    // (clickable only fires on confirmed taps, not drags), so scrollability is unaffected.
+    val contentAreaInteractionSource = remember { MutableInteractionSource() }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(indication = null, interactionSource = contentAreaInteractionSource) {
+                if (!isContentFolded) {
+                    richTextViews[R.id.content_edit]?.let { rt ->
+                        rt.toEditMode(rt.getSourceText()?.length ?: 0)
+                    }
+                }
+            }
+    ) {
     // Single scroll container for the entire form. The content EditText works fine here
     // because it is wrap_content (expands to show all text, no internal scrolling), so it
     // doesn't intercept the parent's scroll gestures.
@@ -682,6 +698,11 @@ fun NoteContent(
                 onViewCreated = { richText ->
                     richTextViews[R.id.content_edit] = richText
                     richText.startInEditMode()
+                    // Tapping in empty space within the FrameLayout (below the 1-line EditText)
+                    // doesn't reach Compose's gesture system, so we handle it at the View level.
+                    richText.setOnClickListener {
+                        richText.toEditMode(richText.getSourceText()?.length ?: 0)
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -689,6 +710,7 @@ fun NoteContent(
             )
         }
     }
+    } // Box
 }
 
 @Composable
