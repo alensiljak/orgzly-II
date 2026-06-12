@@ -56,7 +56,7 @@
 
         <activity
             android:name="com.orgzly.android.ui.main.MainActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

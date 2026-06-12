@@ -1,5 +1,7 @@
 package com.orgzly.android.ui.main;
 
+import androidx.activity.EdgeToEdge;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -130,6 +132,11 @@ public class MainActivity extends CommonActivity
 
         if (BuildConfig.LOG_DEBUG)
             LogUtils.d(TAG, getIntent(), savedInstanceState);
+
+        // Edge-to-edge is enforced on Android 15+ (targetSdk 35+). Enable it explicitly so all
+        // API levels lay out the window the same way and IME insets (imePadding in Compose)
+        // are the single keyboard mechanism everywhere.
+        EdgeToEdge.enable(this);
 
         setContentView(R.layout.activity_main);
 
