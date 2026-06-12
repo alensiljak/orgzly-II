@@ -9,6 +9,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CircularProgressIndicator
@@ -330,7 +332,7 @@ private fun DefaultTopBar(
                     contentDescription = stringResource(R.string.search))
             }
             IconButton(onClick = { overflow = true }) {
-                Icon(painterResource(R.drawable.ic_more_horiz),
+                Icon(Icons.Default.MoreVert,
                     contentDescription = stringResource(R.string.more_options))
             }
             DropdownMenu(expanded = overflow, onDismissRequest = { overflow = false }) {
@@ -381,7 +383,7 @@ private fun SelectionTopBar(count: Int, onBack: () -> Unit, onAction: (Int) -> U
                 Icon(painterResource(R.drawable.ic_swap_vert), stringResource(R.string.move))
             }
             IconButton(onClick = { overflow = true }) {
-                Icon(painterResource(R.drawable.ic_more_horiz), stringResource(R.string.more_options))
+                Icon(Icons.Default.MoreVert, stringResource(R.string.more_options))
             }
             DropdownMenu(expanded = overflow, onDismissRequest = { overflow = false }) {
                 MenuItem(R.string.clock_in) { overflow = false; onAction(R.id.clock_in) }

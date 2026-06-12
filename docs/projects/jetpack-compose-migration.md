@@ -67,13 +67,9 @@ Migrate all `DialogFragment` subclasses to Compose dialogs. These are self-conta
 
 See the [Phase 2 doc](jetpack-compose-migration-phase-2) for the detailed action plan.
 
-### Phase 3 — Notes list screen *(medium risk)*, 🚧 IN PROGRESS
+### Phase 3 — Notes list screen *(medium risk)*, ✅ DONE
 
 See [jetpack-compose-migration-phase-3.md](jetpack-compose-migration-phase-3.md) for the detailed action plan and status.
-
-All three note-list screens (`BookFragment`, `SearchFragment`, `AgendaFragment`) and the shared `NoteItemViewBinder` stack are fully migrated to Compose. Legacy adapters, XML layouts, and gesture helpers have been deleted.
-
-**Remaining:** Espresso test migration (~17 files, ~1–1.5 weeks estimated). All production code is Compose; the test suite still references deleted layout IDs.
 
 ### Phase 4 — Repo and sync management screens *(medium risk)*
 
