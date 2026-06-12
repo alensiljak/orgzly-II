@@ -54,7 +54,10 @@ android {
     signingConfigs {
         release {
             def kp = gradle.ext.keystoreProperties
-            storeFile file(kp.getProperty('storeFile', ''))
+            def storeFilePath = kp.getProperty('storeFile', '')
+            if (storeFilePath) {
+                storeFile file(storeFilePath)
+            }
             storePassword kp.getProperty('storePassword', '')
             keyAlias kp.getProperty('keyAlias', '')
             keyPassword kp.getProperty('keyPassword', '')
