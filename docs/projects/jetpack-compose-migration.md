@@ -71,16 +71,9 @@ See the [Phase 2 doc](jetpack-compose-migration-phase-2) for the detailed action
 
 See [jetpack-compose-migration-phase-3.md](jetpack-compose-migration-phase-3.md) for the detailed action plan and status.
 
-`NotesFragment` (abstract) and its concrete implementations are the most-used screen. This requires the most care because the nested-set tree display, selection state, and swipe actions are complex.
+All three note-list screens (`BookFragment`, `SearchFragment`, `AgendaFragment`) and the shared `NoteItemViewBinder` stack are fully migrated to Compose. Legacy adapters, XML layouts, and gesture helpers have been deleted.
 
-- Implement `NotesScreen.kt` composable with `LazyColumn`
-- Wire existing `NotesViewModel` (migrate LiveData → StateFlow)
-- Replace swipe-to-action with Compose gesture handling
-- Delete XML layouts and legacy Fragment
-
-**Done:** `BookFragment` (notebook tree view) fully migrated to Compose — pure-Compose note rows, 3-mode CAB, swipe→popup, preface, flipper states. Book-only legacy (`fragment_book.xml`, `BookAdapter`, preface views) deleted.
-
-**Remaining:** `SearchFragment` and `AgendaFragment` (share the note-row rendering, still on the legacy `item_head.xml` stack); a few deferred BookFragment niceties; Espresso test migration.
+**Remaining:** Espresso test migration (~17 files, ~1–1.5 weeks estimated). All production code is Compose; the test suite still references deleted layout IDs.
 
 ### Phase 4 — Repo and sync management screens *(medium risk)*
 

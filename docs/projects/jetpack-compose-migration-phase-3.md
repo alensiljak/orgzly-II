@@ -1,5 +1,17 @@
 # Jetpack Compose Migration — Phase 3: Notes List Screen
 
+## Status
+
+| Work item | Status |
+| ----------- | -------- |
+| `BookFragment` → `BookScreen` | ✅ Done |
+| `SearchFragment` → `SearchScreen` | ✅ Done |
+| `AgendaFragment` → `AgendaScreen` | ✅ Done |
+| `NoteItemViewBinder` cleanup (`NoteItemTitleGenerator`) | ✅ Done |
+| Espresso test migration | 🚧 In progress (~17 files remaining) |
+
+---
+
 ## Goal
 
 Migrate the notes-list screens (`NotesFragment` and its concrete subclasses `BookFragment`,
