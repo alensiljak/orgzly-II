@@ -228,6 +228,18 @@ public class AppPreferences {
         getDefaultSharedPreferences(context).edit().putBoolean(key, value).apply();
     }
 
+    public static boolean notebooksGridLayout(Context context) {
+        return getDefaultSharedPreferences(context).getBoolean(
+                context.getResources().getString(R.string.pref_key_notebooks_grid_layout),
+                context.getResources().getBoolean(R.bool.pref_default_notebooks_grid_layout));
+    }
+
+    public static void setNotebooksGridLayout(Context context, boolean value) {
+        getDefaultSharedPreferences(context).edit()
+                .putBoolean(context.getResources().getString(R.string.pref_key_notebooks_grid_layout), value)
+                .apply();
+    }
+
     public static String notebooksSortOrder(Context context) {
         return getDefaultSharedPreferences(context).getString(
                 context.getResources().getString(R.string.pref_key_notebooks_sort_order),

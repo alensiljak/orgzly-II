@@ -79,6 +79,10 @@
     <string name="pref_key_is_search_foldable" translatable="false">pref_key_is_search_foldable</string>
     <bool name="pref_default_is_search_foldable" translatable="false">false</bool>
 
+    <!-- Notebooks' layout (list vs grid). -->
+    <string name="pref_key_notebooks_grid_layout" translatable="false">pref_key_notebooks_grid_layout</string>
+    <bool name="pref_default_notebooks_grid_layout" translatable="false">false</bool>
+
     <!-- Notebooks' sort order. -->
     <string name="pref_key_notebooks_sort_order" translatable="false">pref_key_notebooks_sort_order</string>
     <string name="pref_default_notebooks_sort_order" translatable="false">@string/pref_value_notebooks_sort_order_name</string>

@@ -19,9 +19,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items as gridItems
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ViewList
+import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -102,6 +107,7 @@ fun BooksScreen(
     val newBookDialogVisible by viewModel.newBookDialogVisible.collectAsStateWithLifecycle()
     val importBookDialogUri by viewModel.importBookDialogUri.collectAsStateWithLifecycle()
     val displayedDetails by appPreference { AppPreferences.displayedBookDetails(it) }
+    val isGridLayout by appPreference { AppPreferences.notebooksGridLayout(it) }
 
     val context = LocalContext.current
     val pickFileForImport = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -144,12 +150,14 @@ fun BooksScreen(
                 )
                 else -> DefaultTopBar(
                     withActionBar = withActionBar,
+                    isGridLayout = isGridLayout,
                     onOpenDrawer = onOpenDrawer,
                     onImportBook = { pickFileForImport.launch("*/*") },
                     onSearchOpen = { searchActive = true },
                     onSync = onSync,
                     onSettings = onSettings,
                     onPendingReminders = onPendingReminders,
+                    onToggleLayout = { AppPreferences.setNotebooksGridLayout(context, !isGridLayout) },
                     scrollBehavior = scrollBehavior,
                 )
             }
@@ -188,27 +196,57 @@ fun BooksScreen(
                         )
                     }
                     BooksViewModel.ViewState.LOADED -> {
-                        LazyColumn(modifier = Modifier.fillMaxSize()) {
-                            items(books, key = { it.book.id }) { bookView ->
-                                BookItem(
-                                    bookView = bookView,
-                                    isSelected = bookView.book.id in selectedIds,
-                                    displayedDetails = displayedDetails,
-                                    onClick = {
-                                        if (inSelectionMode) {
-                                            viewModel.toggleSelection(bookView.book.id)
-                                        } else {
-                                            onBookClick(bookView.book.id)
-                                        }
-                                    },
-                                    onLongClick = {
-                                        if (!withActionBar) {
-                                            onBookClick(bookView.book.id)
-                                        } else {
-                                            viewModel.toggleSelection(bookView.book.id)
-                                        }
-                                    },
-                                )
+                        if (isGridLayout) {
+                            LazyVerticalGrid(
+                                columns = GridCells.Fixed(2),
+                                modifier = Modifier.fillMaxSize(),
+                                contentPadding = androidx.compose.foundation.layout.PaddingValues(4.dp),
+                            ) {
+                                gridItems(books, key = { it.book.id }) { bookView ->
+                                    BookGridItem(
+                                        bookView = bookView,
+                                        isSelected = bookView.book.id in selectedIds,
+                                        context = context,
+                                        onClick = {
+                                            if (inSelectionMode) {
+                                                viewModel.toggleSelection(bookView.book.id)
+                                            } else {
+                                                onBookClick(bookView.book.id)
+                                            }
+                                        },
+                                        onLongClick = {
+                                            if (!withActionBar) {
+                                                onBookClick(bookView.book.id)
+                                            } else {
+                                                viewModel.toggleSelection(bookView.book.id)
+                                            }
+                                        },
+                                    )
+                                }
+                            }
+                        } else {
+                            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                                items(books, key = { it.book.id }) { bookView ->
+                                    BookItem(
+                                        bookView = bookView,
+                                        isSelected = bookView.book.id in selectedIds,
+                                        displayedDetails = displayedDetails,
+                                        onClick = {
+                                            if (inSelectionMode) {
+                                                viewModel.toggleSelection(bookView.book.id)
+                                            } else {
+                                                onBookClick(bookView.book.id)
+                                            }
+                                        },
+                                        onLongClick = {
+                                            if (!withActionBar) {
+                                                onBookClick(bookView.book.id)
+                                            } else {
+                                                viewModel.toggleSelection(bookView.book.id)
+                                            }
+                                        },
+                                    )
+                                }
                             }
                         }
                     }
@@ -281,12 +319,14 @@ fun BooksScreen(
 @Composable
 private fun DefaultTopBar(
     withActionBar: Boolean,
+    isGridLayout: Boolean,
     onOpenDrawer: () -> Unit,
     onImportBook: () -> Unit,
     onSearchOpen: () -> Unit,
     onSync: () -> Unit,
     onSettings: () -> Unit,
     onPendingReminders: () -> Unit,
+    onToggleLayout: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     var overflowExpanded by remember { mutableStateOf(false) }
@@ -309,6 +349,12 @@ private fun DefaultTopBar(
         },
         actions = {
             if (withActionBar) {
+                IconButton(onClick = onToggleLayout) {
+                    Icon(
+                        imageVector = if (isGridLayout) Icons.AutoMirrored.Filled.ViewList else Icons.Default.GridView,
+                        contentDescription = if (isGridLayout) "Switch to list" else "Switch to grid",
+                    )
+                }
                 IconButton(onClick = onSearchOpen) {
                     Icon(
                         painter = painterResource(R.drawable.ic_search),
@@ -560,6 +606,118 @@ private fun BookItem(
                             color = LocalContentColor.current.copy(alpha = 0.7f),
                         )
                     }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun BookGridItem(
+    bookView: BookView,
+    isSelected: Boolean,
+    context: Context,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
+) {
+    val book = bookView.book
+
+    Card(
+        modifier = Modifier
+            .padding(4.dp)
+            .testTag("book_item_${book.name}")
+            .combinedClickable(onClick = onClick, onLongClick = onLongClick)
+            .graphicsLayer { alpha = if (book.isDummy) 0.4f else 1f },
+        colors = if (isSelected) {
+            CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+        } else {
+            CardDefaults.elevatedCardColors()
+        },
+        elevation = CardDefaults.elevatedCardElevation(),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top,
+            ) {
+                Text(
+                    text = book.title ?: book.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 2,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                )
+                when {
+                    book.lastAction?.type == BookAction.Type.ERROR ->
+                        Icon(
+                            painter = painterResource(R.drawable.ic_sync_problem),
+                            contentDescription = stringResource(R.string.sync),
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(16.dp),
+                        )
+                    bookView.isOutOfSync() ->
+                        Icon(
+                            painter = painterResource(R.drawable.ic_sync),
+                            contentDescription = stringResource(R.string.sync_needed),
+                            modifier = Modifier.size(16.dp),
+                        )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_format_list_bulleted),
+                    contentDescription = null,
+                    modifier = Modifier.size(12.dp),
+                    tint = LocalContentColor.current.copy(alpha = 0.6f),
+                )
+                Text(
+                    text = if (bookView.noteCount > 0) {
+                        context.resources.getQuantityString(
+                            R.plurals.notes_count_nonzero, bookView.noteCount, bookView.noteCount,
+                        )
+                    } else {
+                        context.getString(R.string.notes_count_zero)
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = LocalContentColor.current.copy(alpha = 0.6f),
+                    modifier = Modifier.padding(start = 4.dp),
+                )
+            }
+
+            val syncTime = bookView.syncedTo?.mtime ?: book.mtime
+            if (syncTime != null && syncTime > 0) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 2.dp),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_access_time),
+                        contentDescription = null,
+                        modifier = Modifier.size(12.dp),
+                        tint = LocalContentColor.current.copy(alpha = 0.6f),
+                    )
+                    Text(
+                        text = formatTime(context, syncTime) ?: "",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = LocalContentColor.current.copy(alpha = 0.6f),
+                        modifier = Modifier.padding(start = 4.dp),
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                    )
                 }
             }
         }
