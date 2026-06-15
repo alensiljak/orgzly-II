@@ -28,6 +28,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.automirrored.filled.StickyNote2
+import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -74,6 +76,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cc.alensiljak.orgzly.R
 import com.orgzly.android.db.entity.BookAction
@@ -349,12 +352,6 @@ private fun DefaultTopBar(
         },
         actions = {
             if (withActionBar) {
-                IconButton(onClick = onToggleLayout) {
-                    Icon(
-                        imageVector = if (isGridLayout) Icons.AutoMirrored.Filled.ViewList else Icons.Default.GridView,
-                        contentDescription = if (isGridLayout) "Switch to list" else "Switch to grid",
-                    )
-                }
                 IconButton(onClick = onSearchOpen) {
                     Icon(
                         painter = painterResource(R.drawable.ic_search),
@@ -388,6 +385,12 @@ private fun DefaultTopBar(
                     DropdownMenuItem(
                         text = { Text(stringResource(R.string.show_pending_reminders)) },
                         onClick = { overflowExpanded = false; onPendingReminders() },
+                    )
+                    DropdownMenuItem(
+                        text = {
+                            Text(if (isGridLayout) "Switch to list view" else "Switch to grid view")
+                        },
+                        onClick = { overflowExpanded = false; onToggleLayout() },
                     )
                 }
             }
@@ -677,19 +680,13 @@ private fun BookGridItem(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_format_list_bulleted),
+                    imageVector = Icons.AutoMirrored.Filled.StickyNote2,
                     contentDescription = null,
-                    modifier = Modifier.size(12.dp),
-                    tint = LocalContentColor.current.copy(alpha = 0.6f),
+                    modifier = Modifier.size(13.dp),
+                    tint = Color(0xFFFFB300),
                 )
                 Text(
-                    text = if (bookView.noteCount > 0) {
-                        context.resources.getQuantityString(
-                            R.plurals.notes_count_nonzero, bookView.noteCount, bookView.noteCount,
-                        )
-                    } else {
-                        context.getString(R.string.notes_count_zero)
-                    },
+                    text = if (bookView.noteCount > 0) "${bookView.noteCount} notes" else "0 notes",
                     style = MaterialTheme.typography.bodySmall,
                     color = LocalContentColor.current.copy(alpha = 0.6f),
                     modifier = Modifier.padding(start = 4.dp),
@@ -704,12 +701,7 @@ private fun BookGridItem(
                         .fillMaxWidth()
                         .padding(top = 2.dp),
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_access_time),
-                        contentDescription = null,
-                        modifier = Modifier.size(12.dp),
-                        tint = LocalContentColor.current.copy(alpha = 0.6f),
-                    )
+                    Text(text = "🕒", fontSize = 11.sp)
                     Text(
                         text = formatTime(context, syncTime) ?: "",
                         style = MaterialTheme.typography.bodySmall,
