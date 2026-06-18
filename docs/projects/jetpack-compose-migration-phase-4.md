@@ -5,7 +5,7 @@
 | Work item                                         | Status  |
 |---------------------------------------------------|---------|
 | `ReposActivity` → `ReposScreen`                   | Done    |
-| `DirectoryRepoActivity` → Compose                 | Pending |
+| `DirectoryRepoActivity` → Compose                 | Done    |
 | `GitRepoActivity` → Compose                       | Pending |
 | `WebdavRepoActivity` → Compose                    | Pending |
 | `DropboxRepoActivity` → Compose                   | Pending |
