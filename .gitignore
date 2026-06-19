@@ -4,6 +4,8 @@ app.properties
 # Crowdin configuration file
 crowdin.yml
 
+# Pi project-local configuration
+.pi/
 
 # Created by https://www.gitignore.io/api/gradle,intellij,android,emacs
 
