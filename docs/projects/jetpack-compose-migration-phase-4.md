@@ -7,7 +7,7 @@
 | `ReposActivity` → `ReposScreen`                   | Done    |
 | `DirectoryRepoActivity` → Compose                 | Done    |
 | `GitRepoActivity` → Compose                       | Pending |
-| `WebdavRepoActivity` → Compose                    | Pending |
+| `WebdavRepoActivity` → Compose                    | Done    |
 | `DropboxRepoActivity` → Compose                   | Pending |
 | `SyncFragment` → Compose screen in `MainActivity` | Done    |
 
@@ -112,3 +112,44 @@ preserved (with LiveData → StateFlow migration where it adds value).
 
 - `ui/sync/SyncFragment.kt`
 - `res/layout/fragment_sync.xml`
+
+---
+
+## WebdavRepoActivity → Compose
+
+### What the screen does
+
+- Form with URL, username, password fields (all with inline error messages)
+- "Add / Edit trusted certificates" button → `AlertDialog` with a multi-line text field
+- Test connection button: disabled while in progress, shows result text (success with notebook count, or error message)
+- Cleartext-traffic warning dialog when the URL scheme is not HTTPS/WebDAVS
+- Save FAB → validates, then saves via `viewModel.saveRepo()`; existing repo pre-fills all fields
+
+### Approach
+
+- `WebdavRepoActivity` now extends `ComposeActivity` (was `CommonActivity`)
+- Form state (`url`, `username`, `password`, field errors, snackbar message, cleartext dialog flag)
+  held as `mutableStateOf` in the Activity — same pattern as `DirectoryRepoActivity`
+- `WebdavRepoViewModel` unchanged; `certificates` (`MutableLiveData<String?>`) and
+  `connectionTestStatus` observed in `Content()` via `observeAsState()`
+- Validation logic stays in the Activity (`isInputValid()`)
+- Certificates and cleartext-traffic dialogs lifted into Compose (`AlertDialog`) — no more
+  `MaterialAlertDialogBuilder`
+- View binding and `KeyboardUtils.closeSoftKeyboard` removed (Compose handles keyboard dismissal
+  automatically via scroll)
+
+### New files
+
+- `ui/repo/webdav/WebdavRepoScreen.kt` — `Scaffold` with `OrgzlyTopAppBar`, scrollable `Column`
+  of form fields, test-connection button + result text, `CertificatesDialog`, cleartext `AlertDialog`
+
+### Changed files
+
+- `ui/repo/webdav/WebdavRepoActivity.kt` — extends `ComposeActivity`; form state as
+  `mutableStateOf`; `Content()` wires screen; `saveAndFinish()` / `doSave()` / `testConnection()`
+  / `isInputValid()` are plain private methods
+
+### Deleted files
+
+- `res/layout/activity_repo_webdav.xml`
+- `res/layout/dialog_certificates.xml`
