@@ -9,144 +9,117 @@ import com.orgzly.org.datetime.OrgDateTime
 import com.orgzly.org.datetime.OrgDateTimeUtils
 import com.orgzly.org.datetime.OrgInterval
 import org.joda.time.DateTime
-import org.joda.time.ReadableInstant
-import java.util.*
-
 
 object NoteReminders {
-    // private val TAG: String = NoteReminders::class.java.name
 
-    const val INTERVAL_FROM_LAST_TO_NOW = 1
-    const val INTERVAL_FROM_NOW = 2
-
-    @JvmStatic
-    fun getNoteReminders(
+    /**
+     * All notes whose effective reminder time falls in [from, to).
+     *
+     * "Effective time" means:
+     *  - the note's own timestamp if it has a time component (e.g. 10:00)
+     *  - the configured daily reminder time otherwise (date-only timestamps)
+     *  - shifted earlier by the warning period for deadline/event notes
+     *
+     * Used to collect what to show since the last alarm run.
+     */
+    fun getNotificationsInWindow(
         context: Context,
         dataRepository: DataRepository,
-        now: ReadableInstant,
-        lastRun: LastRun,
-        intervalType: Int): List<NoteReminder> {
+        from: DateTime,
+        to: DateTime
+    ): List<NoteReminder> = collect(context, dataRepository) { time ->
+        !time.isBefore(from) && time.isBefore(to)
+    }
 
-        val result: MutableList<NoteReminder> = ArrayList()
+    /**
+     * The single next upcoming note with effective time strictly after [after].
+     * Returns null if nothing is scheduled ahead.
+     *
+     * Used to decide when to set the next AlarmManager alarm.
+     */
+    fun getNextReminder(
+        context: Context,
+        dataRepository: DataRepository,
+        after: DateTime
+    ): NoteReminder? = collect(context, dataRepository) { time ->
+        time.isAfter(after)
+    }.minByOrNull { it.runTime }
+
+    /**
+     * Whether this note time entry should produce a reminder at all:
+     * its type must be enabled in settings and the note must not be done.
+     */
+    fun isRelevantNoteTime(context: Context, noteTime: NoteTime): Boolean {
+        if (AppPreferences.doneKeywordsSet(context).contains(noteTime.state)) return false
+        return AppPreferences.remindersForScheduledEnabled(context)
+                && noteTime.timeType == ReminderTimeDao.SCHEDULED_TIME
+                || AppPreferences.remindersForDeadlineEnabled(context)
+                && noteTime.timeType == ReminderTimeDao.DEADLINE_TIME
+                || AppPreferences.remindersForEventsEnabled(context)
+                && noteTime.timeType == ReminderTimeDao.EVENT_TIME
+    }
+
+    // -------------------------------------------------------------------------
+
+    /**
+     * Shared collection logic. Iterates all note times, computes each note's
+     * effective reminder time via OrgDateTimeUtils (handles date-only offsets
+     * and deadline warning periods), then keeps only notes matching [predicate].
+     * Result is sorted by time, oldest first.
+     */
+    private fun collect(
+        context: Context,
+        dataRepository: DataRepository,
+        predicate: (DateTime) -> Boolean
+    ): List<NoteReminder> {
+        val dailyTime = AppPreferences.reminderDailyTime(context)
+        val result = mutableListOf<NoteReminder>()
 
         for (noteTime in dataRepository.times()) {
-            if (isRelevantNoteTime(context, noteTime)) {
-                val orgDateTime = OrgDateTime.parse(noteTime.orgTimestampString)
+            if (!isRelevantNoteTime(context, noteTime)) continue
 
-                val interval = intervalToConsider(intervalType, now, lastRun, noteTime.timeType)
+            val orgDateTime = OrgDateTime.parse(noteTime.orgTimestampString)
 
-                // Deadline warning period
+            // Deadline and event notes support an optional warning period that
+            // shifts the effective reminder time earlier (e.g. "-3d" on a
+            // DEADLINE fires three days before the actual due date).
+            val warningPeriod: OrgInterval? =
+                if (noteTime.timeType == ReminderTimeDao.DEADLINE_TIME
+                    || noteTime.timeType == ReminderTimeDao.EVENT_TIME) {
+                    (if (orgDateTime.hasDelay()) orgDateTime.delay else null) as? OrgInterval
+                } else null
 
-                val warningPeriod = if (isWarningPeriodSupported(noteTime)) {
-                    if (orgDateTime.hasDelay()) {
-                        orgDateTime.delay as OrgInterval
-                    } else {
-                        // TODO: Use default from user preference
-                        // OrgInterval(1, OrgInterval.Unit.DAY)
-                        null
-                    }
-                } else {
-                    null
-                }
+            // getTimesInInterval with from=epoch and to=null returns exactly one
+            // element for non-repeating timestamps: the note's effective time
+            // with the daily-time offset (for date-only notes) and warning period
+            // already applied. useRepeater=false keeps it to a single occurrence.
+            val effectiveTime = OrgDateTimeUtils.getTimesInInterval(
+                orgDateTime,
+                DateTime(0),   // epoch — always before any real note date
+                null,
+                dailyTime,
+                false,         // do not use repeater
+                warningPeriod,
+                1
+            ).firstOrNull() ?: continue
 
-                val time = getFirstTime(
-                    orgDateTime,
-                    interval,
-                    AppPreferences.reminderDailyTime(context),
-                    warningPeriod
-                )
-
-//                    if (BuildConfig.LOG_DEBUG) {
-//                        LogUtils.d(TAG,
-//                                "Note's time", noteTime,
-//                                "Interval", interval,
-//                                "Found first time", time)
-//                    }
-
-                if (time != null) {
-                    val payload = NoteReminderPayload(
+            if (predicate(effectiveTime)) {
+                result.add(NoteReminder(
+                    effectiveTime,
+                    NoteReminderPayload(
                         noteTime.noteId,
                         noteTime.bookId,
                         noteTime.bookName,
                         noteTime.title,
                         noteTime.tags,
                         noteTime.timeType,
-                        orgDateTime)
-
-                    result.add(NoteReminder(time, payload))
-                }
+                        orgDateTime
+                    )
+                ))
             }
         }
 
-        // Sort by time, older first
-        result.sortWith { o1, o2 -> o1.runTime.compareTo(o2.runTime) }
-
+        result.sortWith { a, b -> a.runTime.compareTo(b.runTime) }
         return result
-    }
-
-    fun isRelevantNoteTime(context: Context, noteTime: NoteTime): Boolean {
-        val doneStateKeywords = AppPreferences.doneKeywordsSet(context)
-        val isDone = doneStateKeywords.contains(noteTime.state)
-
-        val isEnabled = AppPreferences.remindersForScheduledEnabled(context)
-                && noteTime.timeType == ReminderTimeDao.SCHEDULED_TIME
-                || AppPreferences.remindersForDeadlineEnabled(context)
-                && noteTime.timeType == ReminderTimeDao.DEADLINE_TIME
-                || AppPreferences.remindersForEventsEnabled(context)
-                && noteTime.timeType == ReminderTimeDao.EVENT_TIME
-
-        return isEnabled && !isDone
-    }
-
-    private fun isWarningPeriodSupported(noteTime: NoteTime): Boolean {
-        return noteTime.timeType == ReminderTimeDao.DEADLINE_TIME
-                || noteTime.timeType == ReminderTimeDao.EVENT_TIME
-    }
-
-    private fun intervalToConsider(
-        intervalType: Int, now: ReadableInstant, lastRun: LastRun, timeType: Int
-    ): Pair<ReadableInstant, ReadableInstant?> {
-
-        when (intervalType) {
-            INTERVAL_FROM_LAST_TO_NOW -> {
-                val from = when (timeType) {
-                    ReminderTimeDao.SCHEDULED_TIME -> {
-                        lastRun.scheduled
-                    }
-                    ReminderTimeDao.DEADLINE_TIME -> {
-                        lastRun.deadline
-                    }
-                    else -> {
-                        lastRun.event
-                    }
-                }
-
-                return Pair(from ?: now, now)
-            }
-
-            INTERVAL_FROM_NOW -> {
-                return Pair(now, null)
-            }
-
-            else -> throw IllegalArgumentException("Before or after now?")
-        }
-    }
-
-    private fun getFirstTime(
-        orgDateTime: OrgDateTime,
-        interval: Pair<ReadableInstant, ReadableInstant?>,
-        defaultTimeOfDay: Int,
-        warningPeriod: OrgInterval?): DateTime? {
-
-        val times = OrgDateTimeUtils.getTimesInInterval(
-            orgDateTime,
-            interval.first,
-            interval.second,
-            defaultTimeOfDay,
-            false, // Do not use repeater for reminders
-            warningPeriod,
-            1)
-
-        return times.firstOrNull()
     }
 }

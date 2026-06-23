@@ -9,7 +9,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import cc.alensiljak.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.data.logs.AppLogsRepository
-import com.orgzly.android.reminders.LastRun
+import com.orgzly.android.prefs.AppPreferences
 import com.orgzly.android.ui.CommonActivity
 import com.orgzly.android.ui.util.copyPlainTextToClipboard
 import com.orgzly.android.ui.util.getAlarmManager
@@ -100,7 +100,8 @@ class AppLogsActivity : CommonActivity() {
             }
         }
 
-        val lastRun = LastRun.fromPreferences(this)
+        val lastRunMs = AppPreferences.reminderLastRun(this)
+        val lastRun = if (lastRunMs > 0L) DateTime(lastRunMs) else "Never"
 
         return """
                 Now
@@ -110,12 +111,7 @@ class AppLogsActivity : CommonActivity() {
                 $nextAlarmClock
 
                 Last run for reminders
-                Scheduled
-                ${lastRun.scheduled}
-                Deadline
-                ${lastRun.deadline}
-                Event
-                ${lastRun.event}
+                $lastRun
 
                 Last boot (including deep sleep)
                 $bootAt

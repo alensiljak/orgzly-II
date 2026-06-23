@@ -1154,36 +1154,16 @@ public class AppPreferences {
     }
 
     /*
-     * ReminderWorker
+     * Reminders: last run timestamp
      */
 
-    public static void reminderLastRunForScheduled(Context context, long value) {
-        String key = context.getResources().getString(R.string.pref_key_reminder_service_last_run_for_scheduled);
+    public static void reminderLastRun(Context context, long value) {
+        String key = context.getResources().getString(R.string.pref_key_reminder_service_last_run);
         getStateSharedPreferences(context).edit().putLong(key, value).apply();
     }
 
-    public static long reminderLastRunForScheduled(Context context) {
-        String key = context.getResources().getString(R.string.pref_key_reminder_service_last_run_for_scheduled);
-        return getStateSharedPreferences(context).getLong(key, 0L);
-    }
-
-    public static void reminderLastRunForDeadline(Context context, long value) {
-        String key = context.getResources().getString(R.string.pref_key_reminder_service_last_run_for_deadline);
-        getStateSharedPreferences(context).edit().putLong(key, value).apply();
-    }
-
-    public static long reminderLastRunForDeadline(Context context) {
-        String key = context.getResources().getString(R.string.pref_key_reminder_service_last_run_for_deadline);
-        return getStateSharedPreferences(context).getLong(key, 0L);
-    }
-
-    public static void reminderLastRunForEvents(Context context, long value) {
-        String key = context.getResources().getString(R.string.pref_key_reminder_service_last_run_for_event);
-        getStateSharedPreferences(context).edit().putLong(key, value).apply();
-    }
-
-    public static long reminderLastRunForEvents(Context context) {
-        String key = context.getResources().getString(R.string.pref_key_reminder_service_last_run_for_event);
+    public static long reminderLastRun(Context context) {
+        String key = context.getResources().getString(R.string.pref_key_reminder_service_last_run);
         return getStateSharedPreferences(context).getLong(key, 0L);
     }
 

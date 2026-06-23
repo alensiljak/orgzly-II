@@ -633,9 +633,7 @@
     <string name="pref_key_is_getting_started_notebook_loaded" translatable="false">pref_key_is_getting_started_notebook_loaded</string>
     <string name="pref_key_last_used_version_code" translatable="false">pref_key_last_used_version_code</string>
     <string name="pref_key_last_successful_sync_time" translatable="false">pref_key_last_successful_sync_time</string>
-    <string name="pref_key_reminder_service_last_run_for_scheduled" translatable="false">pref_key_reminder_service_last_run_for_scheduled</string>
-    <string name="pref_key_reminder_service_last_run_for_deadline" translatable="false">pref_key_reminder_service_last_run_for_deadline</string>
-    <string name="pref_key_reminder_service_last_run_for_event" translatable="false">pref_key_reminder_service_last_run_for_event</string>
+    <string name="pref_key_reminder_service_last_run" translatable="false">pref_key_reminder_service_last_run</string>
     <string name="pref_key_notes_clipboard" translatable="false">pref_key_notes_clipboard</string>
     <string name="pref_key_refile_last_location" translatable="false">pref_key_refile_last_location</string>
     <string name="pref_key_last_inline_timestamp_was_active" translatable="false">pref_key_last_inline_timestamp_was_active</string>

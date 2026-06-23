@@ -377,7 +377,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             // Reminders for scheduled notes
             getString(R.string.pref_key_use_reminders_for_scheduled_times) -> {
                 // Reset last run time
-                AppPreferences.reminderLastRunForScheduled(context, 0L)
+                AppPreferences.reminderLastRun(context, 0L)
                 if (AppPreferences.remindersForScheduledEnabled(context)) {
                     // Ensure notifications permission
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -390,7 +390,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             // Reminders for deadlines
             getString(R.string.pref_key_use_reminders_for_deadline_times) -> {
                 // Reset last run time
-                AppPreferences.reminderLastRunForDeadline(context, 0L)
+                AppPreferences.reminderLastRun(context, 0L)
                 if (AppPreferences.remindersForDeadlineEnabled(context)) {
                     // Ensure notifications permission
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -403,7 +403,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             // Reminders for events
             getString(R.string.pref_key_use_reminders_for_event_times) -> {
                 // Reset last run time
-                AppPreferences.reminderLastRunForEvents(context, 0L)
+                AppPreferences.reminderLastRun(context, 0L)
                 if (AppPreferences.remindersForEventsEnabled(context)) {
                     // Ensure notifications permission
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

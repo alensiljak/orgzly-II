@@ -28,173 +28,123 @@ class RemindersBroadcastReceiver : BroadcastReceiver() {
     lateinit var remindersScheduler: RemindersScheduler
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action in listOf(Intent.ACTION_BOOT_COMPLETED, AppIntent.ACTION_REMINDER_DATA_CHANGED,
-                AppIntent.ACTION_REMINDER_TRIGGERED, AppIntent.ACTION_REMINDER_SNOOZE_ENDED,
+        if (intent.action !in listOf(
+                Intent.ACTION_BOOT_COMPLETED,
+                AppIntent.ACTION_REMINDER_DATA_CHANGED,
+                AppIntent.ACTION_REMINDER_TRIGGERED,
+                AppIntent.ACTION_REMINDER_SNOOZE_ENDED,
                 AppIntent.ACTION_SHOW_PENDING_REMINDERS)) {
+            return
+        }
 
-            App.appComponent.inject(this)
+        App.appComponent.inject(this)
 
-            if (!anyRemindersEnabled(context, intent)) {
-                return
-            }
+        if (!anyRemindersEnabled(context, intent)) return
 
-            if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, intent)
+        if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, intent)
 
-            async {
-                when (intent.action) {
-                    AppIntent.ACTION_REMINDER_SNOOZE_ENDED -> {
-                        intent.extras?.apply {
-                            val noteId: Long = getLong(AppIntent.EXTRA_NOTE_ID, 0)
-                            val noteTimeType: Int = getInt(AppIntent.EXTRA_NOTE_TIME_TYPE, 0)
-                            val timestamp: Long = getLong(AppIntent.EXTRA_SNOOZE_TIMESTAMP, 0)
+        async {
+            when (intent.action) {
 
-                            if (noteId > 0) {
-                                snoozeEnded(context, noteId, noteTimeType, timestamp)
-                            }
-                        }
+                AppIntent.ACTION_REMINDER_SNOOZE_ENDED -> {
+                    intent.extras?.apply {
+                        val noteId: Long = getLong(AppIntent.EXTRA_NOTE_ID, 0)
+                        val noteTimeType: Int = getInt(AppIntent.EXTRA_NOTE_TIME_TYPE, 0)
+                        val timestamp: Long = getLong(AppIntent.EXTRA_SNOOZE_TIMESTAMP, 0)
+                        if (noteId > 0) snoozeEnded(context, noteId, noteTimeType, timestamp)
                     }
+                }
 
-                    AppIntent.ACTION_SHOW_PENDING_REMINDERS -> {
-                        val now = DateTime()
-                        val startOfDay = now.withTimeAtStartOfDay()
-                        // Use end-of-today as the upper bound so all items due today are
-                        // included, whether their specific time has passed yet or not.
-                        val endOfDay = startOfDay.plusDays(1)
-                        val pastRun = LastRun(startOfDay, startOfDay, startOfDay)
-                        notifyForRemindersSinceLastRun(context, endOfDay, pastRun)
-                        // Intentionally does NOT call LastRun.toPreferences() —
-                        // normal scheduling state must remain intact.
-                    }
+                AppIntent.ACTION_SHOW_PENDING_REMINDERS -> {
+                    // Manual re-trigger: show all notes due today regardless of when
+                    // the last automatic alarm ran. Does not touch the alarm schedule.
+                    val today = DateTime()
+                    val startOfDay = today.withTimeAtStartOfDay()
+                    val endOfDay = startOfDay.plusDays(1)
+                    val notes = NoteReminders.getNotificationsInWindow(
+                        context, dataRepository, startOfDay, endOfDay)
+                    showNotifications(context, notes)
+                }
 
-                    else -> {
-                        val now = DateTime()
-                        val lastRun = LastRun.fromPreferences(context)
+                else -> {
+                    // Handles: BOOT_COMPLETED, REMINDER_DATA_CHANGED, REMINDER_TRIGGERED
+                    val now = DateTime()
 
-                        remindersScheduler.cancelAll()
+                    // Determine when we last ran. Default to start-of-today on first run
+                    // so we catch everything due today without flooding with old notes.
+                    val lastRunMs = AppPreferences.reminderLastRun(context)
+                    val lastRun = if (lastRunMs > 0L) DateTime(lastRunMs)
+                                  else now.withTimeAtStartOfDay()
 
-                        notifyForRemindersSinceLastRun(context, now, lastRun)
+                    // Cancel any pending alarm before we reschedule below.
+                    remindersScheduler.cancelAll()
 
-                        scheduleNextReminder(context, now, lastRun)
-                        LastRun.toPreferences(context, now)
-                    }
+                    // Show notifications for notes whose time falls in (lastRun, now].
+                    val toNotify = NoteReminders.getNotificationsInWindow(
+                        context, dataRepository, lastRun, now)
+                    showNotifications(context, toNotify)
+
+                    // Schedule the alarm for the next upcoming note.
+                    val next = NoteReminders.getNextReminder(context, dataRepository, now)
+                    scheduleNext(next, now)
+
+                    // Persist the current time so the next run knows where to start.
+                    AppPreferences.reminderLastRun(context, now.millis)
                 }
             }
         }
+    }
+
+    // -------------------------------------------------------------------------
+    // Helpers
+
+    private fun showNotifications(context: Context, notes: List<NoteReminder>) {
+        if (notes.isEmpty()) {
+            if (LogMajorEvents.isEnabled()) {
+                appLogs.log(LogMajorEvents.REMINDERS, "No reminders to show")
+            }
+            return
+        }
+        val toShow = notes.takeLast(20)
+        if (LogMajorEvents.isEnabled()) {
+            appLogs.log(
+                LogMajorEvents.REMINDERS,
+                "Showing ${toShow.size} of ${notes.size} reminder(s)"
+            )
+        }
+        RemindersNotifications.showNotifications(context, toShow, appLogs)
+    }
+
+    private fun scheduleNext(next: NoteReminder?, now: DateTime) {
+        if (next == null) {
+            if (LogMajorEvents.isEnabled()) {
+                appLogs.log(LogMajorEvents.REMINDERS, "No upcoming reminders to schedule")
+            }
+            return
+        }
+
+        // getNextReminder guarantees next.runTime > now, so inMs is always positive.
+        val inMs = next.runTime.millis - now.millis
+        val hasTime = next.payload.orgDateTime.hasTime()
+
+        if (LogMajorEvents.isEnabled()) {
+            appLogs.log(
+                LogMajorEvents.REMINDERS,
+                "Next: \"${next.payload.title}\" at ${next.runTime} " +
+                "(in ${inMs.userFriendlyPeriod()}, hasTime=$hasTime)"
+            )
+        }
+
+        remindersScheduler.scheduleReminder(inMs, hasTime)
     }
 
     private fun anyRemindersEnabled(context: Context, intent: Intent): Boolean {
-        return if (AppPreferences.remindersForScheduledEnabled(context)) {
-            if (LogMajorEvents.isEnabled()) {
-                appLogs.log(
-                    LogMajorEvents.REMINDERS,
-                    "Intent accepted - scheduled time reminder is enabled: $intent"
-                )
-            }
-            true
-        } else if (AppPreferences.remindersForDeadlineEnabled(context)) {
-            if (LogMajorEvents.isEnabled()) {
-                appLogs.log(
-                    LogMajorEvents.REMINDERS,
-                    "Intent accepted - deadline time reminder is enabled: $intent"
-                )
-            }
-            true
-        } else if (AppPreferences.remindersForEventsEnabled(context)) {
-            if (LogMajorEvents.isEnabled()) {
-                appLogs.log(
-                    LogMajorEvents.REMINDERS,
-                    "Intent accepted - events reminder is enabled: $intent"
-                )
-            }
-            true
-        } else {
-            if (LogMajorEvents.isEnabled()) {
-                appLogs.log(
-                    LogMajorEvents.REMINDERS,
-                    "Intent ignored - all reminders are disabled: $intent"
-                )
-            }
-            false
+        val enabled = AppPreferences.anyNotificationsEnabled(context)
+        if (LogMajorEvents.isEnabled()) {
+            val status = if (enabled) "accepted" else "ignored — all reminders disabled"
+            appLogs.log(LogMajorEvents.REMINDERS, "Intent $status: $intent")
         }
-    }
-
-    /**
-     * Display reminders for all notes with times between previous run and now.
-     */
-    private fun notifyForRemindersSinceLastRun(context: Context, now: DateTime, lastRun: LastRun?) {
-        if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG)
-
-        if (lastRun != null) {
-            val notes = NoteReminders.getNoteReminders(
-                context, dataRepository, now, lastRun, NoteReminders.INTERVAL_FROM_LAST_TO_NOW)
-
-            if (notes.isNotEmpty()) {
-                // TODO: Show less, show summary
-                val lastNotes = notes.takeLast(20)
-
-                if (LogMajorEvents.isEnabled()) {
-                    appLogs.log(
-                        LogMajorEvents.REMINDERS,
-                        "Since last run: Found ${notes.size} notes (showing ${lastNotes.size}) between $lastRun and $now")
-                }
-
-                RemindersNotifications.showNotifications(context, lastNotes, appLogs)
-
-            } else {
-                if (LogMajorEvents.isEnabled()) {
-                    appLogs.log(
-                        LogMajorEvents.REMINDERS,
-                        "Since last run: No notes found between $lastRun and $now")
-                }
-            }
-
-        } else {
-            if (LogMajorEvents.isEnabled()) {
-                appLogs.log(LogMajorEvents.REMINDERS, "Since last run: No previous run")
-            }
-        }
-    }
-
-    /**
-     * Schedule the next job for times after now.
-     */
-    private fun scheduleNextReminder(context: Context, now: DateTime, lastRun: LastRun) {
-        val notes = NoteReminders.getNoteReminders(
-            context, dataRepository, now, lastRun, NoteReminders.INTERVAL_FROM_NOW)
-
-        if (notes.isNotEmpty()) {
-            // Schedule only the first upcoming time
-            val firstNote = notes.first()
-
-            val id = firstNote.payload.noteId
-            val title = firstNote.payload.title
-            val runAt = firstNote.runTime.millis
-            val hasTime = firstNote.payload.orgDateTime.hasTime()
-
-            // Schedule in this many milliseconds
-            val inMs = runAt - now.millis
-            if (inMs <= 0) {
-                // Time already passed; notifyForRemindersSinceLastRun already handled it
-                return
-            }
-
-            if (LogMajorEvents.isEnabled()) {
-                val inS = inMs.userFriendlyPeriod()
-                appLogs.log(
-                    LogMajorEvents.REMINDERS,
-                    "Next: Found ${notes.size} notes from $now and scheduling first in $inS ($inMs ms): \"$title\" (id:$id)"
-                )
-            }
-
-            remindersScheduler.scheduleReminder(inMs, hasTime)
-
-        } else {
-            if (LogMajorEvents.isEnabled()) {
-                appLogs.log(
-                    LogMajorEvents.REMINDERS, "Next: No notes found from $now"
-                )
-            }
-        }
+        return enabled
     }
 
     private fun snoozeEnded(context: Context, noteId: Long, noteTimeType: Int, timestamp: Long) {
@@ -208,23 +158,22 @@ class RemindersBroadcastReceiver : BroadcastReceiver() {
                 && NoteReminders.isRelevantNoteTime(context, noteTime)) {
 
                 val orgDateTime = OrgDateTime.parse(noteTime.orgTimestampString)
-
-                val timestampDateTime = DateTime(timestamp)
-
-                val payload = NoteReminderPayload(
-                    noteTime.noteId,
-                    noteTime.bookId,
-                    noteTime.bookName,
-                    noteTime.title,
-                    noteTime.tags,
-                    noteTime.timeType,
-                    orgDateTime)
-
-                reminders.add(NoteReminder(timestampDateTime, payload))
+                reminders.add(NoteReminder(
+                    DateTime(timestamp),
+                    NoteReminderPayload(
+                        noteTime.noteId,
+                        noteTime.bookId,
+                        noteTime.bookName,
+                        noteTime.title,
+                        noteTime.tags,
+                        noteTime.timeType,
+                        orgDateTime
+                    )
+                ))
             }
         }
 
-        if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, "Found ${reminders.size} notes")
+        if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, "Snooze ended, ${reminders.size} note(s)")
 
         if (reminders.isNotEmpty()) {
             RemindersNotifications.showNotifications(context, reminders, appLogs)
