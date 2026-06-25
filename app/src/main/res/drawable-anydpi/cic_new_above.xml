@@ -1,17 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Above: new (⊕) is sibling ABOVE current (●); parent nub shows they share a parent -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24"
     android:tint="?colorControlNormal">
-  <path
-      android:pathData="m11,13 l0,-4 -4,0 0,-2L11,7l0,-4 2,0 0,4 4,0 0,2 -4,0 0,4 -2,0z"
-      android:fillColor="#ffffff"/>
-  <path
-      android:pathData="M12,19m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
-      android:strokeLineJoin="miter"
-      android:strokeWidth="0.86764705"
-      android:fillColor="#ffffff"
-      android:strokeColor="#00000000"
-      android:strokeLineCap="butt"/>
+
+    <!-- parent nub -->
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M5,4 m-2,0 a2,2 0 1 0 4,0 a2,2 0 1 0 -4,0"/>
+
+    <!-- tree: trunk + two branches (├ upper, └ lower) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#ffffff"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M5,6 L5,20 L10,20 M5,11 L10,11"/>
+
+    <!-- NEW note (above = top): outlined circle -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#ffffff"
+        android:strokeWidth="1.5"
+        android:pathData="M10,11 m0,0 a3,3 0 1 0 6,0 a3,3 0 1 0 -6,0"/>
+
+    <!-- NEW note: "+" crosshair -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#ffffff"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:pathData="M13,9 L13,13 M11,11 L15,11"/>
+
+    <!-- CURRENT note (below): filled circle -->
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M10,20 m0,0 a3,3 0 1 0 6,0 a3,3 0 1 0 -6,0"/>
+
 </vector>

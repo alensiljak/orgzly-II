@@ -487,17 +487,21 @@ private fun SelectionBottomBar(isSingleSelection: Boolean, onAction: (Int) -> Un
                 Icon(painterResource(R.drawable.ic_add), stringResource(R.string.new_note))
             }
             DropdownMenu(expanded = newNoteMenu, onDismissRequest = { newNoteMenu = false }) {
-                MenuItem(R.string.new_above) { newNoteMenu = false; onAction(R.id.new_note_above) }
-                MenuItem(R.string.new_under) { newNoteMenu = false; onAction(R.id.new_note_under) }
-                MenuItem(R.string.new_below) { newNoteMenu = false; onAction(R.id.new_note_below) }
+                MenuItem(R.string.new_above, R.drawable.cic_new_above) { newNoteMenu = false; onAction(R.id.new_note_above) }
+                MenuItem(R.string.new_under, R.drawable.cic_new_under) { newNoteMenu = false; onAction(R.id.new_note_under) }
+                MenuItem(R.string.new_below, R.drawable.cic_new_below) { newNoteMenu = false; onAction(R.id.new_note_below) }
             }
         }
     }
 }
 
 @Composable
-private fun MenuItem(textRes: Int, onClick: () -> Unit) {
-    DropdownMenuItem(text = { Text(stringResource(textRes)) }, onClick = onClick)
+private fun MenuItem(textRes: Int, iconRes: Int? = null, onClick: () -> Unit) {
+    DropdownMenuItem(
+        text = { Text(stringResource(textRes)) },
+        leadingIcon = iconRes?.let { { Icon(painterResource(it), contentDescription = null) } },
+        onClick = onClick,
+    )
 }
 
 @Composable
