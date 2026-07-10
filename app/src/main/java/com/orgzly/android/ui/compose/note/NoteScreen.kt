@@ -46,6 +46,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -773,9 +774,17 @@ fun BreadcrumbsView(
     onBookBreadcrumbClick: () -> Unit,
     onNoteBreadcrumbClick: (Note) -> Unit
 ) {
+    val scrollState = rememberScrollState()
+
+    // Keep the current note (last crumb) in view when the path is wider than the screen
+    LaunchedEffect(details.book?.book?.id, details.ancestors.size) {
+        scrollState.scrollTo(scrollState.maxValue)
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .horizontalScroll(scrollState)
             .padding(16.dp)
     ) {
         val bookTitle = details.book?.book?.name ?: ""
@@ -783,14 +792,18 @@ fun BreadcrumbsView(
             text = bookTitle,
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.primary,
+            maxLines = 1,
+            softWrap = false,
             modifier = Modifier.clickable(onClick = onBookBreadcrumbClick)
         )
         details.ancestors.forEach { ancestor ->
-            Text(text = " > ", style = MaterialTheme.typography.bodySmall)
+            Text(text = " > ", style = MaterialTheme.typography.bodySmall, maxLines = 1, softWrap = false)
             Text(
                 text = ancestor.title,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.primary,
+                maxLines = 1,
+                softWrap = false,
                 modifier = Modifier.clickable { onNoteBreadcrumbClick(ancestor) }
             )
         }
