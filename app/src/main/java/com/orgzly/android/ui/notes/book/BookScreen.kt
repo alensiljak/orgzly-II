@@ -45,6 +45,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cc.alensiljak.orgzly.R
 import com.orgzly.android.db.entity.Note
@@ -284,7 +285,7 @@ private fun Preface(text: String, onClick: () -> Unit) {
     }
     Text(
         text = formatted.text,
-        style = MaterialTheme.typography.bodyMedium,
+        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 17.sp),
         modifier = Modifier
             .fillMaxWidth()
             .testTag("preface_row")
