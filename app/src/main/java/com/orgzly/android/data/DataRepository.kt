@@ -12,7 +12,6 @@ import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.sqlite.db.SupportSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQueryBuilder
 import com.google.gson.Gson
@@ -2054,7 +2053,7 @@ class DataRepository @Inject constructor(
                     val intent = Intent(AppIntent.ACTION_OPEN_BOOK)
                     intent.putExtra(AppIntent.EXTRA_BOOK_ID, bookId)
                     intent.putExtra(AppIntent.EXTRA_NOTE_ID, noteId)
-                    LocalBroadcastManager.getInstance(App.getAppContext()).sendBroadcast(intent)
+                    AppEventBus.send(intent)
                 }, 100)
             }
         }
@@ -2530,8 +2529,7 @@ class DataRepository @Inject constructor(
         // Clear repo preferences
         AppPreferences.repoPropsMapDelete(context)
 
-        val intent = Intent(AppIntent.ACTION_DB_CLEARED)
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+        AppEventBus.send(AppIntent.ACTION_DB_CLEARED)
     }
 
     /**

@@ -2,10 +2,7 @@ package com.orgzly.android.ui.main;
 
 import androidx.activity.EdgeToEdge;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
@@ -23,13 +20,14 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.navigation.NavigationView;
 import cc.alensiljak.orgzly.BuildConfig;
 import cc.alensiljak.orgzly.R;
 import com.orgzly.android.App;
+import com.orgzly.android.AppEventBus;
 import com.orgzly.android.AppIntent;
 import com.orgzly.android.SharingShortcutsManager;
 import com.orgzly.android.db.NotesClipboard;
@@ -105,13 +103,21 @@ public class MainActivity extends CommonActivity
     private ActionBarDrawerToggle mDrawerToggle;
     protected DrawerNavigationView drawerNavigationView;
 
-    private LocalBroadcastManager broadcastManager;
+    private static final Set<String> EVENT_ACTIONS = Set.of(
+            AppIntent.ACTION_OPEN_NOTE,
+            AppIntent.ACTION_FOLLOW_LINK_TO_NOTE_OR_BOOK_WITH_PROPERTY,
+            AppIntent.ACTION_FOLLOW_LINK_TO_FILE,
+            AppIntent.ACTION_OPEN_SAVED_SEARCHES,
+            AppIntent.ACTION_OPEN_QUERY,
+            AppIntent.ACTION_OPEN_BOOKS,
+            AppIntent.ACTION_OPEN_BOOK,
+            AppIntent.ACTION_OPEN_SETTINGS,
+            AppIntent.ACTION_SHOW_PENDING_REMINDERS
+    );
 
     private boolean mPromoteDemoteOrMoveRequested = false;
 
     private Runnable runnableOnResumeFragments;
-
-    private BroadcastReceiver receiver = new LocalBroadcastReceiver();
 
     private AlertDialog dialog;
 
@@ -145,7 +151,7 @@ public class MainActivity extends CommonActivity
 
         viewModel = new ViewModelProvider(this, factory).get(MainActivityViewModel.class);
 
-        broadcastManager = LocalBroadcastManager.getInstance(this);
+        AppEventBus.observe(this, EVENT_ACTIONS, this::handleIntent, Lifecycle.State.RESUMED);
 
         setupDrawer();
 
@@ -297,7 +303,7 @@ public class MainActivity extends CommonActivity
                 mDrawerLayout.closeDrawer(GravityCompat.START);
 
                 // Avoid jerky drawer close by displaying new fragment with a delay
-                new Handler().postDelayed(() -> broadcastManager.sendBroadcast(intent), 200);
+                new Handler().postDelayed(() -> AppEventBus.send(intent), 200);
             }
 
             if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, item, intent);
@@ -552,9 +558,6 @@ public class MainActivity extends CommonActivity
 
         if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG);
 
-        LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
-        bm.unregisterReceiver(receiver);
-
         if (dialog != null) {
             dialog.dismiss();
             dialog = null;
@@ -619,17 +622,6 @@ public class MainActivity extends CommonActivity
             runnableOnResumeFragments.run();
             runnableOnResumeFragments = null;
         }
-
-        LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
-        bm.registerReceiver(receiver, new IntentFilter(AppIntent.ACTION_OPEN_NOTE));
-        bm.registerReceiver(receiver, new IntentFilter(AppIntent.ACTION_FOLLOW_LINK_TO_NOTE_OR_BOOK_WITH_PROPERTY));
-        bm.registerReceiver(receiver, new IntentFilter(AppIntent.ACTION_FOLLOW_LINK_TO_FILE));
-        bm.registerReceiver(receiver, new IntentFilter(AppIntent.ACTION_OPEN_SAVED_SEARCHES));
-        bm.registerReceiver(receiver, new IntentFilter(AppIntent.ACTION_OPEN_QUERY));
-        bm.registerReceiver(receiver, new IntentFilter(AppIntent.ACTION_OPEN_BOOKS));
-        bm.registerReceiver(receiver, new IntentFilter(AppIntent.ACTION_OPEN_BOOK));
-        bm.registerReceiver(receiver, new IntentFilter(AppIntent.ACTION_OPEN_SETTINGS));
-        bm.registerReceiver(receiver, new IntentFilter(AppIntent.ACTION_SHOW_PENDING_REMINDERS));
     }
 
     @Override
@@ -762,7 +754,7 @@ public class MainActivity extends CommonActivity
         // DisplayManager.displayBook(bookId, 0);
         Intent intent = new Intent(AppIntent.ACTION_OPEN_BOOK);
         intent.putExtra(AppIntent.EXTRA_BOOK_ID, bookId);
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+        AppEventBus.send(intent);
     }
 
 //    private void animateNotesAfterEdit(Set<Long> noteIds) {
@@ -940,25 +932,24 @@ public class MainActivity extends CommonActivity
         viewModel.openNote(noteId);
     }
 
-    // TODO: Consider creating NavigationBroadcastReceiver
     public static void openSpecificNote(long bookId, long noteId) {
         Intent intent = new Intent(AppIntent.ACTION_OPEN_NOTE);
         intent.putExtra(AppIntent.EXTRA_NOTE_ID, noteId);
         intent.putExtra(AppIntent.EXTRA_BOOK_ID, bookId);
-        LocalBroadcastManager.getInstance(App.getAppContext()).sendBroadcast(intent);
+        AppEventBus.send(intent);
     }
 
     public static void followLinkToFile(String path) {
         Intent intent = new Intent(AppIntent.ACTION_FOLLOW_LINK_TO_FILE);
         intent.putExtra(AppIntent.EXTRA_PATH, path);
-        LocalBroadcastManager.getInstance(App.getAppContext()).sendBroadcast(intent);
+        AppEventBus.send(intent);
     }
 
     public static void followLinkToNoteOrBookWithProperty(String name, String value) {
         Intent intent = new Intent(AppIntent.ACTION_FOLLOW_LINK_TO_NOTE_OR_BOOK_WITH_PROPERTY);
         intent.putExtra(AppIntent.EXTRA_PROPERTY_NAME, name);
         intent.putExtra(AppIntent.EXTRA_PROPERTY_VALUE, value);
-        LocalBroadcastManager.getInstance(App.getAppContext()).sendBroadcast(intent);
+        AppEventBus.send(intent);
     }
 
     @Override
@@ -976,72 +967,68 @@ public class MainActivity extends CommonActivity
         viewModel.clockingUpdateRequest(noteIds, 2);
     }
 
-    private class LocalBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, intent);
+    private void handleIntent(@NonNull Intent intent) {
+        if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, intent);
 
-            if (intent != null && intent.getAction() != null) {
-                handleIntent(intent, intent.getAction());
-            }
+        String action = intent.getAction();
+        if (action == null) {
+            return;
         }
 
-        private void handleIntent(@NonNull Intent intent, @NonNull String action) {
-            switch (action) {
-                case AppIntent.ACTION_OPEN_NOTE: {
-                    long bookId = intent.getLongExtra(AppIntent.EXTRA_BOOK_ID, 0);
-                    long noteId = intent.getLongExtra(AppIntent.EXTRA_NOTE_ID, 0);
-                    DisplayManager.displayExistingNote(getSupportFragmentManager(), bookId, noteId);
-                    break;
-                }
+        switch (action) {
+            case AppIntent.ACTION_OPEN_NOTE: {
+                long bookId = intent.getLongExtra(AppIntent.EXTRA_BOOK_ID, 0);
+                long noteId = intent.getLongExtra(AppIntent.EXTRA_NOTE_ID, 0);
+                DisplayManager.displayExistingNote(getSupportFragmentManager(), bookId, noteId);
+                break;
+            }
 
-                case AppIntent.ACTION_OPEN_SAVED_SEARCHES: {
-                    DisplayManager.displaySavedSearches(getSupportFragmentManager());
-                    break;
-                }
+            case AppIntent.ACTION_OPEN_SAVED_SEARCHES: {
+                DisplayManager.displaySavedSearches(getSupportFragmentManager());
+                break;
+            }
 
-                case AppIntent.ACTION_OPEN_QUERY: {
-                    String query = intent.getStringExtra(AppIntent.EXTRA_QUERY_STRING);
-                    String searchName = intent.getStringExtra(AppIntent.EXTRA_SEARCH_NAME);
-                    DisplayManager.displayQuery(getSupportFragmentManager(), query, searchName);
-                    break;
-                }
+            case AppIntent.ACTION_OPEN_QUERY: {
+                String query = intent.getStringExtra(AppIntent.EXTRA_QUERY_STRING);
+                String searchName = intent.getStringExtra(AppIntent.EXTRA_SEARCH_NAME);
+                DisplayManager.displayQuery(getSupportFragmentManager(), query, searchName);
+                break;
+            }
 
-                case AppIntent.ACTION_OPEN_BOOKS: {
-                    DisplayManager.displayBooks(getSupportFragmentManager(), true);
-                    break;
-                }
+            case AppIntent.ACTION_OPEN_BOOKS: {
+                DisplayManager.displayBooks(getSupportFragmentManager(), true);
+                break;
+            }
 
-                case AppIntent.ACTION_OPEN_BOOK: {
-                    long bookId = intent.getLongExtra(AppIntent.EXTRA_BOOK_ID, 0);
-                    long noteId = intent.getLongExtra(AppIntent.EXTRA_NOTE_ID, 0);
-                    DisplayManager.displayBook(getSupportFragmentManager(), bookId, noteId);
-                    break;
-                }
+            case AppIntent.ACTION_OPEN_BOOK: {
+                long bookId = intent.getLongExtra(AppIntent.EXTRA_BOOK_ID, 0);
+                long noteId = intent.getLongExtra(AppIntent.EXTRA_NOTE_ID, 0);
+                DisplayManager.displayBook(getSupportFragmentManager(), bookId, noteId);
+                break;
+            }
 
-                case AppIntent.ACTION_OPEN_SETTINGS: {
-                    openSettings();
-                    break;
-                }
+            case AppIntent.ACTION_OPEN_SETTINGS: {
+                openSettings();
+                break;
+            }
 
-                case AppIntent.ACTION_SHOW_PENDING_REMINDERS: {
-                    sendBroadcast(new Intent(MainActivity.this, com.orgzly.android.reminders.RemindersBroadcastReceiver.class)
-                            .setAction(AppIntent.ACTION_SHOW_PENDING_REMINDERS));
-                    break;
-                }
+            case AppIntent.ACTION_SHOW_PENDING_REMINDERS: {
+                sendBroadcast(new Intent(this, com.orgzly.android.reminders.RemindersBroadcastReceiver.class)
+                        .setAction(AppIntent.ACTION_SHOW_PENDING_REMINDERS));
+                break;
+            }
 
-                case AppIntent.ACTION_FOLLOW_LINK_TO_NOTE_OR_BOOK_WITH_PROPERTY: {
-                    String name = intent.getStringExtra(AppIntent.EXTRA_PROPERTY_NAME);
-                    String value = intent.getStringExtra(AppIntent.EXTRA_PROPERTY_VALUE);
-                    viewModel.followLinkToNoteOrBookWithProperty(name, value);
-                    break;
-                }
+            case AppIntent.ACTION_FOLLOW_LINK_TO_NOTE_OR_BOOK_WITH_PROPERTY: {
+                String name = intent.getStringExtra(AppIntent.EXTRA_PROPERTY_NAME);
+                String value = intent.getStringExtra(AppIntent.EXTRA_PROPERTY_VALUE);
+                viewModel.followLinkToNoteOrBookWithProperty(name, value);
+                break;
+            }
 
-                case AppIntent.ACTION_FOLLOW_LINK_TO_FILE: {
-                    String path = intent.getStringExtra(AppIntent.EXTRA_PATH);
-                    viewModel.followLinkToFile(path);
-                    break;
-                }
+            case AppIntent.ACTION_FOLLOW_LINK_TO_FILE: {
+                String path = intent.getStringExtra(AppIntent.EXTRA_PATH);
+                viewModel.followLinkToFile(path);
+                break;
             }
         }
     }

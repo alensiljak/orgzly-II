@@ -1,11 +1,10 @@
 package com.orgzly.android.usecase
 
 import android.content.Context
-import android.content.Intent
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.work.*
 import cc.alensiljak.orgzly.BuildConfig
 import com.orgzly.android.App
+import com.orgzly.android.AppEventBus
 import com.orgzly.android.AppIntent
 import com.orgzly.android.data.DataRepository
 import com.orgzly.android.prefs.AppPreferences
@@ -49,11 +48,9 @@ class UseCaseWorker(val context: Context, val params: WorkerParameters) : Worker
     }
 
     private fun broadcastNotesUpdate(action: () -> Unit) {
-        LocalBroadcastManager.getInstance(context).apply {
-            sendBroadcast(Intent(AppIntent.ACTION_UPDATING_NOTES_STARTED))
-            action()
-            sendBroadcast(Intent(AppIntent.ACTION_UPDATING_NOTES_ENDED))
-        }
+        AppEventBus.send(AppIntent.ACTION_UPDATING_NOTES_STARTED)
+        action()
+        AppEventBus.send(AppIntent.ACTION_UPDATING_NOTES_ENDED)
     }
 
     private fun postGettingStartedImport(action: () -> Unit) {
@@ -63,8 +60,7 @@ class UseCaseWorker(val context: Context, val params: WorkerParameters) : Worker
          * Display a message in that case.
          */
         if (AppPreferences.isGettingStartedNotebookLoaded(context)) {
-            val intent = Intent(AppIntent.ACTION_BOOK_IMPORTED)
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+            AppEventBus.send(AppIntent.ACTION_BOOK_IMPORTED)
 
         } else {
             AppPreferences.isGettingStartedNotebookLoaded(context, true)

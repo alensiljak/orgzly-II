@@ -11,11 +11,12 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.lifecycle.Lifecycle
 import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import cc.alensiljak.orgzly.BuildConfig
 import cc.alensiljak.orgzly.R
+import com.orgzly.android.AppEventBus
 import com.orgzly.android.AppIntent
 import com.orgzly.android.data.DataRepository
 import com.orgzly.android.prefs.AppPreferences
@@ -50,29 +51,35 @@ abstract class CommonActivity : AppCompatActivity() {
     @Inject
     lateinit var autoSync: AutoSync
 
-    private val actionReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, "Received broadcast: $intent")
+    private val eventActions = setOf(
+        AppIntent.ACTION_BOOK_IMPORTED,
+        AppIntent.ACTION_DB_CLEARED,
+        AppIntent.ACTION_UPDATING_NOTES_STARTED,
+        AppIntent.ACTION_UPDATING_NOTES_ENDED,
+        AppIntent.ACTION_SHOW_SNACKBAR
+    )
 
-            when (intent.action) {
-                AppIntent.ACTION_BOOK_IMPORTED ->
-                    showSnackbar(R.string.notebook_imported)
+    private fun onAppEvent(intent: Intent) {
+        if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, "Received event: $intent")
 
-                AppIntent.ACTION_DB_CLEARED -> {
-                    clearFragmentBackstack = true
-                }
+        when (intent.action) {
+            AppIntent.ACTION_BOOK_IMPORTED ->
+                showSnackbar(R.string.notebook_imported)
 
-                AppIntent.ACTION_UPDATING_NOTES_STARTED -> {
-                    progressDialog?.dismiss()
-                    progressDialog = progressDialogBuilder(R.string.updating_notes).show()
-                }
-
-                AppIntent.ACTION_UPDATING_NOTES_ENDED ->
-                    progressDialog?.dismiss()
-
-                AppIntent.ACTION_SHOW_SNACKBAR ->
-                    showSnackbar(intent.getStringExtra(AppIntent.EXTRA_MESSAGE))
+            AppIntent.ACTION_DB_CLEARED -> {
+                clearFragmentBackstack = true
             }
+
+            AppIntent.ACTION_UPDATING_NOTES_STARTED -> {
+                progressDialog?.dismiss()
+                progressDialog = progressDialogBuilder(R.string.updating_notes).show()
+            }
+
+            AppIntent.ACTION_UPDATING_NOTES_ENDED ->
+                progressDialog?.dismiss()
+
+            AppIntent.ACTION_SHOW_SNACKBAR ->
+                showSnackbar(intent.getStringExtra(AppIntent.EXTRA_MESSAGE))
         }
     }
 
@@ -143,13 +150,7 @@ abstract class CommonActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(AppIntent.ACTION_BOOK_IMPORTED)
-        intentFilter.addAction(AppIntent.ACTION_DB_CLEARED)
-        intentFilter.addAction(AppIntent.ACTION_UPDATING_NOTES_STARTED)
-        intentFilter.addAction(AppIntent.ACTION_UPDATING_NOTES_ENDED)
-        intentFilter.addAction(AppIntent.ACTION_SHOW_SNACKBAR)
-        LocalBroadcastManager.getInstance(this).registerReceiver(actionReceiver, intentFilter)
+        AppEventBus.observe(this, eventActions, ::onAppEvent, Lifecycle.State.CREATED)
 
         PreferenceManager.getDefaultSharedPreferences(this)
             .registerOnSharedPreferenceChangeListener(settingsChangeListener)
@@ -200,8 +201,6 @@ abstract class CommonActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(actionReceiver)
 
         PreferenceManager.getDefaultSharedPreferences(this)
             .unregisterOnSharedPreferenceChangeListener(settingsChangeListener)

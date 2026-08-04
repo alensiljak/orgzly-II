@@ -125,7 +125,6 @@ dependencies {
     implementation "org.jetbrains:annotations:$versions.jetbrains_annotations"
     implementation "androidx.appcompat:appcompat:$versions.android_appcompat"
     implementation "androidx.documentfile:documentfile:$versions.android_documentfile"
-    implementation "androidx.localbroadcastmanager:localbroadcastmanager:$versions.android_localbroadcastmanager"
 
     // UI
     implementation "androidx.cardview:cardview:$versions.android_cardview"

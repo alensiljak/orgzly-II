@@ -10,7 +10,6 @@ buildscript {
     versions.jetbrains_annotations = '26.1.0'
     versions.android_appcompat = '1.7.1'
     versions.android_documentfile = '1.1.0'
-    versions.android_localbroadcastmanager = '1.1.0'
     versions.android_cardview = '1.0.0'
     versions.android_recyclerview = '1.4.0'
     versions.android_viewpager = '1.1.0'
