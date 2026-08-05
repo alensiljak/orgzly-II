@@ -17,6 +17,7 @@ import com.orgzly.android.usecase.UseCaseResult
 import com.orgzly.android.usecase.UseCaseRunner
 import com.orgzly.android.util.LogUtils
 import java.util.*
+import java.util.concurrent.Executors
 
 class RefileViewModel(
         val dataRepository: DataRepository,
@@ -29,6 +30,11 @@ class RefileViewModel(
     data class Item(val payload: Any? = null, val name: String? = null)
 
     private val breadcrumbs = Stack<Item>()
+
+    // Navigation (open/breadcrumbs) must run strictly in click order, otherwise concurrent
+    // background tasks can push/pop the shared breadcrumbs stack out of order and leave the
+    // breadcrumb header pointing at a different location than the currently displayed list.
+    private val navigationExecutor = Executors.newSingleThreadExecutor()
 
     val data = MutableLiveData<Pair<Stack<Item>, List<Item>>>()
 
@@ -65,7 +71,7 @@ class RefileViewModel(
             }
 
             is Home -> {
-                App.EXECUTORS.diskIO().execute {
+                navigationExecutor.execute {
                     val items = dataRepository.getBooks().map { book ->
                         Item(book.book, book.book.name)
                     }
@@ -80,7 +86,7 @@ class RefileViewModel(
             }
 
             is Book -> {
-                App.EXECUTORS.diskIO().execute {
+                navigationExecutor.execute {
                     val items = dataRepository.getTopLevelNotes(payload.id).map { note ->
                         Item(note, note.title)
                     }
@@ -94,7 +100,7 @@ class RefileViewModel(
             }
 
             is Note -> {
-                App.EXECUTORS.diskIO().execute {
+                navigationExecutor.execute {
                     val items = dataRepository.getNoteChildren(payload.id).map { note ->
                         Item(note, note.title)
                     }
