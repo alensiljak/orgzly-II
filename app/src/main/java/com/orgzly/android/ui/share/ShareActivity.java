@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.core.app.TaskStackBuilder;
+import androidx.core.content.IntentCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 
 import cc.alensiljak.orgzly.BuildConfig;
@@ -123,7 +124,7 @@ public class ShareActivity extends CommonActivity
             }
         } else if (intent.hasExtra(Intent.EXTRA_STREAM)) {
             // A text file was shared
-            Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            Uri uri = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_STREAM, Uri.class);
 
             data.title = uri.getLastPathSegment();
 
@@ -324,7 +325,7 @@ public class ShareActivity extends CommonActivity
     private void handleSendImage(Intent intent, Data data) {
         // Get file uri from intent which probably looks like this:
         // content://media/external/images/...
-        Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        Uri uri = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_STREAM, Uri.class);
 
         try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
             if (cursor != null) {

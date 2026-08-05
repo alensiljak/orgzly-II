@@ -149,7 +149,9 @@ public class ListWidgetProvider extends AppWidgetProvider {
 
         ComponentName thisAppWidgetComponentName = new ComponentName(context.getPackageName(), ListWidgetProvider.class.getName());
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidgetComponentName);
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_widget_list_view);
+        for (int appWidgetId : appWidgetIds) {
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.list_widget_list_view);
+        }
     }
 
     @Override

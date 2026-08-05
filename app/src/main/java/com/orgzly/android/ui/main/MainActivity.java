@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -303,7 +304,7 @@ public class MainActivity extends CommonActivity
                 mDrawerLayout.closeDrawer(GravityCompat.START);
 
                 // Avoid jerky drawer close by displaying new fragment with a delay
-                new Handler().postDelayed(() -> AppEventBus.send(intent), 200);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> AppEventBus.send(intent), 200);
             }
 
             if (BuildConfig.LOG_DEBUG) LogUtils.d(TAG, item, intent);
